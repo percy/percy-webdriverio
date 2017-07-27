@@ -1,0 +1,35 @@
+{
+  "extends": "airbnb",
+  "parser": "babel-eslint",
+  "rules": {
+    "arrow-body-style": "off",
+    "class-methods-use-this": "off",
+    "comma-dangle": ["error", "never"],
+    "consistent-return": "off",
+    "indent": ["error", 2],
+    "max-len": ["error", {
+      "code": 120,
+      "ignoreComments": true,
+      "ignoreTrailingComments": true,
+      "ignoreUrls": true,
+      "ignoreStrings": true,
+      "ignoreTemplateLiterals": true,
+      "ignoreRegExpLiterals": true
+    }],
+    "no-else-return": "off",
+    "no-multi-assign": "off",
+    "no-param-reassign": "off",
+    "no-plusplus": "off",
+    "no-restricted-syntax": "off",
+    "no-trailing-spaces": "off",
+    "no-underscore-dangle": "off",
+    "padded-blocks": "off",
+
+    "import/first": "off",
+    "import/no-extraneous-dependencies": ["error", {
+      "devDependencies": true,
+      "optionalDependencies": true,
+      "peerDependencies": true
+    }],
+  }
+}

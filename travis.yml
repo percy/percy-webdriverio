@@ -1,0 +1,9 @@
+cache:
+  directories:
+    - "node_modules"
+install:
+  yarn
+script:
+  npm run lint
+  npm run build
+  npm test
