@@ -153,6 +153,7 @@ exports.config = {
         } else {
           process.env.PERCY_PROJECT="dummy-repo/dummy-project";
         }
+        process.env.PERCY_BRANCH = "master";
      },
     /**
      * Gets executed just before initialising the webdriver session and test framework. It allows you
