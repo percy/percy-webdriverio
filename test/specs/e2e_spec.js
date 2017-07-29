@@ -1,5 +1,6 @@
 var assert = require('assert');
 var nock = require('nock');
+var version = require('../../package.json').version;
 
 describe('WDIO with percy', function() {
   it('will not smoke', function() {
@@ -13,7 +14,7 @@ describe('WDIO with percy', function() {
           "type":"builds",
             "attributes": {"branch":"master"},
             "relationships":{"resources":{"data":[]}}
-          }})
+          }}).matchHeader('User-Agent', new RegExp(`percy-webdriverio ${version}`))
       .reply(201, {
         "data":{
           "type":"builds",
@@ -22,7 +23,7 @@ describe('WDIO with percy', function() {
             "branch":"master",
             "build-number":113,
             "web-url":`https://percy.io/dummy-repo/dummy-project/builds/${buildId}`,
-            "user-agent":"Percy/v1 percy-js/2.1.3 (node/v6.11.0)"},
+            "user-agent":`Percy/v1 percy-webdriverio ${version} percy-js/2.1.3 (node)`},
           "links":{"self":`/api/v1/builds/${buildId}`},
           "relationships":
             {

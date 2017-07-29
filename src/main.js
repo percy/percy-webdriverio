@@ -1,6 +1,8 @@
 import PercyClient from 'percy-client';
 import Environment from 'percy-client/dist/environment';
 
+import { version } from '../package.json';
+
 import StaticUrlAssetLoader from './staticUrlAssetLoader';
 import FileSystemAssetLoader from './fileSystemAssetLoader';
 
@@ -46,8 +48,9 @@ class WebdriverPercy {
 
     const token = process.env.PERCY_TOKEN;
     const apiUrl = process.env.PERCY_API;
+    const clientInfo = `percy-webdriverio ${version}`;
     browser.percy.environment = new Environment(process.env);
-    browser.percy.percyClient = new PercyClient({ token, apiUrl });
+    browser.percy.percyClient = new PercyClient({ token, apiUrl, clientInfo });
 
     browser.addCommand('percyFinalizeBuild', function async() { // eslint-disable-line prefer-arrow-callback
       const percy = browser.percy;
