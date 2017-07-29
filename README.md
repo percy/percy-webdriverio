@@ -30,7 +30,11 @@ describe('webdriver.io', function() {
 
 ## browser.percyUseAssetLoader
 
-Select the asset loader to load. Currently 2 asset loader are defined:
+Select the asset loader to load. 
+Since percy.io renders pages on the server side, you need to make sure assets (.js, .css, etc files) are inclued as well. 
+
+Currently 2 asset loaders are defined:
+
 1. filesystem:
    load asssets from a given directory. Example:
 
@@ -45,7 +49,7 @@ Select the asset loader to load. Currently 2 asset loader are defined:
     ```
 ## browser.percySnapshot
 
-Capture a snapshot and send to percy.io for comparison. Options in the second parameter are optional.
+Capture a snapshot and send to percy.io for comparison. Options in the second parameter (`width`, `enabledJavascript`, `minimumHeight`) are optional.
 
   ```js
   browser.percySnapshot('name', {widths: [640, 800], enableJavaScript: true, minimumHeight: 400})
