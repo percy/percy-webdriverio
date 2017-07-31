@@ -24,7 +24,7 @@ export default class StaticUrlAssetLoader {
             resolve(resources);
           }
         }).catch((err) => { // eslint-disable-line no-loop-func
-          console.log(`err in downloading ${fullUrl}`, err); // eslint-disable-line no-console
+          console.log(`[percy webdriverio] err in downloading ${fullUrl}`, err); // eslint-disable-line no-console
           inflight -= 1;
           if (inflight === 0) {
             resolve(resources);

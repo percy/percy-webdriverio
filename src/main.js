@@ -20,7 +20,7 @@ function gatherSnapshotResources(assetLoaders, rootPage, percyClient) {
         resolve([].concat(...listOfResources));
       })
       .catch((err) => {
-        console.log('gatherSnapshotResources.XXX.reject', err); // eslint-disable-line no-console
+        console.log('[percy webdriverio] gatherSnapshotResources.XXX.reject', err); // eslint-disable-line no-console
         reject(err);
       });
   });
@@ -33,7 +33,7 @@ function uploadMissingResources(percyClient, buildId, response, shaToResource) {
     for (const missingResource of missingResources) {
       promises.push(percyClient.uploadResource(buildId, shaToResource[missingResource.id].content)
         .then(() => {})
-        .catch(err => console.log('uploadMissingResources', err))); // eslint-disable-line no-console
+        .catch(err => console.log('[percy webdriverio] uploadMissingResources', err))); // eslint-disable-line no-console
     }
   }
   return Promise.all(promises);
