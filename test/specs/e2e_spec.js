@@ -65,10 +65,16 @@ describe('WDIO with percy', function() {
         nock('https://percy.io:443', {"encodedQueryParams":true})
           .post(`/api/v1/snapshots/${snapshotId}/finalize`, {})
           .reply(200, {"success":true}, []);
+
+        nock('https://percy.io:443', {"encodedQueryParams":true})
+          .post(`/api/v1/builds/${buildId}/finalize`, {})
+          .reply(200, {"success":true}, []);
+
     var staticServerPort = 4567;
     browser.url(`localhost:${staticServerPort}/fixtures/index.html`);
     assert.equal(browser.getTitle(), 'Hello world');
     browser.percySnapshot('testPercy');
+    browser.percyFinalizeBuild();
   });
 
   it('will not smoke with asset loader', function() {
@@ -157,13 +163,16 @@ describe('WDIO with percy', function() {
             .post(`/api/v1/snapshots/${snapshotId}/finalize`, {})
             .reply(200, {"success":true}, []);
 
-
+          nock('https://percy.io:443', {"encodedQueryParams":true})
+            .post(`/api/v1/builds/${buildId}/finalize`, {})
+            .reply(200, {"success":true}, []);
     }
     var staticServerPort = 4567;
     browser.percyUseAssetLoader('filesystem', {buildDir: '../fixtures/assets'});
     browser.url(`localhost:${staticServerPort}/fixtures/index.html`);
     assert.equal(browser.getTitle(), 'Hello world');
     browser.percySnapshot('testPercy');
+    browser.percyFinalizeBuild();
   });
 
 });
