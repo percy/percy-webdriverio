@@ -30,8 +30,8 @@ describe('webdriver.io', function() {
 
 ## browser.percyUseAssetLoader
 
-Select the asset loader to load. 
-Since percy.io renders pages on the server side, you need to make sure assets (.js, .css, etc files) are inclued as well. 
+Select the asset loader to load.
+Since percy.io renders pages on the server side, you need to make sure assets (.js, .css, etc files) are inclued as well.
 
 Currently 2 asset loaders are defined:
 
@@ -59,6 +59,12 @@ Capture a snapshot and send to percy.io for comparison. Options in the second pa
 
 Should be called from an after test hook. Will marked the build finished, so percy.io knows it doesn't needs to wait for further snapshots.
 
+
+  ```js
+  after(function() {
+    browser.percyFinalizeBuild();
+  });
+  ```
 
 # Development
 
