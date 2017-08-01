@@ -6,7 +6,8 @@
   "scripts": {
     "build": "babel src --presets babel-preset-es2015 --out-dir dist",
     "lint": "eslint ./src",
-    "test": "cd test/specs && wdio"
+    "test": "cd test/specs && wdio",
+    "prepublish": "babel src --presets babel-preset-es2015 --out-dir dist"
   },
   "dependencies": {
     "percy-client": "^2.1.0",
