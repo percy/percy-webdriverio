@@ -52,6 +52,12 @@ class WebdriverPercy {
     browser.percy.environment = new Environment(process.env);
     browser.percy.percyClient = new PercyClient({ token, apiUrl, clientInfo });
 
+    browser.addCommand('__percyReinit', function async() { // eslint-disable-line prefer-arrow-callback
+      browser.percy = { assetLoaders: [] };
+      browser.percy.environment = new Environment(process.env);
+      browser.percy.percyClient = new PercyClient({ token, apiUrl, clientInfo });
+    });
+
     browser.addCommand('percyFinalizeBuild', function async() { // eslint-disable-line prefer-arrow-callback
       const percy = browser.percy;
       const percyClient = browser.percy.percyClient;

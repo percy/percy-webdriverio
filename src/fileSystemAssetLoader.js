@@ -15,6 +15,7 @@ export default class FileSystemAssetLoader {
     return new Promise((resolve) => {
       const options = this.options;
       const buildDir = options.buildDir;
+      const mountPath = `${(options.mountPath || '')}/`;
 
       const resources = [];
       walk.walkSync(buildDir, {
@@ -42,7 +43,7 @@ export default class FileSystemAssetLoader {
             }
             const content = fs.readFileSync(absolutePath);
             resources.push(percyClient.makeResource({
-              resourceUrl: encodeURI(`/${resourceUrl}`),
+              resourceUrl: encodeURI(`${mountPath}${resourceUrl}`),
               content,
               mimetype: mime.lookup(resourceUrl)
             }));
