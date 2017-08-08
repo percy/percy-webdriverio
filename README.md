@@ -19,8 +19,8 @@ after(function() {
 
 describe('webdriver.io', function() {
     it('should look great', function () {
-        browser.percyUseAssetLoader('static_url', {base: 'http://webdriver.io', urls:[{url: '/js/app.js', mimetype:'text/javascript'}, {url:'/css/screen.css', mimetype:'text/css'}]})
-        browser.url('http://webdriver.io');
+        browser.percyUseAssetLoader('filesystem', {buildDir: 'site/assets', mountPath:'/assets' });
+        browser.url('http://localhost:3000');
         browser.percySnapshot('sample');
     });
 });
