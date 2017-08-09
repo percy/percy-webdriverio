@@ -1,4 +1,7 @@
 # percy-webdriverio
+
+[![Build Status](https://travis-ci.org/percy/percy-webdriverio.svg?branch=master)](https://travis-ci.org/percy/percy-webdriverio)
+
 Webdriver plugin for percy.io support
 
 # Hello world:
