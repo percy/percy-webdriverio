@@ -63,7 +63,7 @@ class Nock {
     if (this.capture) { return; }
     const { buildId } = options;
     nock('https://percy.io:443', { encodedQueryParams: true })
-      .post('/api/v1/repos/dummy-repo/dummy-project/builds/',
+      .post('/api/v1/projects/dummy-repo/dummy-project/builds/',
       { data: {
         type: 'builds',
         attributes: { branch: 'master' },
