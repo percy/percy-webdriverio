@@ -3,7 +3,6 @@ import Environment from 'percy-client/dist/environment';
 
 import { version } from '../package.json';
 
-import StaticUrlAssetLoader from './staticUrlAssetLoader';
 import FileSystemAssetLoader from './fileSystemAssetLoader';
 
 function parseMissingResources(response) {
@@ -80,9 +79,6 @@ class WebdriverPercy {
     browser.addCommand('percyUseAssetLoader', (type, options) => {
       const percy = browser.percy;
       switch (type) {
-      case 'static-url':
-        percy.assetLoaders.push(new StaticUrlAssetLoader(options));
-        break;
       case 'filesystem':
         percy.assetLoaders.push(new FileSystemAssetLoader(options));
         break;
