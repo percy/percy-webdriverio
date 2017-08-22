@@ -106,7 +106,7 @@ class WebdriverPercy {
         });
       }
       return new Promise((resolve, reject) => {
-        browserInstance.getSource().then((source) => {
+        Promise.resolve(browserInstance.getSource()).then((source) => {
           percy.createBuild.then((buildId) => {
             const rootResource = percyClient.makeResource({
               resourceUrl: '/',
