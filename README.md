@@ -37,7 +37,7 @@ Select the asset loader to load.
 Since percy.io renders pages on the server side, you need to make sure assets (.js, .css, etc files) are inclued as well.
 
 1. filesystem:
-   load asssets from a given directory. Example:
+   load assets from a given directory. Example:
 
    ```js
    browser.percyUseAssetLoader('filesystem', {buildDir: 'compiled-assets-dir'});
