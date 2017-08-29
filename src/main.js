@@ -144,6 +144,9 @@ class WebdriverPercy {
                     reject(err);
                   });
                 });
+            }).catch((err) => {
+              browser.logger.error(`percy snapshot failed to gatherSnapshotResources: ${err}`);
+              reject(err);
             });
           }).catch((err) => {
             browser.logger.error(`percy snapshot failed to createBuild: ${err}`);
