@@ -1,3 +1,7 @@
+/* eslint indent: ["error", 4] */
+/* eslint-disable object-shorthand, func-names, global-require */
+/* global browser */
+
 exports.config = {
 
     //
@@ -146,15 +150,15 @@ exports.config = {
      * @param {Object} config wdio configuration object
      * @param {Array.<Object>} capabilities list of capabilities details
      */
-    onPrepare: function (/*config, capabilities*/) {
-        if (process.env.NOCK_REC === "1") {
-          process.env.PERCY_TOKEN=process.env.REC_PERCY_TOKEN;
-          process.env.PERCY_PROJECT=process.env.REC_PRECY_PROJECT;
+    onPrepare: function (/* config, capabilities */) {
+        if (process.env.NOCK_REC === '1') {
+            process.env.PERCY_TOKEN = process.env.REC_PERCY_TOKEN;
+            process.env.PERCY_PROJECT = process.env.REC_PRECY_PROJECT;
         } else {
-          process.env.PERCY_PROJECT="dummy-repo/dummy-project";
+            process.env.PERCY_PROJECT = 'dummy-repo/dummy-project';
         }
-        process.env.PERCY_BRANCH = "master";
-     },
+        process.env.PERCY_BRANCH = 'master';
+    },
     /**
      * Gets executed just before initialising the webdriver session and test framework. It allows you
      * to manipulate configurations depending on the capability or spec.
@@ -170,9 +174,9 @@ exports.config = {
      * @param {Array.<Object>} capabilities list of capabilities details
      * @param {Array.<String>} specs List of spec file paths that are to be run
      */
-    before: function (capabilities, specs) {
-      require('../../dist/main.js').init(browser, {})
-    },
+    before: function (/* capabilities, specs */) {
+        require('../../dist/main.js').init(browser, {});
+    }
     //
     /**
      * Hook that gets executed before the suite starts
@@ -250,4 +254,4 @@ exports.config = {
      */
     // onComplete: function(exitCode) {
     // }
-}
+};
