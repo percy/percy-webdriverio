@@ -66,4 +66,4 @@ Should be called from an after test hook. Will marked the build finished, so per
 
 # recapturing nock flow
 
-REC_PERCY_TOKEN=f32... REC_PRECY_PROJECT=<org>/<proj> NOCK_REC=1 npm test
+REC_PERCY_TOKEN=f32... REC_PERCY_PROJECT=<org>/<proj> NOCK_REC=1 npm test

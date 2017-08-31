@@ -150,7 +150,7 @@ exports.config = {
   onPrepare: function(/* config, capabilities */) {
     if (process.env.NOCK_REC === '1') {
       process.env.PERCY_TOKEN = process.env.REC_PERCY_TOKEN;
-      process.env.PERCY_PROJECT = process.env.REC_PRECY_PROJECT;
+      process.env.PERCY_PROJECT = process.env.REC_PERCY_PROJECT;
     } else {
       process.env.PERCY_PROJECT = 'dummy-repo/dummy-project';
     }
