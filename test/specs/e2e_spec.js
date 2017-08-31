@@ -202,7 +202,6 @@ describe('filesystem asset loader', () => {
   });
 
   it('will raise if directory does not exists', () => {
-    console.log("[xx] does not exists")
     nock('https://percy.io:443').log(console.log); // eslint-disable-line no-console
     const buildId = '2967283';
     const snapshotId = '9499661';

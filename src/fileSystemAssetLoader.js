@@ -21,13 +21,11 @@ export default class FileSystemAssetLoader {
       try {
         isDirectory = fs.statSync(buildDir).isDirectory();
       } catch (err) {
-        console.log("[xx] stat failed!");
         reject(err);
         return;
       }
 
       if (isDirectory) {
-        console.log("[xx] is directory!")
         const resources = [];
         let errors;
         walk.walkSync(buildDir, {
@@ -73,7 +71,6 @@ export default class FileSystemAssetLoader {
           resolve(resources);
         }
       } else {
-        console.log("[xxx] reject");
         reject(`${buildDir} is not a directory`);
       }
     });
