@@ -1,8 +1,7 @@
 {
   "extends": [
     "eslint:recommended",
-    "prettier",
-    "airbnb"
+    "prettier"
   ],
   "parser": "babel-eslint",
   "plugins": [
@@ -18,19 +17,6 @@
         bracketSpacing: true,
       },
     ],
-    "arrow-body-style": "off",
-    "class-methods-use-this": "off",
-    "comma-dangle": ["error", "never"],
-    "consistent-return": "off",
-    "indent": ["error", 2],
-    "max-len": ["error", {
-      "ignoreComments": true,
-      "ignoreTrailingComments": true,
-      "ignoreUrls": true,
-      "ignoreStrings": true,
-      "ignoreTemplateLiterals": true,
-      "ignoreRegExpLiterals": true
-    }],
     "no-else-return": "off",
     "no-multi-assign": "off",
     "no-param-reassign": "off",
@@ -39,12 +25,8 @@
     "no-trailing-spaces": "off",
     "no-underscore-dangle": "off",
     "padded-blocks": "off",
-
     "import/first": "off",
-    "import/no-extraneous-dependencies": ["error", {
-      "devDependencies": true,
-      "optionalDependencies": true,
-      "peerDependencies": true
-    }],
+    "no-undef": "off",
+    "no-console": "off"
   }
 }

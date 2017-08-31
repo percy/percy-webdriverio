@@ -8,14 +8,14 @@ const DEFAULT_SKIPPED_ASSETS = [];
 
 export default class FileSystemAssetLoader {
   constructor(options) {
-    options.skippedAssets = options.skippedAssets || DEFAULT_SKIPPED_ASSETS;
     this.options = options;
+    this.options.skippedAssets = this.options.skippedAssets || DEFAULT_SKIPPED_ASSETS;
   }
   findSnapshotResources(page, percyClient) {
     return new Promise((resolve, reject) => {
       const options = this.options;
       const buildDir = options.buildDir;
-      const mountPath = `${(options.mountPath || '')}/`;
+      const mountPath = `${options.mountPath || ''}/`;
 
       let isDirectory = false;
       try {
@@ -35,7 +35,7 @@ export default class FileSystemAssetLoader {
               const absolutePath = path.join(root, fileStats.name);
               let resourceUrl = absolutePath.replace(buildDir, '');
               if (path.sep === '\\') {
-                // Windows support: transform filesystem backslashes into forward-slashes for the URL.
+                // Windows: transform filesystem backslashes into forward-slashes for the URL.
                 resourceUrl = resourceUrl.replace('\\', '/');
               }
               if (resourceUrl.charAt(0) === '/') {
@@ -52,18 +52,20 @@ export default class FileSystemAssetLoader {
                 return;
               }
               const content = fs.readFileSync(absolutePath);
-              resources.push(percyClient.makeResource({
-                resourceUrl: encodeURI(`${mountPath}${resourceUrl}`),
-                content,
-                mimetype: mime.lookup(resourceUrl)
-              }));
+              resources.push(
+                percyClient.makeResource({
+                  resourceUrl: encodeURI(`${mountPath}${resourceUrl}`),
+                  content,
+                  mimetype: mime.lookup(resourceUrl),
+                }),
+              );
               next();
             },
             errors: function handleErrors(root, fileStats, next) {
               errors = fileStats;
               next();
-            }
-          }
+            },
+          },
         });
         if (resources.length === 0 && errors) {
           reject(errors);

@@ -13,7 +13,7 @@
   },
   "lint-staged": {
     "*.js": [
-      "eslint --fix --color",
+      "./node_modules/eslint/bin/eslint.js --fix",
       "git add"
     ]
   },
