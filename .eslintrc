@@ -1,14 +1,27 @@
 {
-  "extends": "airbnb",
+  "extends": [
+    "eslint:recommended",
+    "prettier",
+    "airbnb"
+  ],
   "parser": "babel-eslint",
+  "plugins": "prettier",
   "rules": {
+    "prettier/prettier": [
+      "error",
+      {
+        printWidth: 100,
+        singleQuote: true,
+        trailingComma: "all",
+        bracketSpacing: true,
+      },
+    ],
     "arrow-body-style": "off",
     "class-methods-use-this": "off",
     "comma-dangle": ["error", "never"],
     "consistent-return": "off",
     "indent": ["error", 2],
     "max-len": ["error", {
-      "code": 120,
       "ignoreComments": true,
       "ignoreTrailingComments": true,
       "ignoreUrls": true,
