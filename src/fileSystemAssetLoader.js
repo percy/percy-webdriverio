@@ -12,46 +12,67 @@ export default class FileSystemAssetLoader {
     this.options = options;
   }
   findSnapshotResources(page, percyClient) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       const options = this.options;
       const buildDir = options.buildDir;
       const mountPath = `${(options.mountPath || '')}/`;
 
-      const resources = [];
-      walk.walkSync(buildDir, {
-        followLinks: true,
-        listeners: {
-          file: function file(root, fileStats, next) {
-            const absolutePath = path.join(root, fileStats.name);
-            let resourceUrl = absolutePath.replace(buildDir, '');
-            if (path.sep === '\\') {
-              // Windows support: transform filesystem backslashes into forward-slashes for the URL.
-              resourceUrl = resourceUrl.replace('\\', '/');
-            }
-            if (resourceUrl.charAt(0) === '/') {
-              resourceUrl = resourceUrl.substr(1);
-            }
-            for (const assetPattern of options.skippedAssets) {
-              if (resourceUrl.match(assetPattern)) {
-                next();
+      let isDirectory = false;
+      try {
+        isDirectory = fs.statSync(buildDir).isDirectory();
+      } catch (err) {
+        reject(err);
+        return;
+      }
+
+      if (isDirectory) {
+        const resources = [];
+        let errors;
+        walk.walkSync(buildDir, {
+          followLinks: true,
+          listeners: {
+            file: function file(root, fileStats, next) {
+              const absolutePath = path.join(root, fileStats.name);
+              let resourceUrl = absolutePath.replace(buildDir, '');
+              if (path.sep === '\\') {
+                // Windows support: transform filesystem backslashes into forward-slashes for the URL.
+                resourceUrl = resourceUrl.replace('\\', '/');
+              }
+              if (resourceUrl.charAt(0) === '/') {
+                resourceUrl = resourceUrl.substr(1);
+              }
+              for (const assetPattern of options.skippedAssets) {
+                if (resourceUrl.match(assetPattern)) {
+                  next();
+                  return;
+                }
+              }
+              if (fs.statSync(absolutePath).size > MAX_FILE_SIZE_BYTES) {
+                console.warn('\n[percy][WARNING] Skipping large file: ', resourceUrl); // eslint-disable-line no-console
                 return;
               }
+              const content = fs.readFileSync(absolutePath);
+              resources.push(percyClient.makeResource({
+                resourceUrl: encodeURI(`${mountPath}${resourceUrl}`),
+                content,
+                mimetype: mime.lookup(resourceUrl)
+              }));
+              next();
+            },
+            errors: function handleErrors(root, fileStats, next) {
+              errors = fileStats;
+              next();
             }
-            if (fs.statSync(absolutePath).size > MAX_FILE_SIZE_BYTES) {
-              console.warn('\n[percy][WARNING] Skipping large file: ', resourceUrl); // eslint-disable-line no-console
-              return;
-            }
-            const content = fs.readFileSync(absolutePath);
-            resources.push(percyClient.makeResource({
-              resourceUrl: encodeURI(`${mountPath}${resourceUrl}`),
-              content,
-              mimetype: mime.lookup(resourceUrl)
-            }));
-            next();
           }
+        });
+        if (resources.length === 0 && errors) {
+          reject(errors);
+        } else {
+          resolve(resources);
         }
-      });
-      resolve(resources);
+      } else {
+        reject(`${buildDir} is not a directory`);
+      }
     });
   }
 }
