@@ -1,7 +1,3 @@
-/* eslint indent: 0 */
-/* eslint-disable object-shorthand, func-names, global-require */
-/* global browser */
-
 exports.config = {
   //
   // ==================
