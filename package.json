@@ -4,38 +4,44 @@
   "description": "percy.io integration for webdriver.io",
   "main": "dist/main.js",
   "scripts": {
-    "build": "babel src --presets babel-preset-es2015 --out-dir dist",
+    "build": "babel src --out-dir dist",
     "lint": "eslint ./src ./test/specs",
     "test": "cd test/specs && wdio",
-    "prepublish": "babel src --presets babel-preset-es2015 --out-dir dist",
-    "prepare": "babel src --presets babel-preset-es2015 --out-dir dist"
+    "precommit": "lint-staged",
+    "prepublish": "babel src --out-dir dist",
+    "prepare": "babel src --out-dir dist"
+  },
+  "lint-staged": {
+    "*.js": [
+      "./node_modules/eslint/bin/eslint.js --fix",
+      "git add"
+    ]
   },
   "dependencies": {
-    "percy-client": "^2.1.0",
-    "walk": "^2.3.9",
+    "mime-types": "^2.1.16",
     "path": "^0.12.7",
-    "mime-types": "^2.1.16"
+    "percy-client": "^2.1.0",
+    "prettier": "^1.6.1",
+    "walk": "^2.3.9"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-core": "^6.24.1",
-    "babel-preset-es2015": "^6.24.1",
     "babel-eslint": "^7.2.3",
-    "eslint-config-airbnb": "^15.0.2",
-    "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-jsx-a11y": "^5.1.1",
-    "eslint-plugin-react": "^7.1.0",
-    "eslint": "^3.16.1",
-    "vitruvius": "^1.0.4",
-    "rimraf": "^2.5.4",
-    "lerna": "2.0.0-beta.38",
-    "request-promise": "4.2.1",
+    "babel-preset-env": "^1.6.0",
+    "babel-register": "^6.26.0",
+    "eslint": "^4.5.0",
+    "eslint-config-prettier": "^2.3.0",
+    "eslint-plugin-prettier": "^2.2.0",
+    "husky": "^0.14.3",
+    "lint-staged": "^4.0.4",
     "mocha": "^3.4.2",
-    "wdio-static-server-service": "^1.0.0",
-    "wdio-mocha-framework": "^0.5.10",
-    "webdriverio": "^4.8.0",
     "nock": "^9.0.14",
-    "wdio-selenium-standalone-service": "^0.0.9"
+    "request-promise": "4.2.1",
+    "wdio-mocha-framework": "^0.5.10",
+    "wdio-selenium-standalone-service": "^0.0.9",
+    "wdio-static-server-service": "^1.0.0",
+    "webdriverio": "^4.8.0"
   },
   "author": "Miklós Fazekas",
   "license": "MIT"
