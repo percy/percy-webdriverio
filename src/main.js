@@ -37,8 +37,9 @@ function uploadMissingResources(percyClient, buildId, response, shaToResource) {
         percyClient
           .uploadResource(buildId, shaToResource[missingResource.id].content)
           .then(() => {})
+          // eslint-disable-next-line no-console
           .catch(err => console.log('[percy webdriverio] uploadMissingResources', err)),
-      ); // eslint-disable-line no-console
+      );
     }
   }
   return Promise.all(promises);

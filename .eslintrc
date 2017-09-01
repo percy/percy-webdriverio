@@ -17,16 +17,6 @@
         bracketSpacing: true,
       },
     ],
-    "no-else-return": "off",
-    "no-multi-assign": "off",
-    "no-param-reassign": "off",
-    "no-plusplus": "off",
-    "no-restricted-syntax": "off",
-    "no-trailing-spaces": "off",
-    "no-underscore-dangle": "off",
-    "padded-blocks": "off",
-    "import/first": "off",
-    "no-undef": "off",
-    "no-console": "off"
+    "no-undef": "off"
   }
 }
