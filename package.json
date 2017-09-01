@@ -4,12 +4,12 @@
   "description": "percy.io integration for webdriver.io",
   "main": "dist/main.js",
   "scripts": {
-    "build": "babel src --presets babel-preset-es2015 --out-dir dist",
+    "build": "babel src --out-dir dist",
     "lint": "eslint ./src ./test/specs",
     "test": "cd test/specs && wdio",
     "precommit": "lint-staged",
-    "prepublish": "babel src --presets babel-preset-es2015 --out-dir dist",
-    "prepare": "babel src --presets babel-preset-es2015 --out-dir dist"
+    "prepublish": "babel src --out-dir dist",
+    "prepare": "babel src --out-dir dist"
   },
   "lint-staged": {
     "*.js": [
