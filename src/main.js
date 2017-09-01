@@ -194,6 +194,5 @@ class WebdriverPercy {
 }
 
 export function init(webdriverInstance, options) {
-  // eslint-disable-line import/prefer-default-export
   return new WebdriverPercy(webdriverInstance, options);
 }
