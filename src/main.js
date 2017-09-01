@@ -58,15 +58,17 @@ class WebdriverPercy {
     browser.percy.environment = new Environment(process.env);
     browser.percy.percyClient = new PercyClient({ token, apiUrl, clientInfo });
 
-    browser.addCommand('__percyReinit', () => {
-      // eslint-disable-line prefer-arrow-callback
+    // adding `async` as function name disables the synchronous behavior of WebdriverIO commands
+    // eslint-disable-next-line prefer-arrow-callback
+    browser.addCommand('__percyReinit', function async() {
       browser.percy = { assetLoaders: [] };
       browser.percy.environment = new Environment(process.env);
       browser.percy.percyClient = new PercyClient({ token, apiUrl, clientInfo });
     });
 
-    browser.addCommand('percyFinalizeBuild', () => {
-      // eslint-disable-line prefer-arrow-callback
+    // adding `async` as function name disables the synchronous behavior of WebdriverIO commands
+    // eslint-disable-next-line prefer-arrow-callback
+    browser.addCommand('percyFinalizeBuild', function async() {
       const percy = browser.percy;
       const percyClient = browser.percy.percyClient;
       return new Promise((resolve, reject) => {
