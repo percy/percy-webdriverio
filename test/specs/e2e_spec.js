@@ -44,6 +44,7 @@ class Nock {
       },
     }));
     const missingResources = options.missing.map(sha => ({ type: 'resources', id: sha }));
+
     nock('https://percy.io:443', { encodedQueryParams: true })
       .post(`/api/v1/builds/${buildId}/snapshots/`, {
         data: {
@@ -173,7 +174,7 @@ describe('WDIO with percy', () => {
     const buildId = '2967280';
     const snapshotId = '9499661';
     const pageSHA = '2733e50faa4486da67da7506edd34d6724b4fe7983f4b7d1015b62d228840e5e';
-    const appJSSHA = '3188aaba4042aa18aa859ddfe17e2d7f138702f9a998d73fd641bef45622ba5b';
+    const appJSSHA = '2055335bf4ad0140b23abf5695f57dc9b9b336edf69b97511946a9beafa75cc6';
     const appCSSSHA = 'ca00f77658989e0d71e3dfa552d33422cf28b12a15ba1c0195152845243e0d91';
 
     const nmock = new Nock();
@@ -232,7 +233,7 @@ describe('filesystem asset loader', () => {
     const buildId = '2967281';
     const snapshotId = '94996612';
     const pageSHA = '2733e50faa4486da67da7506edd34d6724b4fe7983f4b7d1015b62d228840e5e';
-    const appJSSHA = '3188aaba4042aa18aa859ddfe17e2d7f138702f9a998d73fd641bef45622ba5b';
+    const appJSSHA = '2055335bf4ad0140b23abf5695f57dc9b9b336edf69b97511946a9beafa75cc6';
     const appCSSSHA = 'ca00f77658989e0d71e3dfa552d33422cf28b12a15ba1c0195152845243e0d91';
 
     const nmock = new Nock();
