@@ -36,8 +36,9 @@ export default class FileSystemAssetLoader {
               let resourceUrl = absolutePath.replace(buildDir, '');
               if (path.sep === '\\') {
                 // Windows: transform filesystem backslashes into forward-slashes for the URL.
-                resourceUrl = resourceUrl.replace('\\', '/');
+                resourceUrl = resourceUrl.replace(/\\/g, '/');
               }
+
               if (resourceUrl.charAt(0) === '/') {
                 resourceUrl = resourceUrl.substr(1);
               }
