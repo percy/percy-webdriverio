@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "percy.io integration for webdriver.io",
   "main": "dist/main.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "babel src --out-dir dist",
     "lint": "eslint ./src ./test/specs",
