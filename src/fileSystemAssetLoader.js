@@ -33,15 +33,18 @@ export default class FileSystemAssetLoader {
           listeners: {
             file: function file(root, fileStats, next) {
               const absolutePath = path.join(root, fileStats.name);
-              let resourceUrl = absolutePath.replace(buildDir, '');
+              let resourceUrl = absolutePath;
               if (path.sep === '\\') {
                 // Windows: transform filesystem backslashes into forward-slashes for the URL.
                 resourceUrl = resourceUrl.replace(/\\/g, '/');
               }
 
+              resourceUrl = resourceUrl.replace(buildDir, '');
+
               if (resourceUrl.charAt(0) === '/') {
                 resourceUrl = resourceUrl.substr(1);
               }
+
               for (const assetPattern of options.skippedAssets) {
                 if (resourceUrl.match(assetPattern)) {
                   next();
