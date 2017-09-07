@@ -72,23 +72,30 @@ class WebdriverPercy {
       const percy = browser.percy;
       const percyClient = browser.percy.percyClient;
       return new Promise((resolve, reject) => {
-        percy.createBuild
-          .then(percyBuildId => {
-            percyClient
-              .finalizeBuild(percyBuildId)
-              .then(() => {
-                browser.logger.info(`percy finalizedBuild[${percyBuildId}]: ok`);
-                resolve(true);
-              })
-              .catch(err => {
-                browser.logger.error(`percy finalizedBuild[${percyBuildId}]: ${err}`);
-                reject(err);
-              });
-          })
-          .catch(err => {
-            browser.logger.error('percy finalizedBuild failed to get build id');
-            reject(err);
-          });
+        if (percy.createBuild === undefined) {
+          browser.logger.error(
+            '[percy webdriverio] no percySnapshot calls => ignoring finalizeBuild',
+          );
+          reject(new Error('No percySnapshot calls were issued'));
+        } else {
+          percy.createBuild
+            .then(percyBuildId => {
+              percyClient
+                .finalizeBuild(percyBuildId)
+                .then(() => {
+                  browser.logger.info(`percy finalizedBuild[${percyBuildId}]: ok`);
+                  resolve(true);
+                })
+                .catch(err => {
+                  browser.logger.error(`percy finalizedBuild[${percyBuildId}]: ${err}`);
+                  reject(err);
+                });
+            })
+            .catch(err => {
+              browser.logger.error('percy finalizedBuild failed to get build id');
+              reject(err);
+            });
+        }
       });
     });
 
