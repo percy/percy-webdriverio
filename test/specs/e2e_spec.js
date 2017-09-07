@@ -294,7 +294,7 @@ describe('filesystem asset loader', () => {
     assert.equal(browser.getTitle(), 'Hello world');
     assert.throws(() => {
       browser.percySnapshot('testPercy');
-    }, /no such file or directory, stat '\.\.\/fixtures\/no_such_dir'/);
+    }, /no such file or directory, stat '.+[/\\]fixtures[/\\]no_such_dir'/);
     browser.percyFinalizeBuild();
   });
 });
