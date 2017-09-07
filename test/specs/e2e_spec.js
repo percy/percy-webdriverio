@@ -227,6 +227,21 @@ describe('WDIO with percy', () => {
   });
 });
 
+describe('corner case: no perctSnapshot invocations', () => {
+  it('will not call finalize', () => {
+    nock('https://percy.io:443').log(console.log); // eslint-disable-line no-console
+    new Nock();
+
+    const staticServerPort = 4567;
+    browser.__percyReinit();
+    browser.url(`localhost:${staticServerPort}/fixtures/index.html`);
+    assert.equal(browser.getTitle(), 'Hello world');
+    assert.throws(() => {
+      browser.percyFinalizeBuild();
+    }, /No percySnapshot calls were issued/);
+  });
+});
+
 describe('filesystem asset loader', () => {
   it('will use mountPath as root for assets', () => {
     nock('https://percy.io:443').log(console.log); // eslint-disable-line no-console
