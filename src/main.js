@@ -48,7 +48,7 @@ function uploadMissingResources(percyClient, buildId, response, shaToResource) {
 class WebdriverPercy {
   constructor(browser) {
     if (!browser) {
-      throw new Error('A WebdriverIO instance is needed to initialise wdio-screenshot');
+      throw new Error('A WebdriverIO instance is needed to initialise percy-webdriverio');
     }
     browser.percy = { assetLoaders: [] };
 
