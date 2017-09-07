@@ -117,7 +117,7 @@ class WebdriverPercy {
               resolve(buildId);
             })
             .catch(err => {
-              browser.logger.error(`percy snapshot failed to creteBuild: ${err}`);
+              browser.logger.error(`percy snapshot failed to createBuild: ${err}`);
               reject(err);
             });
         });
