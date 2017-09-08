@@ -11,7 +11,7 @@ export default class FileSystemAssetLoader {
     this.options = options;
     this.options.skippedAssets = this.options.skippedAssets || DEFAULT_SKIPPED_ASSETS;
   }
-  findSnapshotResources(page, percyClient) {
+  findBuildResources(percyClient) {
     return new Promise((resolve, reject) => {
       const options = this.options;
       const buildDir = options.buildDir;

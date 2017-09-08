@@ -15,14 +15,14 @@ function parseMissingResources(response) {
   );
 }
 
-function gatherSnapshotResources(assetLoaders, rootPage, percyClient) {
+function gatherBuildResources(assetLoaders, percyClient) {
   return new Promise((resolve, reject) => {
-    Promise.all(assetLoaders.map(loader => loader.findSnapshotResources(rootPage, percyClient)))
+    Promise.all(assetLoaders.map(loader => loader.findBuildResources(percyClient)))
       .then(listOfResources => {
         resolve([].concat(...listOfResources));
       })
       .catch(err => {
-        console.log('[percy webdriverio] gatherSnapshotResources.XXX.reject', err); // eslint-disable-line no-console
+        console.log('[percy webdriverio] gatherBuildResources.XXX.reject', err); // eslint-disable-line no-console
         reject(err);
       });
   });
@@ -66,66 +66,26 @@ class WebdriverPercy {
       browser.percy.percyClient = new PercyClient({ token, apiUrl, clientInfo });
     });
 
-    // adding `async` as function name disables the synchronous behavior of WebdriverIO commands
-    // eslint-disable-next-line prefer-arrow-callback
-    browser.addCommand('percyFinalizeBuild', function async() {
-      const percy = browser.percy;
-      const percyClient = browser.percy.percyClient;
-      return new Promise((resolve, reject) => {
-        percy.createBuild
-          .then(percyBuildId => {
-            percyClient
-              .finalizeBuild(percyBuildId)
-              .then(() => {
-                browser.logger.info(`percy finalizedBuild[${percyBuildId}]: ok`);
-                resolve(true);
-              })
-              .catch(err => {
-                browser.logger.error(`percy finalizedBuild[${percyBuildId}]: ${err}`);
-                reject(err);
-              });
-          })
-          .catch(err => {
-            browser.logger.error('percy finalizedBuild failed to get build id');
-            reject(err);
-          });
-      });
+    browser.addCommand('percyFinalizeBuild', () => {
+      throw new Error(
+        '[percy] browser.percyFinalizeBuild is deprecated, see https://github.com/percy/percy-webdriverio/pull/19',
+      );
     });
 
-    browser.addCommand('percyUseAssetLoader', (type, options) => {
-      const percy = browser.percy;
-      switch (type) {
-        case 'filesystem':
-          percy.assetLoaders.push(new FileSystemAssetLoader(options));
-          break;
-        default:
-          throw new Error(`Unexpected asset loader type: ${type}`);
-      }
+    browser.addCommand('percyUseAssetLoader', () => {
+      throw new Error(
+        '[percy] browser.percyUseAssetLoader is deprecated, see https://github.com/percy/percy-webdriverio/pull/19',
+      );
     });
 
     browser.addCommand('percySnapshot', function async(name, options = {}) {
       const percy = browser.percy;
       const browserInstance = this;
       const percyClient = percy.percyClient;
-      const environment = percy.environment;
-      if (percy.createBuild === undefined) {
-        percy.createBuild = new Promise((resolve, reject) => {
-          percyClient
-            .createBuild(environment.repo, { resources: [] })
-            .then(buildResponse => {
-              const buildId = buildResponse.body.data.id;
-              resolve(buildId);
-            })
-            .catch(err => {
-              browser.logger.error(`percy snapshot failed to createBuild: ${err}`);
-              reject(err);
-            });
-        });
-      }
       return new Promise((resolve, reject) => {
         Promise.resolve(browserInstance.getSource())
           .then(source => {
-            percy.createBuild
+            percyBuildId('percySnapshot')
               .then(buildId => {
                 const rootResource = percyClient.makeResource({
                   resourceUrl: '/',
@@ -133,52 +93,34 @@ class WebdriverPercy {
                   isRoot: true,
                   mimetype: 'text/html',
                 });
-                gatherSnapshotResources(percy.assetLoaders, source, percyClient)
-                  .then(resources => {
-                    const allResources = resources.concat([rootResource]);
-                    percyClient
-                      .createSnapshot(buildId, allResources, {
-                        name,
-                        widths: options.widths,
-                        enableJavaScript: options.enableJavaScript,
-                        minimumHeight: options.minimumHeight,
-                      })
-                      .then(snapshotResponse => {
-                        const snapshotId = snapshotResponse.body.data.id;
-                        const shaToResource = {};
-                        shaToResource[rootResource.sha] = rootResource;
-                        for (const resource of resources) {
-                          shaToResource[resource.sha] = resource;
-                        }
-                        uploadMissingResources(
-                          percyClient,
-                          buildId,
-                          snapshotResponse,
-                          shaToResource,
-                        )
+                percyClient
+                  .createSnapshot(buildId, [rootResource], {
+                    name,
+                    widths: options.widths,
+                    enableJavaScript: options.enableJavaScript,
+                    minimumHeight: options.minimumHeight,
+                  })
+                  .then(snapshotResponse => {
+                    const snapshotId = snapshotResponse.body.data.id;
+                    const shaToResource = {};
+                    shaToResource[rootResource.sha] = rootResource;
+                    uploadMissingResources(percyClient, buildId, snapshotResponse, shaToResource)
+                      .then(() => {
+                        percyClient
+                          .finalizeSnapshot(snapshotId)
                           .then(() => {
-                            percyClient
-                              .finalizeSnapshot(snapshotId)
-                              .then(() => {
-                                browser.logger.info('percy finalizeSnapshot');
-                                resolve();
-                              })
-                              .catch(err => {
-                                browser.logger.error(`percy finalizeSnapshot failed: ${err}`);
-                                reject(err);
-                              });
+                            browser.logger.info('percy finalizeSnapshot');
+                            resolve();
                           })
                           .catch(err => {
-                            browser.logger.error(`percy uploadMissingResources failed: ${err}`);
+                            browser.logger.error(`percy finalizeSnapshot failed: ${err}`);
                             reject(err);
                           });
+                      })
+                      .catch(err => {
+                        browser.logger.error(`percy uploadMissingResources failed: ${err}`);
+                        reject(err);
                       });
-                  })
-                  .catch(err => {
-                    browser.logger.error(
-                      `percy snapshot failed to gatherSnapshotResources: ${err}`,
-                    );
-                    reject(err);
                   });
               })
               .catch(err => {
@@ -197,4 +139,102 @@ class WebdriverPercy {
 
 export function init(webdriverInstance, options) {
   return new WebdriverPercy(webdriverInstance, options);
+}
+
+export function assetLoader(type, options) {
+  switch (type) {
+    case 'filesystem':
+      return new FileSystemAssetLoader(options);
+    default:
+      throw new Error(`Unexpected asset loader type: ${type}`);
+  }
+}
+
+function createPercyClient() {
+  const token = process.env.PERCY_TOKEN;
+  const apiUrl = process.env.PERCY_API;
+  const clientInfo = `percy-webdriverio ${version}`;
+  return new PercyClient({ token, apiUrl, clientInfo });
+}
+
+function logError(message) {
+  console.log(`[percy] ${message}`); // eslint-disable-line no-console
+}
+
+function logInfo(message) {
+  console.log(`[percy] ${message}`); // eslint-disable-line no-console
+}
+
+function percyBuildId(caller) {
+  return new Promise((resolve, reject) => {
+    if (process.env.PERCY_WEBDRIVERIO_BUILD === undefined) {
+      reject(new Error(`[percy] ${caller}: createBuild needs to be called in onPrepare`));
+    } else {
+      resolve(process.env.PERCY_WEBDRIVERIO_BUILD);
+    }
+  });
+}
+
+export function finalizeBuild() {
+  let percyClient = createPercyClient();
+  return new Promise((resolve, reject) => {
+    percyBuildId('finalizeBuild')
+      .then(buildId => {
+        percyClient
+          .finalizeBuild(buildId)
+          .then(() => {
+            logInfo(`finalizedBuild[${buildId}]: ok`);
+            resolve(true);
+          })
+          .catch(err => {
+            logError(`finalizedBuild[${buildId}]: ${err}`);
+            reject(err);
+          });
+      })
+      .catch(err => {
+        logError('finalizedBuild failed to get build id');
+        reject(err);
+      });
+  });
+}
+
+export function __reinit(browser) {
+  browser.__percyReinit();
+  delete process.env.PERCY_WEBDRIVERIO_BUILD;
+}
+
+export function createBuild(assetLoaders) {
+  return new Promise((resolve, reject) => {
+    let percyClient = createPercyClient();
+    let environment = new Environment(process.env);
+    gatherBuildResources(assetLoaders || [], percyClient)
+      .then(resources => {
+        percyClient
+          .createBuild(environment.repo, { resources })
+          .then(buildResponse => {
+            const buildId = buildResponse.body.data.id;
+            const shaToResource = {};
+            for (const resource of resources) {
+              shaToResource[resource.sha] = resource;
+            }
+            uploadMissingResources(percyClient, buildId, buildResponse, shaToResource)
+              .then(() => {
+                process.env.PERCY_WEBDRIVERIO_BUILD = buildId;
+                resolve(buildId);
+              })
+              .catch(err => {
+                logError(`createBuild: failed to upload resources: ${err}`);
+                reject(err);
+              });
+          })
+          .catch(err => {
+            logError(`createBuild: createBuild failed: ${err}`);
+            reject(err);
+          });
+      })
+      .catch(err => {
+        logError(`createBuild: gatherBuildResources failed: ${err}`);
+        reject(err);
+      });
+  });
 }

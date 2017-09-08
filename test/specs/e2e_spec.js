@@ -3,6 +3,8 @@ const assert = require('assert');
 const nock = require('nock');
 const version = require('../../package.json').version;
 
+const percy = require('../../dist/main.js');
+
 class Nock {
   constructor(options) {
     this.options = options;
@@ -102,12 +104,22 @@ class Nock {
       return;
     }
     const { buildId } = options;
+    const resources = (options.resources || []).map(r => ({
+      type: 'resources',
+      id: r.id,
+      attributes: {
+        'resource-url': r.url,
+        mimetype: r.mimetype,
+        'is-root': r.root ? true : null,
+      },
+    }));
+    const missingResources = (options.missing || []).map(sha => ({ type: 'resources', id: sha }));
     nock('https://percy.io:443', { encodedQueryParams: true })
       .post('/api/v1/projects/dummy-repo/dummy-project/builds/', {
         data: {
           type: 'builds',
           attributes: { branch: 'master' },
-          relationships: { resources: { data: [] } },
+          relationships: { resources: { data: resources } },
         },
       })
       .matchHeader('User-Agent', new RegExp(`percy-webdriverio ${version}`))
@@ -128,7 +140,7 @@ class Nock {
               snapshots: { links: { related: `/api/v1/builds/${buildId}/snapshots` } },
               'missing-resources': {
                 links: { related: `/api/v1/builds/${buildId}/missing-resources` },
-                data: [],
+                data: missingResources,
               },
             },
             meta: { 'finalize-link': `/api/v1/builds/${buildId}/finalize` },
@@ -139,6 +151,17 @@ class Nock {
       );
   }
 }
+
+before(() => {
+  // sync_percy_createBuild is only needed because percy.createBuild is async (returns a promise),
+  // and we use addCommand to make it sync
+  browser.addCommand('sync_percy_createBuild', function async(assetLoaders) {
+    return percy.createBuild(assetLoaders);
+  });
+  browser.addCommand('sync_percy_finalizeBuild', function async() {
+    return percy.finalizeBuild();
+  });
+});
 
 describe('WDIO with percy', () => {
   it('will not smoke', () => {
@@ -162,11 +185,12 @@ describe('WDIO with percy', () => {
     nmock.finalizeBuild({ buildId });
 
     const staticServerPort = 4567;
-    browser.__percyReinit();
+    percy.__reinit(browser);
+    browser.sync_percy_createBuild();
     browser.url(`localhost:${staticServerPort}/fixtures/index.html`);
     assert.equal(browser.getTitle(), 'Hello world');
     browser.percySnapshot('testPercy');
-    browser.percyFinalizeBuild();
+    browser.sync_percy_finalizeBuild();
   });
 
   it('will not smoke with asset loader', () => {
@@ -178,15 +202,18 @@ describe('WDIO with percy', () => {
     const appCSSSHA = 'ca00f77658989e0d71e3dfa552d33422cf28b12a15ba1c0195152845243e0d91';
 
     const nmock = new Nock();
-    nmock.startBuild({ buildId });
-    nmock.snapshot({
+    nmock.startBuild({
+      buildId,
       resources: [
         { id: appCSSSHA, url: '/app.css', mimetype: 'text/css' },
         { id: appJSSHA, url: '/app.js', mimetype: 'application/javascript' },
-        { id: pageSHA, url: '/', mimetype: 'text/html', root: true },
       ],
+      missing: [appCSSSHA],
+    });
+    nmock.snapshot({
+      resources: [{ id: pageSHA, url: '/', mimetype: 'text/html', root: true }],
       name: 'testPercy',
-      missing: [appCSSSHA, pageSHA],
+      missing: [pageSHA],
       snapshotId,
       buildId,
     });
@@ -208,7 +235,7 @@ describe('WDIO with percy', () => {
           id: pageSHA,
           attributes: {
             'base64-content':
-              'PCFET0NUWVBFIGh0bWw+PGh0bWwgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGh0bWwiPjxoZWFkPgogIDx0aXRsZT5IZWxsbyB3b3JsZDwvdGl0bGU+CjwvaGVhZD4KPGJvZHk+CiAgPGI+SGVsbG8gd29ybGQ8L2I+CiAgPGRpdiBjbGFzcz0icmVkIj5Gb288L2Rpdj4KCgo8L2JvZHk+PC9odG1sPg==',
+              'PGh0bWwgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGh0bWwiPjxoZWFkPjwvaGVhZD48Ym9keT48cHJlIHN0eWxlPSJ3b3JkLXdyYXA6IGJyZWFrLXdvcmQ7IHdoaXRlLXNwYWNlOiBwcmUtd3JhcDsiPjwvcHJlPjwvYm9keT48L2h0bWw+',
           },
         },
       })
@@ -218,53 +245,19 @@ describe('WDIO with percy', () => {
     nmock.finalizeBuild({ buildId });
 
     const staticServerPort = 4567;
-    browser.__percyReinit();
-    browser.percyUseAssetLoader('filesystem', { buildDir: '../fixtures/assets' });
+    percy.__reinit(browser);
+    browser.sync_percy_createBuild([
+      percy.assetLoader('filesystem', { buildDir: '../fixtures/assets' }),
+    ]);
     browser.url(`localhost:${staticServerPort}/fixtures/index.html`);
     assert.equal(browser.getTitle(), 'Hello world');
     browser.percySnapshot('testPercy');
-    browser.percyFinalizeBuild();
+    browser.sync_percy_finalizeBuild();
   });
 });
 
-describe('filesystem asset loader', () => {
-  it('will use mountPath as root for assets', () => {
-    nock('https://percy.io:443').log(console.log); // eslint-disable-line no-console
-    const buildId = '2967281';
-    const snapshotId = '94996612';
-    const pageSHA = '2733e50faa4486da67da7506edd34d6724b4fe7983f4b7d1015b62d228840e5e';
-    const appJSSHA = '2055335bf4ad0140b23abf5695f57dc9b9b336edf69b97511946a9beafa75cc6';
-    const appCSSSHA = 'ca00f77658989e0d71e3dfa552d33422cf28b12a15ba1c0195152845243e0d91';
-
-    const nmock = new Nock();
-    nmock.startBuild({ buildId });
-    nmock.snapshot({
-      resources: [
-        { id: appCSSSHA, url: '/foo/app.css', mimetype: 'text/css' },
-        { id: appJSSHA, url: '/foo/app.js', mimetype: 'application/javascript' },
-        { id: pageSHA, url: '/', mimetype: 'text/html', root: true },
-      ],
-      name: 'testPercy',
-      missing: [],
-      snapshotId,
-      buildId,
-    });
-    nmock.finalizeSnapshot({ snapshotId });
-    nmock.finalizeBuild({ buildId });
-
-    const staticServerPort = 4567;
-    browser.__percyReinit();
-    browser.percyUseAssetLoader('filesystem', {
-      buildDir: '../fixtures/assets',
-      mountPath: '/foo',
-    });
-    browser.url(`localhost:${staticServerPort}/fixtures/index.html`);
-    assert.equal(browser.getTitle(), 'Hello world');
-    browser.percySnapshot('testPercy');
-    browser.percyFinalizeBuild();
-  });
-
-  it('will raise if directory does not exists', () => {
+describe('corner cases', () => {
+  it('will raise error if same snapshot name used', () => {
     nock('https://percy.io:443').log(console.log); // eslint-disable-line no-console
     const buildId = '2967283';
     const snapshotId = '9499661';
@@ -285,16 +278,65 @@ describe('filesystem asset loader', () => {
     nmock.finalizeBuild({ buildId });
 
     const staticServerPort = 4567;
-    browser.__percyReinit();
-    browser.percyUseAssetLoader('filesystem', {
-      buildDir: '../fixtures/no_such_dir',
-      mountPath: '/foo',
-    });
+    percy.__reinit(browser);
+    browser.sync_percy_createBuild();
     browser.url(`localhost:${staticServerPort}/fixtures/index.html`);
     assert.equal(browser.getTitle(), 'Hello world');
+    browser.percySnapshot('testPercy');
+    browser.sync_percy_finalizeBuild();
+  });
+});
+
+describe('filesystem asset loader', () => {
+  it('will use mountPath as root for assets', () => {
+    nock('https://percy.io:443').log(console.log); // eslint-disable-line no-console
+    const buildId = '2967281';
+    const snapshotId = '94996612';
+    const pageSHA = '2733e50faa4486da67da7506edd34d6724b4fe7983f4b7d1015b62d228840e5e';
+    const appJSSHA = '2055335bf4ad0140b23abf5695f57dc9b9b336edf69b97511946a9beafa75cc6';
+    const appCSSSHA = 'ca00f77658989e0d71e3dfa552d33422cf28b12a15ba1c0195152845243e0d91';
+
+    const nmock = new Nock();
+    nmock.startBuild({
+      buildId,
+      resources: [
+        { id: appCSSSHA, url: '/foo/app.css', mimetype: 'text/css' },
+        { id: appJSSHA, url: '/foo/app.js', mimetype: 'application/javascript' },
+      ],
+    });
+    nmock.snapshot({
+      resources: [{ id: pageSHA, url: '/', mimetype: 'text/html', root: true }],
+      name: 'testPercy',
+      missing: [],
+      snapshotId,
+      buildId,
+    });
+    nmock.finalizeSnapshot({ snapshotId });
+    nmock.finalizeBuild({ buildId });
+
+    const staticServerPort = 4567;
+    percy.__reinit(browser);
+    browser.sync_percy_createBuild([
+      percy.assetLoader('filesystem', { buildDir: '../fixtures/assets', mountPath: '/foo' }),
+    ]);
+    browser.url(`localhost:${staticServerPort}/fixtures/index.html`);
+    assert.equal(browser.getTitle(), 'Hello world');
+    browser.percySnapshot('testPercy');
+    browser.sync_percy_finalizeBuild();
+  });
+
+  it('will raise if directory does not exists', () => {
+    nock('https://percy.io:443').log(console.log); // eslint-disable-line no-console
+    new Nock();
+
+    percy.__reinit(browser);
     assert.throws(() => {
-      browser.percySnapshot('testPercy');
+      browser.sync_percy_createBuild([
+        percy.assetLoader('filesystem', { buildDir: '../fixtures/no_such_dir', mountPath: '/foo' }),
+      ]);
     }, /no such file or directory, stat '.+[/\\]fixtures[/\\]no_such_dir'/);
-    browser.percyFinalizeBuild();
+    assert.throws(() => {
+      browser.sync_percy_finalizeBuild();
+    }, /createBuild needs to be called in onPrepare/);
   });
 });
