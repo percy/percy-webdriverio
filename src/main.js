@@ -121,6 +121,10 @@ class WebdriverPercy {
                         browser.logger.error(`percy uploadMissingResources failed: ${err}`);
                         reject(err);
                       });
+                  })
+                  .catch(err => {
+                    browser.logger.error(`percy createSnapshot failed: ${err}`);
+                    resolve();
                   });
               })
               .catch(err => {

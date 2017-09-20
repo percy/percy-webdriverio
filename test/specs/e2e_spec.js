@@ -47,6 +47,40 @@ class Nock {
     }));
     const missingResources = options.missing.map(sha => ({ type: 'resources', id: sha }));
 
+    let reply = options.reply || [
+      201,
+      {
+        data: {
+          type: 'snapshots',
+          id: snapshotId,
+          attributes: { name: 'testPercy' },
+          links: { self: `/api/v1/snapshots/${snapshotId}` },
+          relationships: {
+            build: {
+              links: {
+                self: `/api/v1/snapshots/${snapshotId}/relationships/build`,
+                related: `/api/v1/snapshots/${snapshotId}/build`,
+              },
+            },
+            screenshots: {
+              links: {
+                self: `/api/v1/snapshots/${snapshotId}/relationships/screenshots`,
+                related: `/api/v1/snapshots/${snapshotId}/screenshots`,
+              },
+            },
+            'missing-resources': {
+              links: {
+                self: `/api/v1/snapshots/${snapshotId}/relationships/missing-resources`,
+                related: `/api/v1/snapshots/${snapshotId}/missing-resources`,
+              },
+              data: missingResources,
+            },
+          },
+        },
+        included: [],
+      },
+    ];
+
     nock('https://percy.io:443', { encodedQueryParams: true })
       .post(`/api/v1/builds/${buildId}/snapshots/`, {
         data: {
@@ -64,40 +98,7 @@ class Nock {
           },
         },
       })
-      .reply(
-        201,
-        {
-          data: {
-            type: 'snapshots',
-            id: snapshotId,
-            attributes: { name: 'testPercy' },
-            links: { self: `/api/v1/snapshots/${snapshotId}` },
-            relationships: {
-              build: {
-                links: {
-                  self: `/api/v1/snapshots/${snapshotId}/relationships/build`,
-                  related: `/api/v1/snapshots/${snapshotId}/build`,
-                },
-              },
-              screenshots: {
-                links: {
-                  self: `/api/v1/snapshots/${snapshotId}/relationships/screenshots`,
-                  related: `/api/v1/snapshots/${snapshotId}/screenshots`,
-                },
-              },
-              'missing-resources': {
-                links: {
-                  self: `/api/v1/snapshots/${snapshotId}/relationships/missing-resources`,
-                  related: `/api/v1/snapshots/${snapshotId}/missing-resources`,
-                },
-                data: missingResources,
-              },
-            },
-          },
-          included: [],
-        },
-        [],
-      );
+      .reply(reply[0], reply[1], []);
   }
   startBuild(options) {
     if (this.capture) {
@@ -162,6 +163,23 @@ before(() => {
     return percy.finalizeBuild();
   });
 });
+
+function assertLogs(block, pattern) {
+  let logMessages = [];
+  browser.logger.setupWriteStream({
+    logOutput: {
+      write: msg => {
+        logMessages.push(msg);
+      },
+      writable: true,
+    },
+  });
+  block();
+  browser.logger.setupWriteStream({});
+  if (!logMessages.some(msg => msg.match(pattern))) {
+    assert.fail(`did not log message matching: ${pattern}`);
+  }
+}
 
 describe('WDIO with percy', () => {
   it('will not smoke', () => {
@@ -262,6 +280,7 @@ describe('corner cases', () => {
     const buildId = '2967283';
     const snapshotId = '9499661';
     const pageSHA = '2733e50faa4486da67da7506edd34d6724b4fe7983f4b7d1015b62d228840e5e';
+    const pageOtherSHA = '6882330355e3a63e167595a58545fde48d3e815c6a1e5a12e7ba3922b3caa658';
 
     const nmock = new Nock();
     nmock.startBuild({ buildId });
@@ -273,9 +292,7 @@ describe('corner cases', () => {
       snapshotId,
       buildId,
     });
-
     nmock.finalizeSnapshot({ snapshotId });
-    nmock.finalizeBuild({ buildId });
 
     const staticServerPort = 4567;
     percy.__reinit(browser);
@@ -283,6 +300,33 @@ describe('corner cases', () => {
     browser.url(`localhost:${staticServerPort}/fixtures/index.html`);
     assert.equal(browser.getTitle(), 'Hello world');
     browser.percySnapshot('testPercy');
+
+    browser.url(`localhost:${staticServerPort}/fixtures/other.html`);
+
+    nmock.snapshot({
+      resources: [{ id: pageOtherSHA, url: '/', mimetype: 'text/html', root: true }],
+      name: 'testPercy',
+      missing: [],
+      snapshotId,
+      buildId,
+      reply: [
+        400,
+        {
+          errors: [
+            { status: 'bad_request' },
+            {
+              source: { pointer: '/data/attributes/base' },
+              detail:
+                "The name of each snapshot must be unique, and this name already exists in the build: 'testPercy' -- You can fix this by passing a 'name' param when creating the snapshot. See the docs for more info on identifying snapshots for your specific client: https://percy.io/docs",
+            },
+          ],
+        },
+      ],
+    });
+    nmock.finalizeBuild({ buildId });
+    nmock.finalizeSnapshot({ snapshotId });
+
+    assertLogs(() => browser.percySnapshot('testPercy'), /name of each snapshot must be unique/);
     browser.sync_percy_finalizeBuild();
   });
 });
