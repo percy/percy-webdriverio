@@ -1,6 +1,6 @@
 {
   "name": "@percy-io/percy-webdriverio",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "percy.io integration for webdriver.io",
   "main": "dist/main.js",
   "files": [
@@ -12,7 +12,8 @@
     "test": "cd test/specs && wdio",
     "precommit": "lint-staged",
     "prepublish": "babel src --out-dir dist",
-    "prepare": "babel src --out-dir dist"
+    "prepare": "babel src --out-dir dist",
+    "pretest": "babel src --out-dir dist"
   },
   "lint-staged": {
     "*.js": [

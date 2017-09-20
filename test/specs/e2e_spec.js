@@ -369,6 +369,42 @@ describe('filesystem asset loader', () => {
     browser.sync_percy_finalizeBuild();
   });
 
+  it('will build correct resourceUrls when mountPath is /', () => {
+    nock('https://percy.io:443').log(console.log); // eslint-disable-line no-console
+    const buildId = '2967281';
+    const snapshotId = '94996612';
+    const pageSHA = '2733e50faa4486da67da7506edd34d6724b4fe7983f4b7d1015b62d228840e5e';
+    const appJSSHA = '2055335bf4ad0140b23abf5695f57dc9b9b336edf69b97511946a9beafa75cc6';
+    const appCSSSHA = 'ca00f77658989e0d71e3dfa552d33422cf28b12a15ba1c0195152845243e0d91';
+
+    const nmock = new Nock();
+    nmock.startBuild({
+      buildId,
+      resources: [
+        { id: appCSSSHA, url: '/app.css', mimetype: 'text/css' },
+        { id: appJSSHA, url: '/app.js', mimetype: 'application/javascript' },
+      ],
+    });
+    nmock.snapshot({
+      resources: [{ id: pageSHA, url: '/', mimetype: 'text/html', root: true }],
+      name: 'testPercy',
+      missing: [],
+      snapshotId,
+      buildId,
+    });
+    nmock.finalizeSnapshot({ snapshotId });
+    nmock.finalizeBuild({ buildId });
+
+    const staticServerPort = 4567;
+    percy.__reinit(browser);
+    browser.sync_percy_createBuild([
+      percy.assetLoader('filesystem', { buildDir: '../fixtures/assets', mountPath: '/' }),
+    ]);
+    browser.url(`localhost:${staticServerPort}/fixtures/index.html`);
+    browser.percySnapshot('testPercy');
+    browser.sync_percy_finalizeBuild();
+  });
+
   it('will raise if directory does not exists', () => {
     nock('https://percy.io:443').log(console.log); // eslint-disable-line no-console
     new Nock();
