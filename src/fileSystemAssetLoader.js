@@ -15,7 +15,12 @@ export default class FileSystemAssetLoader {
     return new Promise((resolve, reject) => {
       const options = this.options;
       const buildDir = options.buildDir;
-      const mountPath = `${options.mountPath || ''}/`;
+
+      // Setup the mountPath, and make sure it ends with one '/'
+      let mountPath = `${options.mountPath || ''}`;
+      if (mountPath.slice(-1) != '/') {
+        mountPath = mountPath + '/';
+      }
 
       let isDirectory = false;
       try {
