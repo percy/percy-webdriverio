@@ -12,7 +12,8 @@
     "test": "cd test/specs && wdio",
     "precommit": "lint-staged",
     "prepublish": "babel src --out-dir dist",
-    "prepare": "babel src --out-dir dist"
+    "prepare": "babel src --out-dir dist",
+    "pretest": "babel src --out-dir dist"
   },
   "lint-staged": {
     "*.js": [
