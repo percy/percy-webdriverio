@@ -16,8 +16,8 @@ export default class FileSystemAssetLoader {
       const options = this.options;
       const buildDir = options.buildDir;
 
-      // Setup the mountPath, and make sure it ends with one '/'
       let mountPath = `${options.mountPath || ''}`;
+      // Only add a / to the mountPath if it doesn't already end in one.
       if (mountPath.slice(-1) != '/') {
         mountPath = mountPath + '/';
       }
