@@ -169,8 +169,9 @@ function createPercyClient() {
 
 function isEnabled() {
   const hasRequiredVars = Boolean(process.env.PERCY_TOKEN) && Boolean(process.env.PERCY_PROJECT);
-  const hasDisabledVar = parseInt(process.env.PERCY_ENABLE) === 0;
-  return hasRequiredVars && !hasDisabledVar;
+  const hasDisableVar = parseInt(process.env.PERCY_ENABLE) === 0;
+  const hasForceEnable = parseInt(process.env.PERCY_ENABLE) === 1;
+  return hasForceEnable || (hasRequiredVars && !hasDisableVar);
 }
 
 function logError(message) {

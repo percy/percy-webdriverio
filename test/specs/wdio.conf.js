@@ -149,6 +149,7 @@ exports.config = {
       process.env.PERCY_TOKEN = process.env.REC_PERCY_TOKEN;
       process.env.PERCY_PROJECT = process.env.REC_PERCY_PROJECT;
     } else {
+      process.env.PERCY_ENABLE = '1';
       process.env.PERCY_PROJECT = 'dummy-repo/dummy-project';
     }
     process.env.PERCY_BRANCH = 'master';
