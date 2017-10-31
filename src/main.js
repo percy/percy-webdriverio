@@ -168,7 +168,9 @@ function createPercyClient() {
 }
 
 function isEnabled() {
-  return parseInt(process.env.PERCY_ENABLE) !== 0;
+  const hasRequiredVars = Boolean(process.env.PERCY_TOKEN) && Boolean(process.env.PERCY_PROJECT);
+  const hasDisabledVar = parseInt(process.env.PERCY_ENABLE) === 0;
+  return hasRequiredVars && !hasDisabledVar;
 }
 
 function logError(message) {
@@ -222,7 +224,9 @@ export function __reinit(browser) {
 
 export function createBuild(assetLoaders) {
   if (!isEnabled()) {
-    logInfo('Percy disabled. `unset PERCY_ENABLE` to re-enable percy.');
+    logInfo(
+      'Percy disabled. Set the PERCY_TOKEN and PERCY_PROJECT and unset PERCY_ENABLE to re-enable Percy.',
+    );
     return new Promise(resolve => {
       resolve(null);
     });
