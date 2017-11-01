@@ -119,7 +119,14 @@ class Nock {
       .post('/api/v1/projects/dummy-repo/dummy-project/builds/', {
         data: {
           type: 'builds',
-          attributes: { branch: 'master' },
+          attributes: {
+            branch: 'master',
+            'target-branch': null,
+            'commit-sha': null,
+            'pull-request-number': null,
+            'parallel-nonce': null,
+            'parallel-total-shards': null,
+          },
           relationships: { resources: { data: resources } },
         },
       })
