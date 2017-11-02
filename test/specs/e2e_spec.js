@@ -115,11 +115,21 @@ class Nock {
       },
     }));
     const missingResources = (options.missing || []).map(sha => ({ type: 'resources', id: sha }));
+    const commitSha = options.commitSha || browser.percy.environment.commitSha || null;
+    const pullRequestNumber =
+      options.pullRequestNumber || browser.percy.environment.pullRequestNumber || null;
     nock('https://percy.io:443', { encodedQueryParams: true })
       .post('/api/v1/projects/dummy-repo/dummy-project/builds/', {
         data: {
           type: 'builds',
-          attributes: { branch: 'master' },
+          attributes: {
+            branch: 'master',
+            'target-branch': null,
+            'commit-sha': commitSha,
+            'pull-request-number': pullRequestNumber,
+            'parallel-nonce': null,
+            'parallel-total-shards': null,
+          },
           relationships: { resources: { data: resources } },
         },
       })

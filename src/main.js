@@ -22,7 +22,8 @@ function gatherBuildResources(assetLoaders, percyClient) {
         resolve([].concat(...listOfResources));
       })
       .catch(err => {
-        console.log('[percy webdriverio] gatherBuildResources.XXX.reject', err); // eslint-disable-line no-console
+        // eslint-disable-next-line no-console
+        console.log('[percy webdriverio] gatherBuildResources.XXX.reject', err);
         reject(err);
       });
   });
@@ -52,6 +53,7 @@ class WebdriverPercy {
     }
     browser.percy = { assetLoaders: [] };
 
+    const enabled = isEnabled();
     const token = process.env.PERCY_TOKEN;
     const apiUrl = process.env.PERCY_API;
     const clientInfo = `percy-webdriverio ${version}`;
@@ -79,6 +81,10 @@ class WebdriverPercy {
     });
 
     browser.addCommand('percySnapshot', function async(name, options = {}) {
+      if (!enabled) {
+        browser.logger.info('Percy is disabled, skipping screenshot: ' + name);
+        return;
+      }
       const percy = browser.percy;
       const browserInstance = this;
       const percyClient = percy.percyClient;
@@ -161,6 +167,12 @@ function createPercyClient() {
   return new PercyClient({ token, apiUrl, clientInfo });
 }
 
+function isEnabled() {
+  const hasRequiredVars = Boolean(process.env.PERCY_TOKEN) && Boolean(process.env.PERCY_PROJECT);
+  const hasDisableVar = parseInt(process.env.PERCY_ENABLE) === 0;
+  return hasRequiredVars && !hasDisableVar;
+}
+
 function logError(message) {
   console.log(`[percy] ${message}`); // eslint-disable-line no-console
 }
@@ -180,6 +192,9 @@ function percyBuildId(caller) {
 }
 
 export function finalizeBuild() {
+  if (!isEnabled()) {
+    return;
+  }
   let percyClient = createPercyClient();
   return new Promise((resolve, reject) => {
     percyBuildId('finalizeBuild')
@@ -208,6 +223,14 @@ export function __reinit(browser) {
 }
 
 export function createBuild(assetLoaders) {
+  if (!isEnabled()) {
+    logInfo(
+      'Percy disabled. Set the PERCY_TOKEN and PERCY_PROJECT and unset PERCY_ENABLE to re-enable Percy.',
+    );
+    return new Promise(resolve => {
+      resolve(null);
+    });
+  }
   return new Promise((resolve, reject) => {
     let percyClient = createPercyClient();
     let environment = new Environment(process.env);
