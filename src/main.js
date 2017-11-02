@@ -82,7 +82,7 @@ class WebdriverPercy {
 
     browser.addCommand('percySnapshot', function async(name, options = {}) {
       if (!enabled) {
-        browser.logger.info('Percy disabled, skipping screenshot: ' + name);
+        browser.logger.info('Percy is disabled, skipping screenshot: ' + name);
         return;
       }
       const percy = browser.percy;
