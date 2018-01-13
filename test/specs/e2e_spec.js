@@ -123,7 +123,7 @@ class Nock {
             branch: 'master',
             'target-branch': null,
             'commit-sha': 'abc',
-            'pull-request-number': null,
+            'pull-request-number': '100',
             'parallel-nonce': null,
             'parallel-total-shards': null,
           },
