@@ -122,8 +122,8 @@ class Nock {
           attributes: {
             branch: 'master',
             'target-branch': null,
-            'commit-sha': null,
-            'pull-request-number': null,
+            'commit-sha': 'abc',
+            'pull-request-number': '100',
             'parallel-nonce': null,
             'parallel-total-shards': null,
           },

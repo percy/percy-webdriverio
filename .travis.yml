@@ -2,6 +2,7 @@ language: node_js
 cache:
   directories:
     - "node_modules"
+sudo: required # Required right now to run Chrome on Travis
 addons:
   chrome: stable
 node_js:

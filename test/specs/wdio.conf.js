@@ -152,6 +152,8 @@ exports.config = {
       process.env.PERCY_PROJECT = 'dummy-repo/dummy-project';
     }
     process.env.PERCY_BRANCH = 'master';
+    process.env.PERCY_COMMIT = 'abc';
+    process.env.PERCY_PULL_REQUEST = '100';
   },
   /**
    * Gets executed just before initialising the webdriver session and test framework. It allows you
