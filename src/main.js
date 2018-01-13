@@ -104,7 +104,12 @@ class WebdriverPercy {
                     const snapshotId = snapshotResponse.body.data.id;
                     const shaToResource = {};
                     shaToResource[rootResource.sha] = rootResource;
-                    uploadMissingResources(percyClient, buildId, snapshotResponse, shaToResource)
+                    return uploadMissingResources(
+                      percyClient,
+                      buildId,
+                      snapshotResponse,
+                      shaToResource,
+                    )
                       .then(() => {
                         percyClient
                           .finalizeSnapshot(snapshotId)
@@ -221,7 +226,7 @@ export function createBuild(assetLoaders) {
             for (const resource of resources) {
               shaToResource[resource.sha] = resource;
             }
-            uploadMissingResources(percyClient, buildId, buildResponse, shaToResource)
+            return uploadMissingResources(percyClient, buildId, buildResponse, shaToResource)
               .then(() => {
                 process.env.PERCY_WEBDRIVERIO_BUILD = buildId;
                 resolve(buildId);
