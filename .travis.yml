@@ -4,6 +4,9 @@ cache:
     - "node_modules"
 addons:
   chrome: stable
+  apt:
+    sources:
+      - libstdc++6
 node_js:
   - "6"
   - "8"
