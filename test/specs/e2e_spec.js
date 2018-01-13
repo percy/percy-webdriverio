@@ -119,7 +119,14 @@ class Nock {
       .post('/api/v1/projects/dummy-repo/dummy-project/builds/', {
         data: {
           type: 'builds',
-          attributes: { branch: 'master' },
+          attributes: {
+            branch: 'master',
+            'target-branch': null,
+            'commit-sha': null,
+            'pull-request-number': null,
+            'parallel-nonce': null,
+            'parallel-total-shards': null,
+          },
           relationships: { resources: { data: resources } },
         },
       })
@@ -253,7 +260,7 @@ describe('WDIO with percy', () => {
           id: pageSHA,
           attributes: {
             'base64-content':
-              'PGh0bWwgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGh0bWwiPjxoZWFkPjwvaGVhZD48Ym9keT48cHJlIHN0eWxlPSJ3b3JkLXdyYXA6IGJyZWFrLXdvcmQ7IHdoaXRlLXNwYWNlOiBwcmUtd3JhcDsiPjwvcHJlPjwvYm9keT48L2h0bWw+',
+              'PCFET0NUWVBFIGh0bWw+PGh0bWwgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGh0bWwiPjxoZWFkPgogIDx0aXRsZT5IZWxsbyB3b3JsZDwvdGl0bGU+CjwvaGVhZD4KPGJvZHk+CiAgPGI+SGVsbG8gd29ybGQ8L2I+CiAgPGRpdiBjbGFzcz0icmVkIj5Gb288L2Rpdj4KCgo8L2JvZHk+PC9odG1sPg==',
           },
         },
       })
