@@ -134,7 +134,7 @@ class Nock {
               branch: 'master',
               'build-number': 113,
               'web-url': `https://percy.io/dummy-repo/dummy-project/builds/${buildId}`,
-              'user-agent': `Percy/v1 percy-webdriverio ${version} percy-js/2.1.3 (node)`,
+              'user-agent': `Percy/v1 percy-webdriverio ${version} percy-js/2.5.0 (node)`,
             },
             links: { self: `/api/v1/builds/${buildId}` },
             relationships: {
