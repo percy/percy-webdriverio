@@ -85,7 +85,7 @@ class WebdriverPercy {
       return new Promise((resolve, reject) => {
         Promise.resolve(browserInstance.getSource())
           .then(source => {
-            percyBuildId('percySnapshot')
+            return percyBuildId('percySnapshot')
               .then(buildId => {
                 const rootResource = percyClient.makeResource({
                   resourceUrl: '/',
