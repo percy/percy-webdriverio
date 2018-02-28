@@ -48,5 +48,9 @@
     "webdriverio": "^4.8.0"
   },
   "author": "Miklós Fazekas",
-  "license": "MIT"
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/percy/percy-webdriverio/issues"
+  },
+  "repository": "https://github.com/percy/percy-webdriverio"
 }
