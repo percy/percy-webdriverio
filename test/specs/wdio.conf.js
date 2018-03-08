@@ -140,10 +140,10 @@ exports.config = {
   // methods to it. If one of them returns with a promise, WebdriverIO will wait until that promise got
   // resolved to continue.
   /**
-     * Gets executed once before all workers get launched.
-     * @param {Object} config wdio configuration object
-     * @param {Array.<Object>} capabilities list of capabilities details
-     */
+   * Gets executed once before all workers get launched.
+   * @param {Object} config wdio configuration object
+   * @param {Array.<Object>} capabilities list of capabilities details
+   */
   onPrepare: function(/* config, capabilities */) {
     if (process.env.NOCK_REC === '1') {
       process.env.PERCY_TOKEN = process.env.REC_PERCY_TOKEN;
@@ -153,101 +153,103 @@ exports.config = {
       process.env.PERCY_PROJECT = 'dummy-repo/dummy-project';
     }
     process.env.PERCY_BRANCH = 'master';
+    process.env.PERCY_COMMIT = 'abc';
+    process.env.PERCY_PULL_REQUEST = '100';
   },
   /**
-     * Gets executed just before initialising the webdriver session and test framework. It allows you
-     * to manipulate configurations depending on the capability or spec.
-     * @param {Object} config wdio configuration object
-     * @param {Array.<Object>} capabilities list of capabilities details
-     * @param {Array.<String>} specs List of spec file paths that are to be run
-     */
+   * Gets executed just before initialising the webdriver session and test framework. It allows you
+   * to manipulate configurations depending on the capability or spec.
+   * @param {Object} config wdio configuration object
+   * @param {Array.<Object>} capabilities list of capabilities details
+   * @param {Array.<String>} specs List of spec file paths that are to be run
+   */
   // beforeSession: function (config, capabilities, specs) {
   // },
   /**
-     * Gets executed before test execution begins. At this point you can access to all global
-     * variables like `browser`. It is the perfect place to define custom commands.
-     * @param {Array.<Object>} capabilities list of capabilities details
-     * @param {Array.<String>} specs List of spec file paths that are to be run
-     */
+   * Gets executed before test execution begins. At this point you can access to all global
+   * variables like `browser`. It is the perfect place to define custom commands.
+   * @param {Array.<Object>} capabilities list of capabilities details
+   * @param {Array.<String>} specs List of spec file paths that are to be run
+   */
   before: function(/* capabilities, specs */) {
     // This is where @percy-io/percy-webdriverio is required
     require('../../dist/main.js').init(browser, {});
   },
   //
   /**
-     * Hook that gets executed before the suite starts
-     * @param {Object} suite suite details
-     */
+   * Hook that gets executed before the suite starts
+   * @param {Object} suite suite details
+   */
   // beforeSuite: function (suite) {
   // },
   /**
-     * Hook that gets executed _before_ a hook within the suite starts (e.g. runs before calling
-     * beforeEach in Mocha)
-     */
+   * Hook that gets executed _before_ a hook within the suite starts (e.g. runs before calling
+   * beforeEach in Mocha)
+   */
   // beforeHook: function () {
   // },
   /**
-     * Hook that gets executed _after_ a hook within the suite starts (e.g. runs after calling
-     * afterEach in Mocha)
-     */
+   * Hook that gets executed _after_ a hook within the suite starts (e.g. runs after calling
+   * afterEach in Mocha)
+   */
   // afterHook: function () {
   // },
   /**
-     * Function to be executed before a test (in Mocha/Jasmine) or a step (in Cucumber) starts.
-     * @param {Object} test test details
-     */
+   * Function to be executed before a test (in Mocha/Jasmine) or a step (in Cucumber) starts.
+   * @param {Object} test test details
+   */
   // beforeTest: function (test) {
   // },
   /**
-     * Runs before a WebdriverIO command gets executed.
-     * @param {String} commandName hook command name
-     * @param {Array} args arguments that command would receive
-     */
+   * Runs before a WebdriverIO command gets executed.
+   * @param {String} commandName hook command name
+   * @param {Array} args arguments that command would receive
+   */
   // beforeCommand: function (commandName, args) {
   // },
   /**
-     * Runs after a WebdriverIO command gets executed
-     * @param {String} commandName hook command name
-     * @param {Array} args arguments that command would receive
-     * @param {Number} result 0 - command success, 1 - command error
-     * @param {Object} error error object if any
-     */
+   * Runs after a WebdriverIO command gets executed
+   * @param {String} commandName hook command name
+   * @param {Array} args arguments that command would receive
+   * @param {Number} result 0 - command success, 1 - command error
+   * @param {Object} error error object if any
+   */
   // afterCommand: function (commandName, args, result, error) {
   // },
   /**
-     * Function to be executed after a test (in Mocha/Jasmine) or a step (in Cucumber) starts.
-     * @param {Object} test test details
-     */
+   * Function to be executed after a test (in Mocha/Jasmine) or a step (in Cucumber) starts.
+   * @param {Object} test test details
+   */
   // afterTest: function (test) {
   // },
   /**
-     * Hook that gets executed after the suite has ended
-     * @param {Object} suite suite details
-     */
+   * Hook that gets executed after the suite has ended
+   * @param {Object} suite suite details
+   */
   // afterSuite: function (suite) {
   // },
   /**
-     * Gets executed after all tests are done. You still have access to all global variables from
-     * the test.
-     * @param {Number} result 0 - test pass, 1 - test fail
-     * @param {Array.<Object>} capabilities list of capabilities details
-     * @param {Array.<String>} specs List of spec file paths that ran
-     */
+   * Gets executed after all tests are done. You still have access to all global variables from
+   * the test.
+   * @param {Number} result 0 - test pass, 1 - test fail
+   * @param {Array.<Object>} capabilities list of capabilities details
+   * @param {Array.<String>} specs List of spec file paths that ran
+   */
   // after: function (result, capabilities, specs) {
   // },
   /**
-     * Gets executed right after terminating the webdriver session.
-     * @param {Object} config wdio configuration object
-     * @param {Array.<Object>} capabilities list of capabilities details
-     * @param {Array.<String>} specs List of spec file paths that ran
-     */
+   * Gets executed right after terminating the webdriver session.
+   * @param {Object} config wdio configuration object
+   * @param {Array.<Object>} capabilities list of capabilities details
+   * @param {Array.<String>} specs List of spec file paths that ran
+   */
   // afterSession: function (config, capabilities, specs) {
   // },
   /**
-     * Gets executed after all workers got shut down and the process is about to exit. It is not
-     * possible to defer the end of the process using a promise.
-     * @param {Object} exitCode 0 - success, 1 - fail
-     */
+   * Gets executed after all workers got shut down and the process is about to exit. It is not
+   * possible to defer the end of the process using a promise.
+   * @param {Object} exitCode 0 - success, 1 - fail
+   */
   // onComplete: function(exitCode) {
   // }
 };

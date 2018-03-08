@@ -144,7 +144,7 @@ class Nock {
               branch: 'master',
               'build-number': 113,
               'web-url': `https://percy.io/dummy-repo/dummy-project/builds/${buildId}`,
-              'user-agent': `Percy/v1 percy-webdriverio ${version} percy-js/2.1.3 (node)`,
+              'user-agent': `Percy/v1 percy-webdriverio ${version} percy-js/2.5.0 (node)`,
             },
             links: { self: `/api/v1/builds/${buildId}` },
             relationships: {
@@ -263,7 +263,7 @@ describe('WDIO with percy', () => {
           id: pageSHA,
           attributes: {
             'base64-content':
-              'PGh0bWwgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGh0bWwiPjxoZWFkPjwvaGVhZD48Ym9keT48cHJlIHN0eWxlPSJ3b3JkLXdyYXA6IGJyZWFrLXdvcmQ7IHdoaXRlLXNwYWNlOiBwcmUtd3JhcDsiPjwvcHJlPjwvYm9keT48L2h0bWw+',
+              'PCFET0NUWVBFIGh0bWw+PGh0bWwgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGh0bWwiPjxoZWFkPgogIDx0aXRsZT5IZWxsbyB3b3JsZDwvdGl0bGU+CjwvaGVhZD4KPGJvZHk+CiAgPGI+SGVsbG8gd29ybGQ8L2I+CiAgPGRpdiBjbGFzcz0icmVkIj5Gb288L2Rpdj4KCgo8L2JvZHk+PC9odG1sPg==',
           },
         },
       })
