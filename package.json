@@ -1,6 +1,6 @@
 {
   "name": "@percy-io/percy-webdriverio",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "percy.io integration for webdriver.io",
   "main": "dist/main.js",
   "files": [
