@@ -225,7 +225,7 @@ export function __reinit(browser) {
 export function createBuild(assetLoaders) {
   if (!isEnabled()) {
     logInfo(
-      'Percy disabled. Set the PERCY_TOKEN and PERCY_PROJECT and unset PERCY_ENABLE to re-enable Percy.',
+      'Percy disabled. Set PERCY_TOKEN and PERCY_PROJECT, and ensure PERCY_ENABLE is not set to 0 to re-enable Percy.',
     );
     return new Promise(resolve => {
       resolve(null);
