@@ -153,6 +153,14 @@ exports.config = {
     process.env.PERCY_BRANCH = 'master';
     process.env.PERCY_COMMIT = 'abc';
     process.env.PERCY_PULL_REQUEST = '100';
+    process.env.PERCY_TARGET_BRANCH = 'percy-target-branch';
+    process.env.PERCY_TARGET_COMMIT = 'percy-target-commit';
+    process.env.PERCY_PARALLEL_NONCE = 'percy-nonce';
+    process.env.PERCY_PARALLEL_TOTAL = '3';
+    process.env.GIT_AUTHOR_NAME = 'git author';
+    process.env.GIT_AUTHOR_EMAIL = 'gitauthor@example.com';
+    process.env.GIT_COMMITTER_NAME = 'git committer';
+    process.env.GIT_COMMITTER_EMAIL = 'git committer@example.com';
   },
   /**
    * Gets executed just before initialising the webdriver session and test framework. It allows you
