@@ -115,20 +115,31 @@ class Nock {
       },
     }));
     const missingResources = (options.missing || []).map(sha => ({ type: 'resources', id: sha }));
-    const commitSha = options.commitSha || browser.percy.environment.commitSha || null;
+    const environmentStub = browser.percy.environment;
+    const commitData = options.commitData || environmentStub.commitData;
+    const parallelNonce = environmentStub.parallelNonce;
+    const parallelTotalShards = environmentStub.parallelTotalShards;
     const pullRequestNumber =
-      options.pullRequestNumber || browser.percy.environment.pullRequestNumber || null;
+      options.pullRequestNumber || environmentStub.pullRequestNumber || null;
+
     nock('https://percy.io:443', { encodedQueryParams: true })
-      .post('/api/v1/projects/dummy-repo/dummy-project/builds/', {
+      .post('/api/v1/builds/', {
         data: {
           type: 'builds',
           attributes: {
-            branch: 'master',
-            'target-branch': null,
-            'commit-sha': commitSha,
+            branch: commitData.branch,
+            'target-branch': environmentStub.targetBranch,
+            'target-commit-sha': environmentStub.targetCommitSha,
+            'commit-sha': commitData.sha,
+            'commit-committed-at': commitData.committedAt,
+            'commit-author-name': commitData.authorName,
+            'commit-author-email': commitData.authorEmail,
+            'commit-committer-name': commitData.committerName,
+            'commit-committer-email': commitData.committerEmail,
+            'commit-message': commitData.message,
             'pull-request-number': pullRequestNumber,
-            'parallel-nonce': null,
-            'parallel-total-shards': null,
+            'parallel-nonce': parallelNonce,
+            'parallel-total-shards': parallelTotalShards,
           },
           relationships: { resources: { data: resources } },
         },

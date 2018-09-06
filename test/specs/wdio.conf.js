@@ -147,14 +147,20 @@ exports.config = {
   onPrepare: function(/* config, capabilities */) {
     if (process.env.NOCK_REC === '1') {
       process.env.PERCY_TOKEN = process.env.REC_PERCY_TOKEN;
-      process.env.PERCY_PROJECT = process.env.REC_PERCY_PROJECT;
     } else {
       process.env.PERCY_TOKEN = 'dummy-token';
-      process.env.PERCY_PROJECT = 'dummy-repo/dummy-project';
     }
     process.env.PERCY_BRANCH = 'master';
     process.env.PERCY_COMMIT = 'abc';
     process.env.PERCY_PULL_REQUEST = '100';
+    process.env.PERCY_TARGET_BRANCH = 'percy-target-branch';
+    process.env.PERCY_TARGET_COMMIT = 'percy-target-commit';
+    process.env.PERCY_PARALLEL_NONCE = 'percy-nonce';
+    process.env.PERCY_PARALLEL_TOTAL = '3';
+    process.env.GIT_AUTHOR_NAME = 'git author';
+    process.env.GIT_AUTHOR_EMAIL = 'gitauthor@example.com';
+    process.env.GIT_COMMITTER_NAME = 'git committer';
+    process.env.GIT_COMMITTER_EMAIL = 'git committer@example.com';
   },
   /**
    * Gets executed just before initialising the webdriver session and test framework. It allows you

@@ -173,7 +173,7 @@ function createPercyClient() {
 }
 
 function isEnabled() {
-  const hasRequiredVars = Boolean(process.env.PERCY_TOKEN) && Boolean(process.env.PERCY_PROJECT);
+  const hasRequiredVars = Boolean(process.env.PERCY_TOKEN);
   const hasDisableVar = parseInt(process.env.PERCY_ENABLE) === 0;
   return hasRequiredVars && !hasDisableVar;
 }
@@ -230,7 +230,7 @@ export function __reinit(browser) {
 export function createBuild(assetLoaders) {
   if (!isEnabled()) {
     logInfo(
-      'Percy disabled. Set PERCY_TOKEN and PERCY_PROJECT, and ensure PERCY_ENABLE is not set to 0 to re-enable Percy.',
+      'Percy disabled. Set PERCY_TOKEN and ensure PERCY_ENABLE is not set to 0 to re-enable Percy.',
     );
     return new Promise(resolve => {
       resolve(null);
@@ -238,11 +238,10 @@ export function createBuild(assetLoaders) {
   }
   return new Promise((resolve, reject) => {
     let percyClient = createPercyClient();
-    let environment = new Environment(process.env);
     gatherBuildResources(assetLoaders || [], percyClient)
       .then(resources => {
         percyClient
-          .createBuild(environment.repo, { resources })
+          .createBuild({ resources })
           .then(buildResponse => {
             const buildId = buildResponse.body.data.id;
             const shaToResource = {};
