@@ -25,7 +25,6 @@
     "mime-types": "^2.1.16",
     "path": "^0.12.7",
     "percy-client": "^3.0.0",
-    "prettier": "^1.6.1",
     "walk": "^2.3.9"
   },
   "devDependencies": {
@@ -41,6 +40,7 @@
     "lint-staged": "^4.0.4",
     "mocha": "^3.4.2",
     "nock": "^9.1.0",
+    "prettier": "^1.6.1",
     "request-promise": "4.2.1",
     "wdio-mocha-framework": "^0.5.10",
     "wdio-selenium-standalone-service": "^0.0.9",
