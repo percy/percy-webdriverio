@@ -38,7 +38,7 @@
     "eslint-plugin-prettier": "^2.2.0",
     "husky": "^0.14.3",
     "lint-staged": "^4.0.4",
-    "mocha": "^3.4.2",
+    "mocha": "^6.0.2",
     "nock": "^9.1.0",
     "prettier": "^1.6.1",
     "request-promise": "4.2.1",
