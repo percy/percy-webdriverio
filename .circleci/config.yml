@@ -1,0 +1,26 @@
+version: 2.1
+
+default_steps: &default_steps
+  steps:
+    - checkout
+    - run: YARN_OPTS=--no-lockfile yarn install
+    - run: npm run lint
+    - run: npm run build
+    - run: npm test
+
+jobs:
+  node_6:
+    docker:
+      - image: circleci/node:6-browsers
+    <<: *default_steps
+  node_8:
+    docker:
+      - image: circleci/node:8-browsers
+    <<: *default_steps
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - node_6
+      - node_8
