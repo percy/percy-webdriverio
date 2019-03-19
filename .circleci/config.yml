@@ -8,16 +8,12 @@ default_steps: &default_steps
     - run: npm run build
     - run: npm test
 
-
 jobs:
   node_6:
     docker:
       - image: circleci/node:6-browsers
-    environment:
-      PERCY_ENABLE: 0
     <<: *default_steps
-  node_8_with_percy:
-    # We've opted this node version to be the one that runs and reports Percy's status
+  node_8:
     docker:
       - image: circleci/node:8-browsers
     <<: *default_steps
@@ -27,4 +23,4 @@ workflows:
   test:
     jobs:
       - node_6
-      - node_8_with_percy
+      - node_8
