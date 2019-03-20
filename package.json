@@ -11,7 +11,8 @@
     "prepublishOnly": "npm run build",
     "build": "tsc",
     "pretest": "npm run build",
-    "test": "percy exec -- wdio wdio.conf.js"
+    "test": "percy exec -- wdio wdio.conf.js",
+    "test-win": "percy exec -- wdio.cmd wdio.conf.js"
   },
   "dependencies": {
     "@percy/agent": "^0.1.17"
