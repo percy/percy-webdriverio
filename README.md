@@ -9,14 +9,3 @@
 # Acknowledgements
 
 Thanks to [Miklós Fazekas](https://github.com/mfazekas) for creating the initial implementation of this package.
-
-# Notes for Developers
-If you want to submit a PR for percy-webdriverio you'll want to run it's tests first:
-```sh
-yarn test
-```
-
-The tests make use of [nock](https://github.com/node-nock/nock) to mock requests made to Percy's API. You can re-record HTTP calls in nock like this:
-```sh
-REC_PERCY_TOKEN=<your-token> REC_PERCY_PROJECT=<your project> NOCK_REC=1 yarn test
-```
