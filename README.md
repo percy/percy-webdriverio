@@ -6,7 +6,9 @@
 
 #### Docs here: [https://percy.io/docs/clients/javascript/webdriverio](https://percy.io/docs/clients/javascript/webdriverio)
 
+# Acknowledgements
 
+Thanks to [Miklós Fazekas](https://github.com/mfazekas) for creating the initial implementation of this package.
 
 # Notes for Developers
 If you want to submit a PR for percy-webdriverio you'll want to run it's tests first:
