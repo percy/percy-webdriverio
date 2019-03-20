@@ -7,7 +7,6 @@ describe('percy-webdriverio SDK', function() {
   const TEST_URL = `http://localhost:${PORT}`
 
   let server = null
-  let page = null
 
   before(async function() {
     // Start local server to host app under test.
