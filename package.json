@@ -1,5 +1,5 @@
 {
-  "name": "@percy-io/percy-webdriverio",
+  "name": "@percy/percy-webdriverio",
   "version": "1.0.0",
   "description": "percy.io integration for webdriver.io",
   "main": "dist/index.js",
