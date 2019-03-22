@@ -13,4 +13,4 @@
 1. Merge approved pull request
 1. Draft and publish a [new release on github](https://github.com/percy/percy-webdriverio/releases)
 1. `npm publish`
-1. [Visit NPM](https://www.npmjs.com/package/@percy-io/percy-webdriverio) and see that your version is now live.
+1. [Visit NPM](https://www.npmjs.com/package/@percy/percy-webdriverio) and see that your version is now live.
