@@ -109,6 +109,24 @@ exports.config = {
     // your test setup with almost no effort. Unlike plugins, they don't add new
     // commands. Instead, they hook themselves up into the test process.
     services: ['selenium-standalone'],
+    // Tell selenium-standalone which drivers to install. Avoid getting
+    // geckodriver, which is in the default drivers, and has intermittent download issues
+    // (the releases are hosted on GitHub, which apparently rate-limits
+    // downloads).
+    seleniumInstallArgs: {
+      drivers: {
+        chrome: {
+          arch: process.arch,
+        }
+      }
+    },
+    seleniumArgs: {
+      drivers: {
+        chrome: {
+          arch: process.arch,
+        }
+      }
+    },
     // Framework you want to run your specs with.
     // The following are supported: Mocha, Jasmine, and Cucumber
     // see also: https://webdriver.io/docs/frameworks.html
