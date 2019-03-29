@@ -109,8 +109,16 @@ exports.config = {
     // your test setup with almost no effort. Unlike plugins, they don't add new
     // commands. Instead, they hook themselves up into the test process.
     services: ['selenium-standalone'],
-    // Tell selenium-standalone which drivers to install
+    // Tell selenium-standalone which drivers to install. Avoid getting
+    // geckodriver.
     seleniumInstallArgs: {
+      drivers: {
+        chrome: {
+          arch: process.arch,
+        }
+      }
+    },
+    seleniumArgs: {
       drivers: {
         chrome: {
           arch: process.arch,
