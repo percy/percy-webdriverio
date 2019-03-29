@@ -110,7 +110,9 @@ exports.config = {
     // commands. Instead, they hook themselves up into the test process.
     services: ['selenium-standalone'],
     // Tell selenium-standalone which drivers to install. Avoid getting
-    // geckodriver.
+    // geckodriver, which is in the default drivers, and has intermittent download issues
+    // (the releases are hosted on GitHub, which apparently rate-limits
+    // downloads).
     seleniumInstallArgs: {
       drivers: {
         chrome: {
