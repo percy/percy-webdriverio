@@ -1,4 +1,4 @@
-# percy-webdriverio
+# @percy/webdriverio
 [![Package Status](https://img.shields.io/npm/v/@percy/percy-webdriverio.svg)](https://www.npmjs.com/package/@percy/percy-webdriverio)
 [![Build Status](https://travis-ci.org/percy/percy-webdriverio.svg?branch=master)](https://travis-ci.org/percy/percy-webdriverio)
 
