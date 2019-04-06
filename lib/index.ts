@@ -1,8 +1,8 @@
 import fs from 'fs'
 import { clientInfo } from './environment'
-import { agentJsFilename, isAgentRunning, postSnapshot } from '@percy/agent'
+const { agentJsFilename, isAgentRunning, postSnapshot } = require('@percy/agent/dist/utils/sdk-utils')
 
-declare var PercyAgent: any;
+declare var PercyAgent: any
 
 /**
  * @param browser wdio Browser object that we are snapshotting. Required.
@@ -23,9 +23,9 @@ export async function percySnapshot(browser: BrowserObject, name: string, option
 
   await browser.executeScript(fs.readFileSync(agentJsFilename()).toString(), [])
 
-  const domSnapshot = await browser.execute(function (options: any) {
-    const percyAgentClient = new PercyAgent({ handleAgentCommunication: false });
-    return percyAgentClient.snapshot("unused", options);
+  const domSnapshot = await browser.execute((options: any) => {
+    const percyAgentClient = new PercyAgent({ handleAgentCommunication: false })
+    return percyAgentClient.snapshot('unused', options)
   }, options)
 
   await postDomSnapshot(name, domSnapshot, await browser.getUrl(), options)
@@ -37,9 +37,9 @@ async function postDomSnapshot(name: string, domSnapshot: any, url: string, opti
     url,
     domSnapshot,
     clientInfo: clientInfo(),
-    ...options
+    ...options,
   })
   if (!postSuccess) {
-    console.log(`[percy] Error posting snapshot to agent`)
+    console.log('[percy] Error posting snapshot to agent')
   }
 }
