@@ -19,6 +19,8 @@
     "@percy/agent": "^0.1.17"
   },
   "devDependencies": {
+    "@semantic-release/changelog": "^3.0.2",
+    "@semantic-release/git": "^7.0.8",
     "@wdio/cli": "^5.7.4",
     "@wdio/local-runner": "^5.7.4",
     "@wdio/mocha-framework": "^5.7.3",
@@ -28,6 +30,7 @@
     "chai": "^4.2.0",
     "http-server": "^0.11.1",
     "mocha": "^6.0.2",
+    "semantic-release": "^15.13.3",
     "typescript": "^3.3.3333"
   },
   "author": "Perceptual Inc.",
@@ -35,5 +38,19 @@
   "bugs": {
     "url": "https://github.com/percy/percy-webdriverio/issues"
   },
-  "repository": "https://github.com/percy/percy-webdriverio"
+  "repository": "https://github.com/percy/percy-webdriverio",
+  "release": {
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      [
+        "@semantic-release/changelog",
+        {
+          "changelogFile": "CHANGELOG.md"
+        }
+      ],
+      "@semantic-release/npm",
+      "@semantic-release/git"
+    ]
+  }
 }
