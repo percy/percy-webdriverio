@@ -65,18 +65,14 @@ describe('percy-webdriverio SDK', function() {
   })
 
   describe('with live sites', async function() {
-    it('snapshots HTTPS website', async function() {
-      await browser.url('https://polaris.shopify.com/')
-      await percySnapshot(browser, this.test.fullTitle(), {
-        widths: [768, 992, 1200],
-      })
+    it('snapshots a website with HTTP', async function() {
+      await browser.url('http://example.com/')
+      await percySnapshot(browser, this.test.fullTitle())
     })
 
-    it('snapshots website with strict CSP', async function() {
-      await browser.url('https://buildkite.com/')
-      await percySnapshot(browser, this.test.fullTitle(), {
-        widths: [768, 992, 1200],
-      })
+    it('snapshots a website with HTTPS, strict CSP, CORS and HSTS setup', async function() {
+      await browser.url('https://sdk-test.percy.dev')
+      await percySnapshot(browser, this.test.fullTitle())
     })
   })
 })
