@@ -16,7 +16,7 @@
     "test-win": "npm run pretest && percy exec -- wdio.cmd wdio.conf.js"
   },
   "dependencies": {
-    "@percy/agent": "^0.2.2"
+    "@percy/agent": "^0.3.1"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^3.0.2",
