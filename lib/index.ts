@@ -23,10 +23,15 @@ export async function percySnapshot(browser: BrowserObject, name: string, option
 
   await browser.execute(fs.readFileSync(agentJsFilename()).toString(), [])
 
-  const domSnapshot = await browser.execute((options: any) => {
+  // WebdriverIO v4 returns an object with the return value from the execute command
+  // WebdriverIO v5 returns whatever is returned from the execute command
+  const browserResult: any = await browser.execute((options: any) => {
     const percyAgentClient = new PercyAgent({ handleAgentCommunication: false })
     return percyAgentClient.snapshot('unused', options)
   }, options)
+
+  const resultIsString = typeof browserResult === "string";
+  const domSnapshot = resultIsString ? browserResult : browserResult.value;
 
   await postDomSnapshot(name, domSnapshot, await browser.getUrl(), options)
 }
