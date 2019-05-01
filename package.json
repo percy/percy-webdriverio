@@ -12,8 +12,7 @@
     "clean": "rm -rf dist/",
     "build": "npm run clean && tsc",
     "pretest": "npm run build",
-    "test": "percy exec -- wdio wdio.conf.js",
-    "test-win": "npm run pretest && percy exec -- wdio.cmd wdio.conf.js"
+    "test": "percy exec -- wdio wdio.conf.js"
   },
   "dependencies": {
     "@percy/agent": "~0"
