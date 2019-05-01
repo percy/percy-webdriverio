@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/percy/percy-webdriverio/compare/v1.0.1...v1.0.2) (2019-05-01)
+
+
+### Bug Fixes
+
+* Handle different `execute` return values for wdio v4 support ([#99](https://github.com/percy/percy-webdriverio/issues/99)) ([875d7eb](https://github.com/percy/percy-webdriverio/commit/875d7eb))
+
 ## [1.0.1](https://github.com/percy/percy-webdriverio/compare/v1.0.0...v1.0.1) (2019-05-01)
 
 
