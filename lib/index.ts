@@ -21,7 +21,7 @@ export async function percySnapshot(browser: BrowserObject, name: string, option
      return
   }
 
-  await browser.executeScript(fs.readFileSync(agentJsFilename()).toString(), [])
+  await browser.execute(fs.readFileSync(agentJsFilename()).toString(), [])
 
   const domSnapshot = await browser.execute((options: any) => {
     const percyAgentClient = new PercyAgent({ handleAgentCommunication: false })
