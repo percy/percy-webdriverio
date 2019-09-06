@@ -22,10 +22,6 @@ describe('percy-webdriverio SDK', function() {
   describe('with local app', async function() {
     beforeEach(async function() {
       await browser.url(TEST_URL)
-    })
-
-    afterEach(async function() {
-      // Clear local storage to start always with a clean slate.
       await browser.clearLocalStorage()
     })
 

@@ -9,7 +9,7 @@ declare var PercyAgent: any
  * @param name Name of the snapshot that we're taking. Required.
  * @param options Additional options, e.g. '{widths: [768, 992, 1200]}'. Optional.
  */
-export async function percySnapshot(browser: BrowserObject, name: string, options: any = {}) {
+export async function percySnapshot(browser: any, name: string, options: any = {}) {
   if (!browser) {
     throw new Error("WebdriverIO 'browser' object must be provided.")
   }
