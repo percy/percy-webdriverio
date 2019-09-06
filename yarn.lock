@@ -454,18 +454,6 @@
     pretty-ms "^5.0.0"
     table "^5.4.2"
 
-"@wdio/sync@^5.12.0":
-  version "5.12.3"
-  resolved "https://registry.yarnpkg.com/@wdio/sync/-/sync-5.12.3.tgz#a37dd82a3bfbd9e7b71929987f49916a4fbefdf6"
-  integrity sha512-2EZX2W+5mk3O6vCGac/zlks9/ODj6Jtq0yWHqytxjy5lySs3lQxKxB2txBnlLX0HJuRN8wKj6GFyD1fX0M7y9g==
-  dependencies:
-    "@wdio/config" "^5.12.1"
-    "@wdio/logger" "^5.12.1"
-    "@wdio/utils" "^5.12.1"
-  optionalDependencies:
-    fibers "^4.0.1"
-    fibers_node_v8 "^3.1.2"
-
 "@wdio/utils@^5.12.1":
   version "5.12.1"
   resolved "https://registry.yarnpkg.com/@wdio/utils/-/utils-5.12.1.tgz#077602989a0060198ea7ec0a13c3b69c76221115"
@@ -1669,11 +1657,6 @@ detect-indent@~5.0.0:
   resolved "https://registry.yarnpkg.com/detect-indent/-/detect-indent-5.0.0.tgz#3871cc0a6a002e8c3e5b3cf7f336264675f06b9d"
   integrity sha1-OHHMCmoALow+Wzz38zYmRnXwa50=
 
-detect-libc@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/detect-libc/-/detect-libc-1.0.3.tgz#fa137c4bd698edf55cd5cd02ac559f91a4c4ba9b"
-  integrity sha1-+hN8S9aY7fVc1c0CrFWfkaTEups=
-
 detect-newline@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/detect-newline/-/detect-newline-2.1.0.tgz#f41f1c10be4b00e87b5f13da680759f2c5bfd3e2"
@@ -2074,20 +2057,6 @@ fd-slicer@~1.1.0:
   integrity sha1-JcfInLH5B3+IkbvmHY85Dq4lbx4=
   dependencies:
     pend "~1.2.0"
-
-fibers@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/fibers/-/fibers-4.0.1.tgz#34fe8a8d010db7f9096adb2558a45bbc1d03fe45"
-  integrity sha512-H79EJn7DMWXk48ygmC82bMP8KNcFBZF1CPfwBpYF6cO85hGWoIrlu7eyX9ayxfjP9Nsl0JXxdI6fpYU4DWVw2w==
-  dependencies:
-    detect-libc "^1.0.3"
-
-fibers_node_v8@^3.1.2:
-  version "3.1.4"
-  resolved "https://registry.yarnpkg.com/fibers_node_v8/-/fibers_node_v8-3.1.4.tgz#8c577e6f3e664c56334a79ece34dbfd7b5b025fe"
-  integrity sha512-Hj3/XWvdFso+gmA36oohH00TmkjuArxuC/O5K2XgXExlLlzLTqfnA+6OrxlsrT/xYD+6EqF6zoWB57t1pv0xVA==
-  dependencies:
-    detect-libc "^1.0.3"
 
 figgy-pudding@^3.4.1, figgy-pudding@^3.5.1:
   version "3.5.1"
