@@ -17,6 +17,7 @@ test_script:
   - node --version
   - yarn --version
   # run tests
+  - set LOG_LEVEL=debug
   - yarn test
 
 build:
