@@ -1731,10 +1731,10 @@ ecc-jsbn@~0.1.1:
     jsbn "~0.1.0"
     safer-buffer "^2.1.0"
 
-ecstatic@^3.0.0:
-  version "3.3.2"
-  resolved "https://registry.yarnpkg.com/ecstatic/-/ecstatic-3.3.2.tgz#6d1dd49814d00594682c652adb66076a69d46c48"
-  integrity sha512-fLf9l1hnwrHI2xn9mEDT7KIi22UDqA2jaCwyCbSUJh9a1V+LEUSL/JO/6TIz/QyuBURWUHrFL5Kg2TtO1bkkog==
+ecstatic@3.2, ecstatic@^3.0.0:
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/ecstatic/-/ecstatic-3.2.2.tgz#4cc37c80ea88c021ca7cde66a15606ceaa9348e7"
+  integrity sha512-khJlPch7aw/Gx+cKabpt0l2kVychBpGuwVKVMb8rhui00kHWwETDN000Z2CxJl1XaZI4xEkoPD/uezmP28c0/Q==
   dependencies:
     he "^1.1.1"
     mime "^1.6.0"

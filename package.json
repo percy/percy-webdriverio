@@ -32,6 +32,9 @@
     "typescript": "^3.3.3333",
     "webdriverio": "^5.12.5"
   },
+  "resolutions": {
+    "ecstatic": "3.2"
+  },
   "author": "Perceptual Inc.",
   "license": "MIT",
   "bugs": {
