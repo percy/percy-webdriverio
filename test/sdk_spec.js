@@ -22,6 +22,7 @@ describe('percy-webdriverio SDK', function() {
   describe('with local app', async function() {
     beforeEach(async function() {
       await browser.url(TEST_URL)
+      await browser.clearLocalStorage()
     })
 
     it('snapshots with provided name', async function() {
@@ -39,12 +40,22 @@ describe('percy-webdriverio SDK', function() {
     })
 
     it('takes multiple snapshots in one test', async function() {
-      await percySnapshot(browser, `${this.test.fullTitle()} WAT?`)
+      // Add a todo.
       const inputField = await $('.new-todo')
+      await inputField.sendKeys(['A thing to accomplish', '\uE007'])
 
-      await inputField.sendKeys(['A thing to accomplish'])
+      let itemsLeft = await browser.execute(
+        () => document.querySelector('.todo-count').textContent
+      )
+      itemsLeft.should.eq('1 item left')
+      await percySnapshot(browser, `${this.test.fullTitle()} #1`)
 
-      await inputField.sendKeys(['Another thing to do'])
+      const inputToggle = await $('input.toggle')
+      await inputToggle.click()
+      itemsLeft = await browser.execute(
+        () => document.querySelector('.todo-count').textContent
+      )
+      itemsLeft.should.eq('0 items left')
       await percySnapshot(browser, `${this.test.fullTitle()} #2`)
     })
   })
