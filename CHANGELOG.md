@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/percy/percy-webdriverio/compare/v1.0.2...v1.0.3) (2019-09-06)
+
+
+### Bug Fixes
+
+* Use `any` for `browser` arg since wdio types can't be trusted ([#202](https://github.com/percy/percy-webdriverio/issues/202)) ([e0616ec](https://github.com/percy/percy-webdriverio/commit/e0616ec)), closes [/github.com/webdriverio/webdriverio/issues/4315#issuecomment-518284117](https://github.com//github.com/webdriverio/webdriverio/issues/4315/issues/issuecomment-518284117)
+
 ## [1.0.2](https://github.com/percy/percy-webdriverio/compare/v1.0.1...v1.0.2) (2019-05-01)
 
 
