@@ -35,6 +35,12 @@ describe('percy-webdriverio SDK', function() {
       })
     })
 
+    it('snapshots with provided name and percyCSS', async function() {
+      await percySnapshot(browser, this.test.fullTitle(), {
+        percyCSS: `body { background-color: purple; }`
+      })
+    })
+
     it('snapshots with minHeight', async function() {
       await percySnapshot(browser, this.test.fullTitle(), { minHeight: 2000 })
     })
