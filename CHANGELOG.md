@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/percy/percy-webdriverio/compare/v1.0.3...v1.0.4) (2019-09-17)
+
+
+### Bug Fixes
+
+* Pass snapshot options to agent DOMSnapshot ([#203](https://github.com/percy/percy-webdriverio/issues/203)) ([285a840](https://github.com/percy/percy-webdriverio/commit/285a840))
+
 ## [1.0.3](https://github.com/percy/percy-webdriverio/compare/v1.0.2...v1.0.3) (2019-09-06)
 
 
