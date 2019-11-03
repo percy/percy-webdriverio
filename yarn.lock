@@ -399,7 +399,7 @@
     async-exit-hook "^2.0.1"
     stream-buffers "^3.0.2"
 
-"@wdio/logger@5.13.2":
+"@wdio/logger@5.13.2", "@wdio/logger@^5.12.1":
   version "5.13.2"
   resolved "https://registry.yarnpkg.com/@wdio/logger/-/logger-5.13.2.tgz#417f580f0882ff6d6ec2bd2c210502f2f8fa4f2b"
   integrity sha512-F8NlP+AoN0zKv8+0iDAJxdbb488kk5LlPA6U6XPgTT/1xxPgpM4MVQoiCGtLOU9UNPX9XLfgoCXyYWMxp96Ncg==
@@ -409,23 +409,13 @@
     loglevel-plugin-prefix "^0.8.4"
     strip-ansi "^5.2.0"
 
-"@wdio/logger@^5.12.1":
-  version "5.12.1"
-  resolved "https://registry.yarnpkg.com/@wdio/logger/-/logger-5.12.1.tgz#1f753b0fa0c1dae455c2a485553890661150fc01"
-  integrity sha512-KUmdS0Scj0T5UQGtcWFiQRqc0NpFLQ/vSvRxlDzzkoeGwwPINqTRkLT103KL7Lyitlm9uLfaFfYc2KSzynTung==
-  dependencies:
-    chalk "^2.3.0"
-    loglevel "^1.6.0"
-    loglevel-plugin-prefix "^0.8.4"
-    strip-ansi "^5.2.0"
-
 "@wdio/mocha-framework@^5.14.0":
-  version "5.14.0"
-  resolved "https://registry.yarnpkg.com/@wdio/mocha-framework/-/mocha-framework-5.14.0.tgz#5c65a58389ba03f264629e13558cfed7b4610a05"
-  integrity sha512-1Xt4z61pudvvEtOt581GdJgyMb9liWiMLmKpejmeWptz4hbT0w6ecb3Wm75RGNdU5j9brNj5JWoLGb2q/YyR2Q==
+  version "5.15.1"
+  resolved "https://registry.yarnpkg.com/@wdio/mocha-framework/-/mocha-framework-5.15.1.tgz#a3d2e19ead60fb1afa28aa6cd051d5861d5d3392"
+  integrity sha512-8eJYjAeEuQZCpa+Y9g3s7UvYemx9T+d6/tYfCUXmrRMjmM8BpzQVyBbz4Lsi4VlteBHVE6Os53PBcX3pvYi1mA==
   dependencies:
     "@wdio/logger" "5.13.2"
-    "@wdio/utils" "5.14.0"
+    "@wdio/utils" "5.15.1"
     mocha "^6.1.0"
 
 "@wdio/protocols@5.14.0":
@@ -490,6 +480,14 @@
   version "5.14.0"
   resolved "https://registry.yarnpkg.com/@wdio/utils/-/utils-5.14.0.tgz#cc1d6d0d4cd406c13ba46169c216965ce7f50c65"
   integrity sha512-Du6DeTHrElyPL+vQDUQhXiPy7DWAfiCaPikCmgL1Et45+3difUr3DNjctU3Bkgl22PU9nK6xUX27oUkx4vAsAg==
+  dependencies:
+    "@wdio/logger" "5.13.2"
+    deepmerge "^4.0.0"
+
+"@wdio/utils@5.15.1":
+  version "5.15.1"
+  resolved "https://registry.yarnpkg.com/@wdio/utils/-/utils-5.15.1.tgz#00e76c5415d8269845fbadd1617755b2b4a0ebd1"
+  integrity sha512-mbLcKqjRyryUuMk4n9sHWokhop82GcrVHh6GAyMFJgCG85zBel5+qmZkHHO4hqfUrxUg/J9XyQio2r1eUw0Fzg==
   dependencies:
     "@wdio/logger" "5.13.2"
     deepmerge "^4.0.0"
