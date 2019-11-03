@@ -360,13 +360,13 @@
     "@types/node" "*"
 
 "@wdio/cli@^5.14.0":
-  version "5.14.1"
-  resolved "https://registry.yarnpkg.com/@wdio/cli/-/cli-5.14.1.tgz#012c764803d970e9a7df96d03464b9244078458a"
-  integrity sha512-0hkAEIfMSfCYuw83EgSzVDGNeajwxxruv5fVH1XiGmRLiJd9zs2oC6tl0kxc920yH3D5gkiF2glzb/d4B1IC7A==
+  version "5.15.6"
+  resolved "https://registry.yarnpkg.com/@wdio/cli/-/cli-5.15.6.tgz#6af29c079f6847c673dfe7a5786406119d1dcad2"
+  integrity sha512-dKf9HxaOqFbYuVaWVG0u0apBT11JrJPxnwS0kZft8xKwPK1HfQyfS0OYvxSbzaNWg50zXgcYwx9LLkjlaCymkQ==
   dependencies:
-    "@wdio/config" "5.14.0"
+    "@wdio/config" "5.15.3"
     "@wdio/logger" "5.13.2"
-    "@wdio/utils" "5.14.0"
+    "@wdio/utils" "5.15.1"
     async-exit-hook "^2.0.1"
     chalk "^2.3.2"
     chokidar "^3.0.0"
@@ -378,7 +378,7 @@
     lodash.pickby "^4.6.0"
     lodash.union "^4.6.0"
     log-update "^3.2.0"
-    webdriverio "5.14.0"
+    webdriverio "5.15.6"
     yargs "^14.0.0"
     yarn-install "^1.0.0"
 
@@ -6310,7 +6310,7 @@ webdriverio@5.14.0:
     serialize-error "^5.0.0"
     webdriver "5.14.0"
 
-webdriverio@^5.12.5:
+webdriverio@5.15.6, webdriverio@^5.12.5:
   version "5.15.6"
   resolved "https://registry.yarnpkg.com/webdriverio/-/webdriverio-5.15.6.tgz#b0ac32a49460a221e8a56747d6a6dd91740cd765"
   integrity sha512-pYRmJ5+a0oJxP0SEKAvpO5JZeUDT+5PlEXWG9inP4SlvQ4hrl963Pt5VOQqRxnBRPzZMFAeZYz34yHAZp0Ip4Q==
