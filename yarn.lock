@@ -434,12 +434,12 @@
     strip-ansi "^6.0.0"
 
 "@wdio/mocha-framework@^5.14.0":
-  version "5.15.1"
-  resolved "https://registry.yarnpkg.com/@wdio/mocha-framework/-/mocha-framework-5.15.1.tgz#a3d2e19ead60fb1afa28aa6cd051d5861d5d3392"
-  integrity sha512-8eJYjAeEuQZCpa+Y9g3s7UvYemx9T+d6/tYfCUXmrRMjmM8BpzQVyBbz4Lsi4VlteBHVE6Os53PBcX3pvYi1mA==
+  version "5.18.6"
+  resolved "https://registry.yarnpkg.com/@wdio/mocha-framework/-/mocha-framework-5.18.6.tgz#70d63656c7a8dbbb07d443ae303408219d2c2729"
+  integrity sha512-wmm5uMII3cpLp1bIc1zWWqkKBrnu3m20byM9D9pFQxWusu5/OBgmsrsL2uDkRpm1+vLjjVoJWa0jnZRE2JRekw==
   dependencies:
-    "@wdio/logger" "5.13.2"
-    "@wdio/utils" "5.15.1"
+    "@wdio/logger" "5.16.10"
+    "@wdio/utils" "5.18.6"
     mocha "^6.1.0"
 
 "@wdio/protocols@5.14.0":
@@ -513,18 +513,18 @@
     "@wdio/logger" "5.13.2"
     deepmerge "^4.0.0"
 
-"@wdio/utils@5.15.1":
-  version "5.15.1"
-  resolved "https://registry.yarnpkg.com/@wdio/utils/-/utils-5.15.1.tgz#00e76c5415d8269845fbadd1617755b2b4a0ebd1"
-  integrity sha512-mbLcKqjRyryUuMk4n9sHWokhop82GcrVHh6GAyMFJgCG85zBel5+qmZkHHO4hqfUrxUg/J9XyQio2r1eUw0Fzg==
-  dependencies:
-    "@wdio/logger" "5.13.2"
-    deepmerge "^4.0.0"
-
 "@wdio/utils@5.16.10":
   version "5.16.10"
   resolved "https://registry.yarnpkg.com/@wdio/utils/-/utils-5.16.10.tgz#886206b89f3388d7cc72ceaf35feda1d6e82cfb5"
   integrity sha512-aDx+/28QWtLk/zrnWZvlyjTTSkziX5Vka5sw+9Elxj67ii5bh7NtBd3euJK2NhphJXlF1vUZY2JT9KYs9jWSAA==
+  dependencies:
+    "@wdio/logger" "5.16.10"
+    deepmerge "^4.0.0"
+
+"@wdio/utils@5.18.6":
+  version "5.18.6"
+  resolved "https://registry.yarnpkg.com/@wdio/utils/-/utils-5.18.6.tgz#f46c91a3f5dda5cf20cc4dae2f15b336e0834dc3"
+  integrity sha512-OVdK7P9Gne9tR6dl1GEKucwX4mtS47F26g4lH8r0HURvMegZLGtcchI1cqF6hjK7EpP737b+C3q4ooZSBdH9XQ==
   dependencies:
     "@wdio/logger" "5.16.10"
     deepmerge "^4.0.0"
