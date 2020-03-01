@@ -27,7 +27,7 @@
     "@wdio/spec-reporter": "^5.13.0",
     "chai": "^4.2.0",
     "http-server": "^0.11.1",
-    "mocha": "^6.0.2",
+    "mocha": "^7.1.0",
     "semantic-release": "^15.13.3",
     "typescript": "^3.3.3333",
     "webdriverio": "^5.12.5"
