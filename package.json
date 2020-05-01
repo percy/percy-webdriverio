@@ -12,10 +12,13 @@
     "clean": "rm -rf dist/",
     "build": "npm run clean && tsc",
     "pretest": "npm run build",
-    "test": "percy exec -- wdio wdio.conf.js"
+    "test": "percy exec -- wdio wdio.conf.js",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "dependencies": {
-    "@percy/agent": "~0"
+    "@percy/agent": "~0",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^5.0.0",
@@ -54,5 +57,6 @@
       "@semantic-release/npm",
       "@semantic-release/git"
     ]
-  }
+  },
+  "snyk": true
 }
