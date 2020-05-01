@@ -26,7 +26,7 @@
     "@wdio/selenium-standalone-service": "^5.16.0",
     "@wdio/spec-reporter": "^5.18.0",
     "chai": "^4.2.0",
-    "http-server": "^0.11.1",
+    "http-server": "^0.12.3",
     "mocha": "^7.1.0",
     "semantic-release": "^17.0.4",
     "typescript": "^3.3.3333",
