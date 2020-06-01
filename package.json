@@ -21,7 +21,7 @@
     "@semantic-release/changelog": "^5.0.0",
     "@semantic-release/git": "^9.0.0",
     "@wdio/cli": "^5.18.0",
-    "@wdio/local-runner": "^5.18.0",
+    "@wdio/local-runner": "^6.0.3",
     "@wdio/mocha-framework": "^6.0.1",
     "@wdio/selenium-standalone-service": "^5.16.0",
     "@wdio/spec-reporter": "^6.1.5",
