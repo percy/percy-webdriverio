@@ -667,9 +667,9 @@
     selenium-standalone "^6.15.1"
 
 "@wdio/spec-reporter@^6.1.5":
-  version "6.3.6"
-  resolved "https://registry.yarnpkg.com/@wdio/spec-reporter/-/spec-reporter-6.3.6.tgz#b5e69d665905e761296bd58139a2ec5054dbf7cc"
-  integrity sha512-RO/Bc8NIGE8VScrmJz8VNFtIAFoW02xOgFGD8J4LgObQ/cKyn/v6vxCCRgGv27DHYW4j0/rtrem/+z/hgU/C9w==
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/@wdio/spec-reporter/-/spec-reporter-6.4.0.tgz#df848a0fe567c3a9238b88deb646d2b2ecdc7f53"
+  integrity sha512-nY7tr6nRDkJEsT0Yv/ZJVaDT2KjtQqd/X+X7cFHEMvy13NguOOdC/+WQyilR+JrT5JSJZySRDdu0gm7A8DSVGA==
   dependencies:
     "@wdio/reporter" "6.3.6"
     chalk "^4.0.0"
