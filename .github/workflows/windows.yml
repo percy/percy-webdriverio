@@ -10,6 +10,10 @@ jobs:
         run: yarn
       - name: Build
         run: yarn build
+      - name: Set Chrome Binary Path
+        run: |
+          mkdir "C:\Program Files (x86)\Google\Chrome"
+          cmd /c mklink /D "C:\Program Files (x86)\Google\Chrome\Application" "C:\Program Files\Google\Chrome\Application"
       - name: Percy Test
         uses: percy/exec-action@master
         with:
