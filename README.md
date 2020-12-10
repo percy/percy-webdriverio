@@ -118,15 +118,20 @@ const percySnapshot = require('@percy/webdriverio');
 
 ## Upgrading
 
-If you're coming from a pre-2.0 version of this package, the `browser` argument is now only required
-when used in standalone mode.
+If you're coming from a pre-2.0 version of this package, the `percySnapshot` function is now the default 
+export, and the `browser` argument is now only required when used in standalone mode.
 
 ```javascript
-// before (or in standalone mode)
+// before 
+const { percySnapshot } = require('@percy/webdriverio');
 await percySnapshot(browser, 'Snapshot name', options);
 
-// after (using the WDIO testrunner)
+// after
+const percySnapshot = require('@percy/webdriverio');
 await percySnapshot('Snapshot name', options);
+
+// in standalone mode, browser is still required
+await percySnapshot(browser, 'Snapshot name', options);
 ```
 
 ### Migrating Config
