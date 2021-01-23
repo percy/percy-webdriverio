@@ -7,21 +7,23 @@ const CLIENT_INFO = `${sdkPkg.name}/${sdkPkg.version}`;
 const ENV_INFO = `${webdriverioPkg.name}/${webdriverioPkg.version}`;
 
 // Take a DOM snapshot and post it to the snapshot endpoint
-function percySnapshot(browser, name, options) {
-  if (!browser || typeof browser === 'string') throw new Error('The WebdriverIO `browser` object is required.');
+module.exports = function percySnapshot(b, name, options) {
+  // allow working with or without standalone mode
+  if (!b || typeof b === 'string') [b, name, options] = [browser, b, name];
+  if (!b) throw new Error('The WebdriverIO `browser` object is required.');
   if (!name) throw new Error('The `name` argument is required.');
 
-  return browser.call(async () => {
+  return b.call(async () => {
     if (!(await utils.isPercyEnabled())) return;
     let log = utils.logger('webdriverio');
 
     try {
       // Inject the DOM serialization script
-      await browser.execute(await utils.fetchPercyDOM());
+      await b.execute(await utils.fetchPercyDOM());
 
       // Serialize and capture the DOM
       /* istanbul ignore next: no instrumenting injected code */
-      let { domSnapshot, url } = await browser.execute(options => ({
+      let { domSnapshot, url } = await b.execute(options => ({
         /* eslint-disable-next-line no-undef */
         domSnapshot: PercyDOM.serialize(options),
         url: document.URL
@@ -42,12 +44,4 @@ function percySnapshot(browser, name, options) {
       log.error(error);
     }
   });
-}
-
-// allow working with or without standalone mode by checking for a global browser
-// object and binding it to the snapshot function when found
-if (browser) {
-  module.exports = (...args) => percySnapshot(browser, ...args);
-} else {
-  module.exports = percySnapshot;
-}
+};
