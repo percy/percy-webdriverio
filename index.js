@@ -13,6 +13,7 @@ function percySnapshot(browser, name, options) {
 
   return browser.call(async () => {
     if (!(await utils.isPercyEnabled())) return;
+    let log = utils.logger('webdriverio');
 
     try {
       // Inject the DOM serialization script
@@ -37,8 +38,8 @@ function percySnapshot(browser, name, options) {
       });
     } catch (error) {
       // Handle errors
-      utils.log('error', `Could not take DOM snapshot "${name}"`);
-      utils.log('error', error);
+      log.error(`Could not take DOM snapshot "${name}"`);
+      log.error(error);
     }
   });
 }
