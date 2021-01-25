@@ -41,26 +41,22 @@ describe('percySnapshot', () => {
   it('disables snapshots when the healthcheck fails', async () => {
     sdk.test.failure('/percy/healthcheck');
 
-    await sdk.stdio(async () => {
-      await percySnapshot('Snapshot 1');
-      await percySnapshot('Snapshot 2');
-    });
+    await percySnapshot('Snapshot 1');
+    await percySnapshot('Snapshot 2');
 
     expect(sdk.server.requests).toEqual([
       ['/percy/healthcheck']
     ]);
 
-    expect(sdk.stdio[2]).toEqual([]);
-    expect(sdk.stdio[1]).toEqual([
+    expect(sdk.logger.stderr).toEqual([]);
+    expect(sdk.logger.stdout).toEqual([
       '[percy] Percy is not running, disabling snapshots\n'
     ]);
   });
 
   it('posts snapshots to the local percy server', async () => {
-    await sdk.stdio(async () => {
-      await percySnapshot('Snapshot 1');
-      await percySnapshot('Snapshot 2');
-    });
+    await percySnapshot('Snapshot 1');
+    await percySnapshot('Snapshot 2');
 
     expect(sdk.server.requests).toEqual([
       ['/percy/healthcheck'],
@@ -77,18 +73,17 @@ describe('percySnapshot', () => {
       })]
     ]);
 
-    expect(sdk.stdio[2]).toEqual([]);
+    expect(sdk.logger.stdout).toEqual([]);
+    expect(sdk.logger.stderr).toEqual([]);
   });
 
   it('handles snapshot failures', async () => {
     sdk.test.failure('/percy/snapshot', 'failure');
 
-    await sdk.stdio(async () => {
-      await percySnapshot('Snapshot 1');
-    });
+    await percySnapshot('Snapshot 1');
 
-    expect(sdk.stdio[1]).toHaveLength(0);
-    expect(sdk.stdio[2]).toEqual([
+    expect(sdk.logger.stdout).toHaveLength(0);
+    expect(sdk.logger.stderr).toEqual([
       '[percy] Could not take DOM snapshot "Snapshot 1"\n',
       '[percy] Error: failure\n'
     ]);
@@ -100,10 +95,8 @@ describe('percySnapshot', () => {
     delete require.cache[require.resolve('..')];
     percySnapshot = require('..');
 
-    await sdk.stdio(async () => {
-      await percySnapshot(og, 'Snapshot 1');
-      await percySnapshot(og, 'Snapshot 2');
-    });
+    await percySnapshot(og, 'Snapshot 1');
+    await percySnapshot(og, 'Snapshot 2');
 
     expect(sdk.server.requests).toEqual([
       ['/percy/healthcheck'],
@@ -116,7 +109,7 @@ describe('percySnapshot', () => {
       })]
     ]);
 
-    expect(sdk.stdio[2]).toEqual([]);
+    expect(sdk.logger.stderr).toEqual([]);
   });
 
   it('throws the proper argument error in standalone mode', async () => {
