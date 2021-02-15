@@ -294,7 +294,7 @@
   dependencies:
     dotenv "^8.2.0"
 
-"@percy/logger@^1.0.0-beta.32", "@percy/logger@^1.0.0-beta.34":
+"@percy/logger@^1.0.0-beta.34":
   version "1.0.0-beta.34"
   resolved "https://registry.yarnpkg.com/@percy/logger/-/logger-1.0.0-beta.34.tgz#10a6baaae35d61f49c4e87803e76418fa7f0a20c"
   integrity sha512-gy9GsHa8LmN/nHwzDvmDEDEUVqg+xsfmfYOhj8RFzhqJ7jp6E/qWeHJPzTx6i+iroQJ6bbfzbRxWN3tOH5yjvg==
@@ -1730,9 +1730,9 @@ eslint-plugin-node@^11.1.0:
     semver "^6.1.0"
 
 eslint-plugin-promise@^4.2.1:
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-promise/-/eslint-plugin-promise-4.2.1.tgz#845fd8b2260ad8f82564c1222fce44ad71d9418a"
-  integrity sha512-VoM09vT7bfA7D+upt+FjeBO5eHIJQBUWki1aPvB+vbNiHS3+oGIJGIeyBtKQTME6UPXXy3vV07OL1tHd3ANuDw==
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-promise/-/eslint-plugin-promise-4.3.1.tgz#61485df2a359e03149fdafc0a68b0e030ad2ac45"
+  integrity sha512-bY2sGqyptzFBDLh/GMbAxfdJC+b0f23ME63FOE4+Jao0oZ3E1LEwFtWJX/1pGMJLiTtrSSern2CRM/g+dfc0eQ==
 
 eslint-plugin-standard@^5.0.0:
   version "5.0.0"
