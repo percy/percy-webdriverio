@@ -7,16 +7,8 @@
 
 ## Installation
 
-Using yarn:
-
 ```sh-session
-$ yarn add --dev @percy/cli @percy/webdriverio@next
-```
-
-Using npm:
-
-```sh-session
-$ npm install --save-dev @percy/cli @percy/webdriverio@next
+$ npm install --save-dev @percy/cli @percy/webdriverio
 ```
 ## Usage
 
@@ -116,7 +108,25 @@ const percySnapshot = require('@percy/webdriverio');
   - `options.requestHeaders` - Headers that should be used during asset discovery
   - `options.enableJavaScript` - Enable JavaScript in Percy's rendering environment
 
+
 ## Upgrading
+
+### Automatically with `@percy/migrate`
+
+We built a tool to help automate migrating to the new CLI toolchain! Migrating
+can be done by running the following commands and following the prompts:
+
+``` shell
+$ npx @percy/migrate
+? Are you currently using @percy/webdriverio? Yes
+? Install @percy/cli (required to run percy)? Yes
+? Migrate Percy config file? Yes
+? Upgrade SDK to @percy/webdriverio@2.0.0? Yes
+```
+
+This will automatically run the changes described below for you.
+
+### Manually
 
 If you're coming from a pre-2.0 version of this package, the `percySnapshot` function is now the default 
 export, and the `browser` argument is now only required when used in standalone mode.
