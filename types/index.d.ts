@@ -1,8 +1,7 @@
 import { SnapshotOptions } from '@percy/core';
-import { Browser } from 'webdriverio';
 
 export default function percySnapshot(
-  browser: Browser,
+  browser: WebdriverIO.Browser,
   name: string,
   options?: SnapshotOptions
 ): Promise<void>;

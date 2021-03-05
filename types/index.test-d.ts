@@ -1,8 +1,8 @@
+/// <reference types="webdriverio/sync" />
 import { expectType, expectError } from 'tsd';
-import { Browser } from 'webdriverio';
 import percySnapshot from '.';
 
-declare const browser: Browser;
+declare const browser: WebdriverIO.Browser;
 
 expectError(percySnapshot());
 expectError(percySnapshot(browser));
