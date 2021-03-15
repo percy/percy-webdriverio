@@ -265,54 +265,54 @@
     "@nodelib/fs.scandir" "2.1.3"
     fastq "^1.6.0"
 
-"@percy/client@^1.0.0-beta.39":
-  version "1.0.0-beta.39"
-  resolved "https://registry.yarnpkg.com/@percy/client/-/client-1.0.0-beta.39.tgz#b275258d7f9ae0453a7d1a3242320b7dc2a5ec6a"
-  integrity sha512-lFQp9zyku5p306RMFWoDVWob9pRkaJkpBO8MDPbNW3rxYEPhvQ/WyNSN1vqa18if0fOVYsA2ZpACkBaYVRjt1Q==
+"@percy/client@^1.0.0-beta.42":
+  version "1.0.0-beta.42"
+  resolved "https://registry.yarnpkg.com/@percy/client/-/client-1.0.0-beta.42.tgz#b68bd6c3cda144d140956a52ab26b6bf31211c15"
+  integrity sha512-JQXcOMcKgNmR/GEjgDofAiSNjtJTpdv5XIJkZdPpCdShIc67LUw+ouBYU6sLZzVEgGl16HbGu9fk2siePjDRyw==
   dependencies:
-    "@percy/env" "^1.0.0-beta.39"
+    "@percy/env" "^1.0.0-beta.42"
 
-"@percy/config@^1.0.0-beta.39":
-  version "1.0.0-beta.39"
-  resolved "https://registry.yarnpkg.com/@percy/config/-/config-1.0.0-beta.39.tgz#96dc58f42200516f9a95b1c901ca41e98ffa5a59"
-  integrity sha512-Mnpo0xXtH2GOhUZmzqG4bT/r56eRYIkB9joAZ27JG2lHr597k4ZlmX0oz//Hnc4VQkMa9JvRfy66iQP+L2Oxiw==
+"@percy/config@^1.0.0-beta.42":
+  version "1.0.0-beta.42"
+  resolved "https://registry.yarnpkg.com/@percy/config/-/config-1.0.0-beta.42.tgz#60e76b1041bb5e1cd82c54e252f971e0b928158a"
+  integrity sha512-ko2R7/EylGvIsbIS6GkzwpRT7FM6ldEyI+0KFss8+1aihi7jPgzWXcZx+Dt+f89+VZ+hzgDlosOCZms5pJmz6g==
   dependencies:
-    "@percy/logger" "^1.0.0-beta.39"
+    "@percy/logger" "^1.0.0-beta.42"
     ajv "^7.0.3"
     cosmiconfig "^7.0.0"
     yaml "^1.10.0"
 
 "@percy/core@~1.0.0-beta.32":
-  version "1.0.0-beta.39"
-  resolved "https://registry.yarnpkg.com/@percy/core/-/core-1.0.0-beta.39.tgz#317575658a333ada720904857e198ce2b2a7cd7c"
-  integrity sha512-jxwjgo42Rw0+x0E+M+OBgznXDjBTRfLPjuufw6LcsOrwPqxR4xShLiwbGaQvHZzLYzSPRGt9dqs1GauV0TZHNQ==
+  version "1.0.0-beta.42"
+  resolved "https://registry.yarnpkg.com/@percy/core/-/core-1.0.0-beta.42.tgz#7c88717e5b4bc3d4616ff3f2b70be4d847581b69"
+  integrity sha512-MsxK2h+cUGiPRQj87tVHsJhS4BsL8saRN9KAp/pOajvbeDKw+CSl1V3r/hHvB+E2a2Yh9vNDQRvEA5o0elOScg==
   dependencies:
-    "@percy/client" "^1.0.0-beta.39"
-    "@percy/config" "^1.0.0-beta.39"
-    "@percy/dom" "^1.0.0-beta.39"
-    "@percy/logger" "^1.0.0-beta.39"
+    "@percy/client" "^1.0.0-beta.42"
+    "@percy/config" "^1.0.0-beta.42"
+    "@percy/dom" "^1.0.0-beta.42"
+    "@percy/logger" "^1.0.0-beta.42"
     cross-spawn "^7.0.3"
     extract-zip "^2.0.1"
     progress "^2.0.3"
     rimraf "^3.0.2"
     ws "^7.4.1"
 
-"@percy/dom@^1.0.0-beta.39":
-  version "1.0.0-beta.39"
-  resolved "https://registry.yarnpkg.com/@percy/dom/-/dom-1.0.0-beta.39.tgz#8923f90f910338362867aad2639951ec74c55112"
-  integrity sha512-9p4uFpyvHs1hNDJTMBFTWRtINPW1c1gaUHqblaov6zhr9/L/VUZx2xKFxBgl7Irvuw0osF0QhK5TjEWao6Qsqg==
+"@percy/dom@^1.0.0-beta.42":
+  version "1.0.0-beta.42"
+  resolved "https://registry.yarnpkg.com/@percy/dom/-/dom-1.0.0-beta.42.tgz#3b67523a361c16761e0ad1e2224b43647a3cb8af"
+  integrity sha512-V/QZax0yGdIOfiu5cLF/zGd4/SLpg3LqxUfjXT7NeRy6ePHEmR9pqMLaTVPCxRjZ5RTNDZFhU+/dLyBxENfDVQ==
 
-"@percy/env@^1.0.0-beta.39":
-  version "1.0.0-beta.39"
-  resolved "https://registry.yarnpkg.com/@percy/env/-/env-1.0.0-beta.39.tgz#d388615ee6260bbbe23b0220098340dd64edc755"
-  integrity sha512-s8T9wMmTDTavObSscknnni4qnZhfwQBbFFYwVD7ZTz7xtmu2ZqYWYIFuVOaB2so+AFRUv8shbGIcSgHWiXPZUg==
+"@percy/env@^1.0.0-beta.42":
+  version "1.0.0-beta.42"
+  resolved "https://registry.yarnpkg.com/@percy/env/-/env-1.0.0-beta.42.tgz#67de18e48b0c61e061dfbd98b1abe554b89f75ed"
+  integrity sha512-IeAf+dnxTn6sq147N5oIL7u6bp3ieXcrD+PmQyQnC3NGn9BotbOg6DteCTPbh4g/ps+SK92/J0Ae9NJBPuQhQw==
   dependencies:
     dotenv "^8.2.0"
 
-"@percy/logger@^1.0.0-beta.39":
-  version "1.0.0-beta.39"
-  resolved "https://registry.yarnpkg.com/@percy/logger/-/logger-1.0.0-beta.39.tgz#dd5c03866d0d494157be191237602d86d43de5ff"
-  integrity sha512-aEnKxCO3r9+bhxogIhJhxjh80QGImiIhbmik/oKCWNIc2KywATGRXsJvRmlF1DskA+RQcwzG/fENerSLNRycgQ==
+"@percy/logger@^1.0.0-beta.39", "@percy/logger@^1.0.0-beta.42":
+  version "1.0.0-beta.42"
+  resolved "https://registry.yarnpkg.com/@percy/logger/-/logger-1.0.0-beta.42.tgz#cb90846fef656e42418c28d77aca84add718ac7f"
+  integrity sha512-b509abYbz8e6u2vBvDR3WkEMeo3pSIJ87sI+YgJYajgDNweQxDhFLD8Sugrgp43FOvZ98meUJB4wfHK9wbNYJg==
 
 "@percy/sdk-utils@~1.0.0-beta.32":
   version "1.0.0-beta.39"
