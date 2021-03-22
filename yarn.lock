@@ -4719,9 +4719,9 @@ webdriverio@7.1.1:
     webdriver "7.1.1"
 
 webdriverio@^7.0.9:
-  version "7.2.1"
-  resolved "https://registry.yarnpkg.com/webdriverio/-/webdriverio-7.2.1.tgz#a6683304c6d4ab1ceca94554b6b7a714e78c4016"
-  integrity sha512-lHnOJ+4fvgBObgjQA9wDk8/S039C9c59EgB57euQP8jBD+G3kDHsUTiP6KC9nMdXZTgecSLfrqzMgR+O4CfB5w==
+  version "7.2.2"
+  resolved "https://registry.yarnpkg.com/webdriverio/-/webdriverio-7.2.2.tgz#5ef27e39409fe0ba9c749c5de57a516300e59bba"
+  integrity sha512-lptj2luxJ+ZTu4+CySvNRSHTx0X5BxTmcJO5I0i6yK1H/vVRSYpp8IUBj4yNQIvuOkXKh4g6Am9dmiXIrXq5IA==
   dependencies:
     "@types/aria-query" "^4.2.1"
     "@wdio/config" "7.2.1"
