@@ -1478,6 +1478,11 @@ devtools-protocol@^0.0.862770:
   resolved "https://registry.yarnpkg.com/devtools-protocol/-/devtools-protocol-0.0.862770.tgz#6f68a37e6b84880138d2496624bbd3b8ac75c377"
   integrity sha512-vKu/espkDXGsae87BfzQXg2kLYjPwMgyCr8xPBDwb3kY8pwZl1GDaigQdW9O8BXamJ2vLC0ArxRvvuj7FuU3kg==
 
+devtools-protocol@^0.0.863986:
+  version "0.0.863986"
+  resolved "https://registry.yarnpkg.com/devtools-protocol/-/devtools-protocol-0.0.863986.tgz#a9f1b13daeb1dba671580e59f3a8aa9cb0c921c8"
+  integrity sha512-WMf5KuRLsLwJMp9JdawSvoEpxZPqyyNeOZ3YR8QF8lE9IVHbbpdWeuXV22SJxPUemFeznvVlwSBeQz91nL+41A==
+
 devtools@7.2.1:
   version "7.2.1"
   resolved "https://registry.yarnpkg.com/devtools/-/devtools-7.2.1.tgz#0c58f65f7d5bb865a967d440ce91e1be22646cea"
@@ -4619,7 +4624,7 @@ webdriver@7.2.1:
     got "^11.0.2"
     lodash.merge "^4.6.1"
 
-webdriverio@7.2.2, webdriverio@^7.0.9:
+webdriverio@7.2.2:
   version "7.2.2"
   resolved "https://registry.yarnpkg.com/webdriverio/-/webdriverio-7.2.2.tgz#5ef27e39409fe0ba9c749c5de57a516300e59bba"
   integrity sha512-lptj2luxJ+ZTu4+CySvNRSHTx0X5BxTmcJO5I0i6yK1H/vVRSYpp8IUBj4yNQIvuOkXKh4g6Am9dmiXIrXq5IA==
@@ -4638,6 +4643,39 @@ webdriverio@7.2.2, webdriverio@^7.0.9:
     css-value "^0.0.1"
     devtools "7.2.1"
     devtools-protocol "^0.0.862770"
+    fs-extra "^9.0.1"
+    get-port "^5.1.1"
+    grapheme-splitter "^1.0.2"
+    lodash.clonedeep "^4.5.0"
+    lodash.isobject "^3.0.2"
+    lodash.isplainobject "^4.0.6"
+    lodash.zip "^4.2.0"
+    minimatch "^3.0.4"
+    puppeteer-core "^7.1.0"
+    resq "^1.9.1"
+    rgb2hex "0.2.3"
+    serialize-error "^8.0.0"
+    webdriver "7.2.1"
+
+webdriverio@^7.0.9:
+  version "7.2.3"
+  resolved "https://registry.yarnpkg.com/webdriverio/-/webdriverio-7.2.3.tgz#050547ddcfa6155ac796e56fc364cac2264f86cd"
+  integrity sha512-ikyTL4CmRTF9/CD1GjXktiQBDvsMxjbpVpVPotw1K/Izw2Q47WyTnkd1v8JAheXrYLJJlsyZopOWEUkW7VwkZw==
+  dependencies:
+    "@types/aria-query" "^4.2.1"
+    "@wdio/config" "7.2.1"
+    "@wdio/logger" "7.0.0"
+    "@wdio/protocols" "7.1.1"
+    "@wdio/repl" "7.2.1"
+    "@wdio/types" "7.2.1"
+    "@wdio/utils" "7.2.1"
+    archiver "^5.0.0"
+    aria-query "^4.2.2"
+    atob "^2.1.2"
+    css-shorthand-properties "^1.1.1"
+    css-value "^0.0.1"
+    devtools "7.2.1"
+    devtools-protocol "^0.0.863986"
     fs-extra "^9.0.1"
     get-port "^5.1.1"
     grapheme-splitter "^1.0.2"
