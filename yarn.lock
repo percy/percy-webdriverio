@@ -605,14 +605,14 @@
     strip-ansi "^6.0.0"
 
 "@wdio/mocha-framework@^7.0.7":
-  version "7.3.0"
-  resolved "https://registry.yarnpkg.com/@wdio/mocha-framework/-/mocha-framework-7.3.0.tgz#51a1a6f72858de0e5b34563e70870bfdd0c027fa"
-  integrity sha512-xVbnuYZrLReu5ED1E1vZU6RQ5PjBPgdx5E6FFa66vDG+Cgu5HNd5uZmepcgJMIsr8YDE8GSOag993HrLBiRFxQ==
+  version "7.3.1"
+  resolved "https://registry.yarnpkg.com/@wdio/mocha-framework/-/mocha-framework-7.3.1.tgz#ac1b6232ad12d793b7eea5f1e8065df6a2eebb8c"
+  integrity sha512-wxtSq8ntB2VhWr8AJMRpTC3LIVPIcMsySbstrw8fufOCEzwYdSzQ9SYTs6BjXqeh5XV8mthYPSSUKJrqoQaOnA==
   dependencies:
     "@types/mocha" "^8.0.0"
     "@wdio/logger" "7.0.0"
-    "@wdio/types" "7.2.1"
-    "@wdio/utils" "7.3.0"
+    "@wdio/types" "7.3.1"
+    "@wdio/utils" "7.3.1"
     expect-webdriverio "^2.0.0"
     mocha "^8.0.1"
 
@@ -677,6 +677,13 @@
   dependencies:
     got "^11.8.1"
 
+"@wdio/types@7.3.1":
+  version "7.3.1"
+  resolved "https://registry.yarnpkg.com/@wdio/types/-/types-7.3.1.tgz#caac699a33df160ab8e057f71990cbfe8191050f"
+  integrity sha512-bRsVN8neezagQLwPIp5nJP8g9mYoGeAeWrh1Ooyrqlg9iPi/a2QzLMiUqWtg1e4cUGal/bh+aKMXcAWSFxooLQ==
+  dependencies:
+    got "^11.8.1"
+
 "@wdio/utils@7.2.1":
   version "7.2.1"
   resolved "https://registry.yarnpkg.com/@wdio/utils/-/utils-7.2.1.tgz#edf6f8a2ee2cd0574269ba420a9578ad0617bffc"
@@ -692,6 +699,14 @@
   dependencies:
     "@wdio/logger" "7.0.0"
     "@wdio/types" "7.2.1"
+
+"@wdio/utils@7.3.1":
+  version "7.3.1"
+  resolved "https://registry.yarnpkg.com/@wdio/utils/-/utils-7.3.1.tgz#55032f576b029b1fca9cec4bdfe1d9b1d3d6450c"
+  integrity sha512-/Vl3PX5TDqlnAQK3sDXimm3WsTv9Gu7mNYDB/haPDRRkMVQWvgAXjczPWz2n68G/2NQXg19ivg3QzWDancgbEA==
+  dependencies:
+    "@wdio/logger" "7.0.0"
+    "@wdio/types" "7.3.1"
 
 acorn-jsx@^5.3.1:
   version "5.3.1"
