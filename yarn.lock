@@ -299,7 +299,7 @@
   dependencies:
     dotenv "^8.2.0"
 
-"@percy/logger@^1.0.0-beta.47", "@percy/logger@^1.0.0-beta.48":
+"@percy/logger@^1.0.0-beta.48":
   version "1.0.0-beta.48"
   resolved "https://registry.yarnpkg.com/@percy/logger/-/logger-1.0.0-beta.48.tgz#c8323536038d0ac5f05080a36f7dbc3319b139c9"
   integrity sha512-vO70hgMuRssqFAcI3x3zyRLHqXYNtaaBKoaoXMpt4XF0W7At7AxFPOttvkzAI1gP7mqNwUZtc2K8VPkcguR7Aw==
@@ -1809,9 +1809,9 @@ eslint-visitor-keys@^2.0.0:
   integrity sha512-QudtT6av5WXels9WjIM7qz1XD1cWGvX4gGXvp/zBn9nXG02D0utdU3Em2m/QjTnrsk6bBjmCygl3rmj118msQQ==
 
 eslint@^7.11.0:
-  version "7.24.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-7.24.0.tgz#2e44fa62d93892bfdb100521f17345ba54b8513a"
-  integrity sha512-k9gaHeHiFmGCDQ2rEfvULlSLruz6tgfA8DEn+rY9/oYPFFTlz55mM/Q/Rij1b2Y42jwZiK3lXvNTw6w6TXzcKQ==
+  version "7.25.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-7.25.0.tgz#1309e4404d94e676e3e831b3a3ad2b050031eb67"
+  integrity sha512-TVpSovpvCNpLURIScDRB6g5CYu/ZFq9GfX2hLNIV4dSBKxIWojeDODvYl3t0k0VtMxYeR8OXPCFE5+oHMlGfhw==
   dependencies:
     "@babel/code-frame" "7.12.11"
     "@eslint/eslintrc" "^0.4.0"
