@@ -355,11 +355,6 @@
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
   integrity sha512-rr+OQyAjxze7GgWrSaJwydHStIhHq2lvY3BOC2Mj7KnzI7XK0Uw1TOOdI9lDoajEbSWLiYgoo4f1R51erQfhPQ==
 
-"@types/cucumber@^6.0.1":
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/@types/cucumber/-/cucumber-6.0.1.tgz#0fe9673d34568d35ff21957af049883635472fcd"
-  integrity sha512-+GZV6xfN0MeN9shDCdny8GbC8N0+U6uca8cjyaJndcwmrUhwS6qOU2vmYn0d71EOwJF568/v3SxJ8VKxuZNYRw==
-
 "@types/easy-table@^0.0.32":
   version "0.0.32"
   resolved "https://registry.yarnpkg.com/@types/easy-table/-/easy-table-0.0.32.tgz#961034bf7bba3d5a4344585b960d7a0d11a249b5"
@@ -619,14 +614,13 @@
   dependencies:
     "@wdio/utils" "7.5.3"
 
-"@wdio/reporter@7.5.3":
-  version "7.5.3"
-  resolved "https://registry.yarnpkg.com/@wdio/reporter/-/reporter-7.5.3.tgz#2e31c4499fb94bea0f9a78c53a6acad8aeb4fec8"
-  integrity sha512-gR2mjMKqYjTYMndYkq3WOBodeGbymRaXCeGvPW5FFXADEkymMzpt2Grw7enHFJrxJq5lJKyd51wItRAONMjhvQ==
+"@wdio/reporter@7.5.7":
+  version "7.5.7"
+  resolved "https://registry.yarnpkg.com/@wdio/reporter/-/reporter-7.5.7.tgz#4fe96e2a9d5ec6b3abd71e32a6a2dfcf278a4e38"
+  integrity sha512-9PXqZtCXDtU6UYLNDPu9MZQ8BiABGnRlJTrlbYB3gBfZDibMkJMvwXzPderipBv2+ifDZXmGe3Njf1ao2TkbFA==
   dependencies:
-    "@types/cucumber" "^6.0.1"
     "@wdio/types" "7.5.3"
-    fs-extra "^9.0.0"
+    fs-extra "^10.0.0"
 
 "@wdio/runner@7.5.3":
   version "7.5.3"
@@ -643,12 +637,12 @@
     webdriverio "7.5.3"
 
 "@wdio/spec-reporter@^7.0.0":
-  version "7.5.3"
-  resolved "https://registry.yarnpkg.com/@wdio/spec-reporter/-/spec-reporter-7.5.3.tgz#de174dea21a2167ff1ed0528db6c227c202513ff"
-  integrity sha512-2i2kjBP5+qfe2IVJESPbCVo6idPuQsBdktDcFh7ZkFppfZNARNHMaFY9zxCIoB47L5qtTuIe60I1+BoQ/3Xw4A==
+  version "7.5.7"
+  resolved "https://registry.yarnpkg.com/@wdio/spec-reporter/-/spec-reporter-7.5.7.tgz#152e82b0fc56d4100c618bdae5e79b429630f830"
+  integrity sha512-BvgnwDFnfL07rC+e5F4gIOrfcEj5lsnYXBC6WhJIuOlqKdIrRBYD4YCTcJ8hrDPL9BXHp8OZuESsjsc0vfWV6Q==
   dependencies:
     "@types/easy-table" "^0.0.32"
-    "@wdio/reporter" "7.5.3"
+    "@wdio/reporter" "7.5.7"
     "@wdio/types" "7.5.3"
     chalk "^4.0.0"
     easy-table "^1.1.1"
@@ -2078,6 +2072,15 @@ fs-constants@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/fs-constants/-/fs-constants-1.0.0.tgz#6be0de9be998ce16af8afc24497b9ee9b7ccd9ad"
   integrity sha512-y6OAwoSIf7FyjMIv94u+b5rdheZEjzR63GTyZJm5qh4Bi+2YgwLCcI/fPFZkL5PSixOt6ZNKm+w+Hfp/Bciwow==
+
+fs-extra@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-10.0.0.tgz#9ff61b655dde53fb34a82df84bb214ce802e17c1"
+  integrity sha512-C5owb14u9eJwizKGdchcDUQeFtlSHHthBk8pbX9Vc1PFZrLombudjDnNns88aYslCyF6IY5SUw3Roz6xShcEIQ==
+  dependencies:
+    graceful-fs "^4.2.0"
+    jsonfile "^6.0.1"
+    universalify "^2.0.0"
 
 fs-extra@^9.0.0, fs-extra@^9.0.1:
   version "9.0.1"
@@ -4549,6 +4552,11 @@ universalify@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/universalify/-/universalify-1.0.0.tgz#b61a1da173e8435b2fe3c67d29b9adf8594bd16d"
   integrity sha512-rb6X1W158d7pRQBg5gkR8uPaSfiids68LTJQYOtEUhoJUWBdaQHsuT/EUduxXYxcrt4r5PJ4fuHW1MHT6p0qug==
+
+universalify@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/universalify/-/universalify-2.0.0.tgz#75a4984efedc4b08975c5aeb73f530d02df25717"
+  integrity sha512-hAZsKq7Yy11Zu1DE0OzWjw7nnLZmJZYTDZZyEFHZdUhV8FkH5MCfoU1XMaxXovpyW5nq5scPqq0ZDP9Zyl04oQ==
 
 unzip-response@^1.0.0:
   version "1.0.2"
