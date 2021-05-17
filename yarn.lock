@@ -457,6 +457,11 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.45.tgz#ec2dfb5566ff814d061aef7e141575aedba245cf"
   integrity sha512-DssMqTV9UnnoxDWu959sDLZzfvqCF0qDNRjaWeYSui9xkFe61kKo4l1TWNTQONpuXEm+gLMRvdlzvNHBamzmEw==
 
+"@types/node@^14.14.31":
+  version "14.14.45"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.45.tgz#ec2dfb5566ff814d061aef7e141575aedba245cf"
+  integrity sha512-DssMqTV9UnnoxDWu959sDLZzfvqCF0qDNRjaWeYSui9xkFe61kKo4l1TWNTQONpuXEm+gLMRvdlzvNHBamzmEw==
+
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/@types/normalize-package-data/-/normalize-package-data-2.4.0.tgz#e486d0d97396d79beedd0a6e33f4534ff6b4973e"
@@ -615,12 +620,13 @@
   dependencies:
     "@wdio/utils" "7.5.3"
 
-"@wdio/reporter@7.5.7":
-  version "7.5.7"
-  resolved "https://registry.yarnpkg.com/@wdio/reporter/-/reporter-7.5.7.tgz#4fe96e2a9d5ec6b3abd71e32a6a2dfcf278a4e38"
-  integrity sha512-9PXqZtCXDtU6UYLNDPu9MZQ8BiABGnRlJTrlbYB3gBfZDibMkJMvwXzPderipBv2+ifDZXmGe3Njf1ao2TkbFA==
+"@wdio/reporter@7.6.0":
+  version "7.6.0"
+  resolved "https://registry.yarnpkg.com/@wdio/reporter/-/reporter-7.6.0.tgz#4af2b8ed40b9b1395129a3a5198026886b88c613"
+  integrity sha512-fIH1fo80c/6FMjHZUJ13lebplK2S4ZYvvrnfdtn+VSoo5/x5tHYyOCULPULwvMSkL8+sLtLB6u/KpLAyWGquIw==
   dependencies:
-    "@wdio/types" "7.5.3"
+    "@types/node" "^14.14.31"
+    "@wdio/types" "7.6.0"
     fs-extra "^10.0.0"
 
 "@wdio/runner@7.5.7":
@@ -638,13 +644,13 @@
     webdriverio "7.5.7"
 
 "@wdio/spec-reporter@^7.0.0":
-  version "7.5.7"
-  resolved "https://registry.yarnpkg.com/@wdio/spec-reporter/-/spec-reporter-7.5.7.tgz#152e82b0fc56d4100c618bdae5e79b429630f830"
-  integrity sha512-BvgnwDFnfL07rC+e5F4gIOrfcEj5lsnYXBC6WhJIuOlqKdIrRBYD4YCTcJ8hrDPL9BXHp8OZuESsjsc0vfWV6Q==
+  version "7.6.0"
+  resolved "https://registry.yarnpkg.com/@wdio/spec-reporter/-/spec-reporter-7.6.0.tgz#84e3fbc180669a6ccb29b81cb8bf18238f484216"
+  integrity sha512-GPmBaKAP7Jb60PReNISgO3Heg0T+B1PFWSXJwz2e1ZKYUtHNTfxQhZ2FfLphcG7hrxICebkAgtpn0QmCgDxhNw==
   dependencies:
     "@types/easy-table" "^0.0.32"
-    "@wdio/reporter" "7.5.7"
-    "@wdio/types" "7.5.3"
+    "@wdio/reporter" "7.6.0"
+    "@wdio/types" "7.6.0"
     chalk "^4.0.0"
     easy-table "^1.1.1"
     pretty-ms "^7.0.0"
