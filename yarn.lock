@@ -639,9 +639,9 @@
     webdriverio "7.6.0"
 
 "@wdio/spec-reporter@^7.0.0":
-  version "7.6.0"
-  resolved "https://registry.yarnpkg.com/@wdio/spec-reporter/-/spec-reporter-7.6.0.tgz#84e3fbc180669a6ccb29b81cb8bf18238f484216"
-  integrity sha512-GPmBaKAP7Jb60PReNISgO3Heg0T+B1PFWSXJwz2e1ZKYUtHNTfxQhZ2FfLphcG7hrxICebkAgtpn0QmCgDxhNw==
+  version "7.6.1"
+  resolved "https://registry.yarnpkg.com/@wdio/spec-reporter/-/spec-reporter-7.6.1.tgz#1469c0c6e3a9184ed668fe4a6ed7c4ede199231c"
+  integrity sha512-FLe7zh5uOP20SD/9Sh3ILCJ6Jy0Jx3EahO5wgQNJvXWFvHSQber+Ghm5pxD0McGf/Caay02l0sCXZs5eH0ouqg==
   dependencies:
     "@types/easy-table" "^0.0.32"
     "@wdio/reporter" "7.6.0"
