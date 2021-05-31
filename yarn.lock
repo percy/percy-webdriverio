@@ -1165,6 +1165,16 @@ chrome-launcher@^0.13.1:
     mkdirp "^0.5.3"
     rimraf "^3.0.2"
 
+chrome-launcher@^0.14.0:
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/chrome-launcher/-/chrome-launcher-0.14.0.tgz#de8d8a534ccaeea0f36ea8dc12dd99e3169f3320"
+  integrity sha512-W//HpflaW6qBGrmuskup7g+XJZN6w03ko9QSIe5CtcTal2u0up5SeReK3Ll1Why4Ey8dPkv8XSodZyHPnGbVHQ==
+  dependencies:
+    "@types/node" "*"
+    escape-string-regexp "^4.0.0"
+    is-wsl "^2.2.0"
+    lighthouse-logger "^1.0.0"
+
 ci-info@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-2.0.0.tgz#67a9e964be31a51e15e5010d58e6f12834002f46"
@@ -1472,6 +1482,11 @@ devtools-protocol@^0.0.882987:
   resolved "https://registry.yarnpkg.com/devtools-protocol/-/devtools-protocol-0.0.882987.tgz#8295d9ce819637b73bf95aa42e63a6ab917beb21"
   integrity sha512-BXKWVSagixwFcGy+cHh6TEBL39f9hgDsVREAq+KaEaQy8Vn4a7Xhj70ClvZL9+S5M7U4800F9CSjUsAzkgsuRg==
 
+devtools-protocol@^0.0.885657:
+  version "0.0.885657"
+  resolved "https://registry.yarnpkg.com/devtools-protocol/-/devtools-protocol-0.0.885657.tgz#3be80c0c0bc3700f82ec3d0d2a338155ef5267e0"
+  integrity sha512-ufRW2vDsAgJYQd5BI8cdFtGrmoWBsBmuz2bSE9uqtVZtoXO4N82yYKroVW1mriJTQqj3joYHu1EkMDxwyDqsvQ==
+
 devtools@7.6.0:
   version "7.6.0"
   resolved "https://registry.yarnpkg.com/devtools/-/devtools-7.6.0.tgz#8861905e37505feb204cbf559c1b54e10c9e8f0a"
@@ -1484,6 +1499,24 @@ devtools@7.6.0:
     "@wdio/types" "7.6.0"
     "@wdio/utils" "7.6.0"
     chrome-launcher "^0.13.1"
+    edge-paths "^2.1.0"
+    puppeteer-core "^9.1.0"
+    query-selector-shadow-dom "^1.0.0"
+    ua-parser-js "^0.7.21"
+    uuid "^8.0.0"
+
+devtools@7.6.1:
+  version "7.6.1"
+  resolved "https://registry.yarnpkg.com/devtools/-/devtools-7.6.1.tgz#f996557efb05e13888c75bd3c9e91efd042cfed6"
+  integrity sha512-3NVpwGFISb0SKSLx/9f7XlpXEPlSLwxtHyGiqPf8oe3ghxe3UI8thYEXGzPcYFvwW6De0uuNwOPPVRUg3nZhog==
+  dependencies:
+    "@types/node" "^14.14.31"
+    "@wdio/config" "7.6.0"
+    "@wdio/logger" "7.5.3"
+    "@wdio/protocols" "7.5.3"
+    "@wdio/types" "7.6.0"
+    "@wdio/utils" "7.6.0"
+    chrome-launcher "^0.14.0"
     edge-paths "^2.1.0"
     puppeteer-core "^9.1.0"
     query-selector-shadow-dom "^1.0.0"
@@ -4601,7 +4634,7 @@ webdriver@7.6.0:
     got "^11.0.2"
     lodash.merge "^4.6.1"
 
-webdriverio@7.6.0, webdriverio@^7.0.9:
+webdriverio@7.6.0:
   version "7.6.0"
   resolved "https://registry.yarnpkg.com/webdriverio/-/webdriverio-7.6.0.tgz#74db96a599fe69886074bf80ed52a99ad9f8f57d"
   integrity sha512-o93L4dD4Ia0WOXghuv7Aj4vuSkK/eIDKRf7G5+dwh/j0myw3v2PKXC9pIG7Bxvp9exax5h/1NM+IFbvkTQAOlA==
@@ -4621,6 +4654,41 @@ webdriverio@7.6.0, webdriverio@^7.0.9:
     css-value "^0.0.1"
     devtools "7.6.0"
     devtools-protocol "^0.0.882987"
+    fs-extra "^10.0.0"
+    get-port "^5.1.1"
+    grapheme-splitter "^1.0.2"
+    lodash.clonedeep "^4.5.0"
+    lodash.isobject "^3.0.2"
+    lodash.isplainobject "^4.0.6"
+    lodash.zip "^4.2.0"
+    minimatch "^3.0.4"
+    puppeteer-core "^9.1.0"
+    query-selector-shadow-dom "^1.0.0"
+    resq "^1.9.1"
+    rgb2hex "0.2.5"
+    serialize-error "^8.0.0"
+    webdriver "7.6.0"
+
+webdriverio@^7.0.9:
+  version "7.6.1"
+  resolved "https://registry.yarnpkg.com/webdriverio/-/webdriverio-7.6.1.tgz#d24fdc3706878eb08c64813d751535bc1b2a334a"
+  integrity sha512-Dp7loWNJnQe29JHfmIY2VNlTab1wYw1dyDmhN0MTDPq47xloWASjC4LYrWI7va6VczFahIXh9HV9KcMv4KnTMQ==
+  dependencies:
+    "@types/aria-query" "^4.2.1"
+    "@types/node" "^14.14.31"
+    "@wdio/config" "7.6.0"
+    "@wdio/logger" "7.5.3"
+    "@wdio/protocols" "7.5.3"
+    "@wdio/repl" "7.6.0"
+    "@wdio/types" "7.6.0"
+    "@wdio/utils" "7.6.0"
+    archiver "^5.0.0"
+    aria-query "^4.2.2"
+    atob "^2.1.2"
+    css-shorthand-properties "^1.1.1"
+    css-value "^0.0.1"
+    devtools "7.6.1"
+    devtools-protocol "^0.0.885657"
     fs-extra "^10.0.0"
     get-port "^5.1.1"
     grapheme-splitter "^1.0.2"
