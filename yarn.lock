@@ -634,16 +634,25 @@
     loglevel-plugin-prefix "^0.8.4"
     strip-ansi "^6.0.0"
 
+"@wdio/logger@7.7.0":
+  version "7.7.0"
+  resolved "https://registry.yarnpkg.com/@wdio/logger/-/logger-7.7.0.tgz#cac834008b7570f3b6ae30ed731545618c51da40"
+  integrity sha512-XX/OkC8NlvsBdhKsb9j7ZbuQtF/Vuo0xf38PXdqYtVezOrYbDuba0hPG++g/IGNuAF34ZbSi+49cvz4u5w92kQ==
+  dependencies:
+    chalk "^4.0.0"
+    loglevel "^1.6.0"
+    loglevel-plugin-prefix "^0.8.4"
+    strip-ansi "^6.0.0"
+
 "@wdio/mocha-framework@^7.0.7":
-  version "7.6.0"
-  resolved "https://registry.yarnpkg.com/@wdio/mocha-framework/-/mocha-framework-7.6.0.tgz#908326f769f01ff7899ec5873b38a0855882ac89"
-  integrity sha512-F/dyxgd8gxbVPbo8enNbStoA73BFRJ/WB6uugfQfl56z37v5jSlCyROACTwGVZe11OyMEds4HHXsw6Opve38uA==
+  version "7.7.3"
+  resolved "https://registry.yarnpkg.com/@wdio/mocha-framework/-/mocha-framework-7.7.3.tgz#fe71777603688dd77d1ee82df047a5458c0ac653"
+  integrity sha512-0G9q3z6kuqFJxavm/pZNvO0bhRrZQuPbWf38vQGrbHEP15i8LNI1dDg1R73vb0y1jIbZDSIiuQsQQ6keGWND+w==
   dependencies:
     "@types/mocha" "^8.0.0"
-    "@types/node" "^14.14.31"
-    "@wdio/logger" "7.5.3"
-    "@wdio/types" "7.6.0"
-    "@wdio/utils" "7.6.0"
+    "@wdio/logger" "7.7.0"
+    "@wdio/types" "7.7.3"
+    "@wdio/utils" "7.7.3"
     expect-webdriverio "^3.0.0"
     mocha "^8.0.1"
 
@@ -702,6 +711,14 @@
     "@types/node" "^14.14.31"
     got "^11.8.1"
 
+"@wdio/types@7.7.3":
+  version "7.7.3"
+  resolved "https://registry.yarnpkg.com/@wdio/types/-/types-7.7.3.tgz#b92380a575d66d5f9c43b4b3c57f9311295f7545"
+  integrity sha512-ZZBQHCXKjZSQj9pf4df/QhfgQQj0vzm9hkK7YyNM+S+qnW0LExL8qQKLxTlGHDaYxk/+Jrd9pcZrJXRCoSnUaA==
+  dependencies:
+    "@types/node" "^14.14.31"
+    got "^11.8.1"
+
 "@wdio/utils@7.6.0":
   version "7.6.0"
   resolved "https://registry.yarnpkg.com/@wdio/utils/-/utils-7.6.0.tgz#c927be22da3b826e928760b91d11a25e8f25f5cd"
@@ -709,6 +726,14 @@
   dependencies:
     "@wdio/logger" "7.5.3"
     "@wdio/types" "7.6.0"
+
+"@wdio/utils@7.7.3":
+  version "7.7.3"
+  resolved "https://registry.yarnpkg.com/@wdio/utils/-/utils-7.7.3.tgz#9459bcf61d8cb6874af31e6a52fdd07aea758cc0"
+  integrity sha512-bvOoE2gve8Z8HFguVw0RMp5BbSmJR4zSr8DwbwnA8RSL3NshKlRk33HWYLmKsxjkH+ZWI2ihFbpvLD4W4imXag==
+  dependencies:
+    "@wdio/logger" "7.7.0"
+    "@wdio/types" "7.7.3"
 
 acorn-jsx@^5.3.1:
   version "5.3.1"
