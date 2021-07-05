@@ -331,7 +331,7 @@
   dependencies:
     dotenv "^10.0.0"
 
-"@percy/logger@^1.0.0-beta.52", "@percy/logger@^1.0.0-beta.56":
+"@percy/logger@^1.0.0-beta.56":
   version "1.0.0-beta.56"
   resolved "https://registry.yarnpkg.com/@percy/logger/-/logger-1.0.0-beta.56.tgz#2f028b14f17a610b80457b2da67ceb50f9ee2940"
   integrity sha512-1GEAJgZBWP/d/d7cecHVHFXE+29l2Rkaxc8PHtDqnW9vz6KWtzsmZF2HmM0hhq2qcXH3hVPz+NKn+fGWfAZ9nA==
@@ -2034,9 +2034,9 @@ gaze@^1.1.2:
     globule "^1.0.0"
 
 geckodriver@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/geckodriver/-/geckodriver-2.0.0.tgz#b30e8dd0ebde8ceaaef8101fc1855311d7d4973a"
-  integrity sha512-qcL58vKCwaUufE9y2viDydvvynxUzeITc0CblefAo0jWdxNMbQmY6wVt6MKJuBHOQ71QRer5iq9CSRZHppuytg==
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/geckodriver/-/geckodriver-2.0.1.tgz#2432e9d621c8db9d649c25a1f34799e55208fb55"
+  integrity sha512-xSaRWJuWDArekuaT2Ck/vsIXPy6DGb8NS2e6InRSZeeVBX+0XM8EmLshhMbR9xm6hiwlxXUX4LAT2LnJJSUFwg==
   dependencies:
     adm-zip "0.5.5"
     bluebird "3.7.2"
