@@ -651,14 +651,14 @@
     strip-ansi "^6.0.0"
 
 "@wdio/mocha-framework@^7.0.7":
-  version "7.8.0"
-  resolved "https://registry.yarnpkg.com/@wdio/mocha-framework/-/mocha-framework-7.8.0.tgz#4c517582db05dcc3301d05420443145ac8de4ffd"
-  integrity sha512-3UA44VLFEOu1dNh6lkGV4Tv1ceOA3HAwEGrauxEXps7z2f8EtNhZ2ZIxDN5vTmeVPHNJ1LrJM7MNiuC+hQmnVg==
+  version "7.9.0"
+  resolved "https://registry.yarnpkg.com/@wdio/mocha-framework/-/mocha-framework-7.9.0.tgz#2a12662bbcdfd300d0ec8b382cecf7f0f7e53ff9"
+  integrity sha512-/HKn4pWefhaH7192y+nBL+RcFlgV1SYvW3FSOzlaamEioMf55k47eYB+U/XH5//H52/u+kz66gCp4A5562tF6Q==
   dependencies:
     "@types/mocha" "^9.0.0"
     "@wdio/logger" "7.7.0"
     "@wdio/types" "7.8.0"
-    "@wdio/utils" "7.8.0"
+    "@wdio/utils" "7.9.0"
     expect-webdriverio "^3.0.0"
     mocha "^9.0.0"
 
@@ -715,14 +715,6 @@
     easy-table "^1.1.1"
     pretty-ms "^7.0.0"
 
-"@wdio/types@7.7.7":
-  version "7.7.7"
-  resolved "https://registry.yarnpkg.com/@wdio/types/-/types-7.7.7.tgz#cc5c74f926ebb0771507bc83247d61a41eb08602"
-  integrity sha512-E1enStCkdsb1lvTxCXU2ITCP+hHpVFt3lttadeiJxpkhIPIlu9Qfk8+Fz9IOhxS+NBBLrFq67f3+SA4GtK3JiQ==
-  dependencies:
-    "@types/node" "^15.12.5"
-    got "^11.8.1"
-
 "@wdio/types@7.8.0":
   version "7.8.0"
   resolved "https://registry.yarnpkg.com/@wdio/types/-/types-7.8.0.tgz#03ead5b8d10fb0d373bebe16a92c8c10e4e01059"
@@ -738,6 +730,15 @@
   dependencies:
     "@wdio/logger" "7.7.0"
     "@wdio/types" "7.8.0"
+
+"@wdio/utils@7.9.0":
+  version "7.9.0"
+  resolved "https://registry.yarnpkg.com/@wdio/utils/-/utils-7.9.0.tgz#7fc0ce58ac82fcbb796735c7e8764cadaaef79af"
+  integrity sha512-Wf65vTIOkg9fpX/VVXt16U9IidT8aPh/z4+nGD00/QZwCyexo4lsLV/zMms1xQ0qDsroNU1nJY1Nvi2Y8wnbYQ==
+  dependencies:
+    "@wdio/logger" "7.7.0"
+    "@wdio/types" "7.8.0"
+    p-iteration "^1.1.8"
 
 acorn-jsx@^5.3.1:
   version "5.3.1"
@@ -3320,6 +3321,11 @@ p-cancelable@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/p-cancelable/-/p-cancelable-2.0.0.tgz#4a3740f5bdaf5ed5d7c3e34882c6fb5d6b266a6e"
   integrity sha512-wvPXDmbMmu2ksjkB4Z3nZWTSkJEb9lqVdMaCKpZUGJG9TMiNp9XcbG3fn9fPKjem04fJMJnXoyFPk2FmgiaiNg==
+
+p-iteration@^1.1.8:
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/p-iteration/-/p-iteration-1.1.8.tgz#14df726d55af368beba81bcc92a26bb1b48e714a"
+  integrity sha512-IMFBSDIYcPNnW7uWYGrBqmvTiq7W0uB0fJn6shQZs7dlF3OvrHOre+JT9ikSZ7gZS3vWqclVgoQSvToJrns7uQ==
 
 p-limit@^1.1.0:
   version "1.3.0"
