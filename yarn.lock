@@ -584,9 +584,9 @@
   integrity sha512-sL/cEvJWAnClXw0wHk85/2L0G6Sj8UB0Ctc1TEMbKSsmpRosqhwj9gWgFRZSrBr2f9tiXISwNhCPmlfqUqyb9Q==
 
 "@wdio/cli@^7.0.8":
-  version "7.10.1"
-  resolved "https://registry.yarnpkg.com/@wdio/cli/-/cli-7.10.1.tgz#ae27ef579718cbcb35aea8e6ff1428df4cea3514"
-  integrity sha512-EuqfroWGB159W4j2WY1zZDosiaso7VXFzbmYUOEXLRvyWJMznLABiUBU8w9QpoU1z1chJM0WLkA2DmjULvQGaA==
+  version "7.11.1"
+  resolved "https://registry.yarnpkg.com/@wdio/cli/-/cli-7.11.1.tgz#e5bc37c50f0ce2e17b690f4be9e4be0f89cdbae6"
+  integrity sha512-CGFX7vy5U9i9ccsUNmcOv+LzFaoKNFPr1+mopELld/b0wUVN9yM70jfgmUMjpHQnAMl3lqxIjBQuDrxE8/qTEw==
   dependencies:
     "@types/ejs" "^3.0.5"
     "@types/fs-extra" "^9.0.4"
@@ -599,7 +599,7 @@
     "@wdio/config" "7.10.1"
     "@wdio/logger" "7.7.0"
     "@wdio/types" "7.10.1"
-    "@wdio/utils" "7.10.1"
+    "@wdio/utils" "7.11.0"
     async-exit-hook "^2.0.1"
     chalk "^4.0.0"
     chokidar "^3.0.0"
@@ -612,7 +612,7 @@
     lodash.union "^4.6.0"
     mkdirp "^1.0.4"
     recursive-readdir "^2.2.2"
-    webdriverio "7.10.1"
+    webdriverio "7.11.1"
     yargs "^17.0.0"
     yarn-install "^1.0.0"
 
