@@ -637,15 +637,15 @@
     glob "^7.1.2"
 
 "@wdio/local-runner@^7.0.0":
-  version "7.12.5"
-  resolved "https://registry.yarnpkg.com/@wdio/local-runner/-/local-runner-7.12.5.tgz#7c2d89c3767312c61d715ffa17ab0dc95cb86a80"
-  integrity sha512-xRyqSir4U7ZnR0PDvKdEjh3SGKkre9pXngepLUzzXtgRdeAHII8Bu20CSHm9Mu/JbVNux5r6Yvqhm0CwPN22Pg==
+  version "7.13.2"
+  resolved "https://registry.yarnpkg.com/@wdio/local-runner/-/local-runner-7.13.2.tgz#10b559d9c4090a694cc89ef7427d33f97f8c1985"
+  integrity sha512-wegCw6d/Omm3zFek1hhFmW363hW/gnzf1pTvWa91rC4jlWjMSEp1HkEVnjLIdLeiaPcya5JuB0gSKTQnsl9EpA==
   dependencies:
     "@types/stream-buffers" "^3.0.3"
     "@wdio/logger" "7.7.0"
-    "@wdio/repl" "7.12.5"
-    "@wdio/runner" "7.12.5"
-    "@wdio/types" "7.12.5"
+    "@wdio/repl" "7.13.2"
+    "@wdio/runner" "7.13.2"
+    "@wdio/types" "7.13.2"
     async-exit-hook "^2.0.1"
     split2 "^3.2.2"
     stream-buffers "^3.0.2"
@@ -711,19 +711,19 @@
     object-inspect "^1.10.3"
     supports-color "8.1.1"
 
-"@wdio/runner@7.12.5":
-  version "7.12.5"
-  resolved "https://registry.yarnpkg.com/@wdio/runner/-/runner-7.12.5.tgz#363d23cf4fcd9ea09b95a1ec5bf5b966971ec17d"
-  integrity sha512-FRDEsXoL0C9nc9bs67b8MMrzf+JwhBKxW/5rnOx4cQQzd5NRwGTpVtFKWNPWhMjHXLqBuyEwr0MgK/ZG5dz/bg==
+"@wdio/runner@7.13.2":
+  version "7.13.2"
+  resolved "https://registry.yarnpkg.com/@wdio/runner/-/runner-7.13.2.tgz#fcb0368c71cea1949181f6c8c73a95ad211899d4"
+  integrity sha512-IlhObs9bH+cSs2gH/RzYuiKEXZ7HL65cBIgRhuFKVjunrAiZZUGugk2MJHQltYXBaydSkk2kJCj0noHzEBR/CA==
   dependencies:
-    "@wdio/config" "7.12.5"
+    "@wdio/config" "7.13.2"
     "@wdio/logger" "7.7.0"
-    "@wdio/types" "7.12.5"
-    "@wdio/utils" "7.12.5"
+    "@wdio/types" "7.13.2"
+    "@wdio/utils" "7.13.2"
     deepmerge "^4.0.0"
     gaze "^1.1.2"
-    webdriver "7.12.5"
-    webdriverio "7.12.5"
+    webdriver "7.13.2"
+    webdriverio "7.13.2"
 
 "@wdio/spec-reporter@^7.0.0":
   version "7.12.5"
