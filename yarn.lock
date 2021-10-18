@@ -352,10 +352,10 @@
   dependencies:
     defer-to-connect "^2.0.0"
 
-"@tsd/typescript@~4.3.2":
-  version "4.3.2"
-  resolved "https://registry.yarnpkg.com/@tsd/typescript/-/typescript-4.3.2.tgz#c63c4ce7b68590e57d0473a03f48ee58501ef7cf"
-  integrity sha512-r7RuRkxXUBPfY/S+D3L993VfrlTMxMO9hGzxblpx8DaUFoCje0c2og8R87B3RWLz7ucHB4LBaA/89miUTY75oA==
+"@tsd/typescript@~4.4.3":
+  version "4.4.4"
+  resolved "https://registry.yarnpkg.com/@tsd/typescript/-/typescript-4.4.4.tgz#c16c9327eb25e9b221be8e555d0d70a03006ef00"
+  integrity sha512-XNaotnbhU6sKSXYg9rVz4L9i9g+j+x1IIgMPztK8KumtMEsrLXcqPBKp/qzmUKwAZEqgHs4+TTz90dUu5/aIqQ==
 
 "@types/aria-query@^4.2.1":
   version "4.2.1"
@@ -391,6 +391,19 @@
   version "3.0.5"
   resolved "https://registry.yarnpkg.com/@types/ejs/-/ejs-3.0.5.tgz#95a3a1c3d9603eba80fe67ff56da1ba275ef2eda"
   integrity sha512-k4ef69sS4sIqAPW9GoBnN+URAON2LeL1H0duQvL4RgdEBna19/WattYSA1qYqvbVEDRTSWzOw56tCLhC/m/IOw==
+
+"@types/eslint@^7.2.13":
+  version "7.28.1"
+  resolved "https://registry.yarnpkg.com/@types/eslint/-/eslint-7.28.1.tgz#50b07747f1f84c2ba8cd394cf0fe0ba07afce320"
+  integrity sha512-XhZKznR3i/W5dXqUhgU9fFdJekufbeBd5DALmkuXoeFcjbQcPk+2cL+WLHf6Q81HWAnM2vrslIHpGVyCAviRwg==
+  dependencies:
+    "@types/estree" "*"
+    "@types/json-schema" "*"
+
+"@types/estree@*":
+  version "0.0.50"
+  resolved "https://registry.yarnpkg.com/@types/estree/-/estree-0.0.50.tgz#1e0caa9364d3fccd2931c3ed96fdbeaa5d4cca83"
+  integrity sha512-C6N5s2ZFtuZRj54k2/zyRhNDjJwwcViAM3Nbm8zjBpbqAdZ00mr0CFxvSKeO8Y/e03WVFLpQMdHYVfUd6SB+Hw==
 
 "@types/fs-extra@^9.0.4":
   version "9.0.5"
@@ -430,6 +443,11 @@
   integrity sha512-nwKNbvnwJ2/mndE9ItP/zc2TCzw6uuodnF4EHYWD+gCQDVBuRQL5UzbZD0/ezy1iKsFU2ZQiDqg4M9dN4+wZgA==
   dependencies:
     "@types/istanbul-lib-report" "*"
+
+"@types/json-schema@*":
+  version "7.0.9"
+  resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.9.tgz#97edc9037ea0c38585320b28964dde3b39e4660d"
+  integrity sha512-qcUXuemtEu+E5wZSJHNxUXeCZhAfXKQ41D+duX+VYPde7xyEVZci+/oXKJL13tnRs9lR2pr4fod59GT6/X1/yQ==
 
 "@types/json5@^0.0.29":
   version "0.0.29"
@@ -1648,11 +1666,12 @@ eslint-config-standard@^16.0.2:
   resolved "https://registry.yarnpkg.com/eslint-config-standard/-/eslint-config-standard-16.0.3.tgz#6c8761e544e96c531ff92642eeb87842b8488516"
   integrity sha512-x4fmJL5hGqNJKGHSjnLdgA6U6h1YW/G2dW9fA+cyVur4SK6lyue8+UgNKWlZtUDTXvgKDD/Oa3GQjmB5kjtVvg==
 
-eslint-formatter-pretty@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/eslint-formatter-pretty/-/eslint-formatter-pretty-4.0.0.tgz#dc15f3bf4fb51b7ba5fbedb77f57ba8841140ce2"
-  integrity sha512-QgdeZxQwWcN0TcXXNZJiS6BizhAANFhCzkE7Yl9HKB7WjElzwED6+FbbZB2gji8ofgJTGPqKm6VRCNT3OGCeEw==
+eslint-formatter-pretty@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/eslint-formatter-pretty/-/eslint-formatter-pretty-4.1.0.tgz#7a6877c14ffe2672066c853587d89603e97c7708"
+  integrity sha512-IsUTtGxF1hrH6lMWiSl1WbGaiP01eT6kzywdY1U+zLc0MP+nwEnUiS9UI8IaOTUhTeQJLlCEWIbXINBH4YJbBQ==
   dependencies:
+    "@types/eslint" "^7.2.13"
     ansi-escapes "^4.2.1"
     chalk "^4.1.0"
     eslint-rule-docs "^1.1.5"
@@ -1868,15 +1887,15 @@ expect@^26.6.2:
     jest-regex-util "^26.0.0"
 
 expect@^27.0.2:
-  version "27.2.5"
-  resolved "https://registry.yarnpkg.com/expect/-/expect-27.2.5.tgz#16154aaa60b4d9a5b0adacfea3e4d6178f4b93fd"
-  integrity sha512-ZrO0w7bo8BgGoP/bLz+HDCI+0Hfei9jUSZs5yI/Wyn9VkG9w8oJ7rHRgYj+MA7yqqFa0IwHA3flJzZtYugShJA==
+  version "27.3.0"
+  resolved "https://registry.yarnpkg.com/expect/-/expect-27.3.0.tgz#6cf2864a2553fe8ea68e19a6ce1641b08c3a5a98"
+  integrity sha512-JBRU82EBkZUBqLBAoF3ovzNGEBm14QQnePK4PmZdm6de6q/UzPnmIuWP3dRCw/FE8wRQhf/1eKzy1p1q8d6EvQ==
   dependencies:
     "@jest/types" "^27.2.5"
     ansi-styles "^5.0.0"
     jest-get-type "^27.0.6"
-    jest-matcher-utils "^27.2.5"
-    jest-message-util "^27.2.5"
+    jest-matcher-utils "^27.3.0"
+    jest-message-util "^27.3.0"
     jest-regex-util "^27.0.6"
 
 external-editor@^3.0.3:
@@ -2672,15 +2691,15 @@ jest-diff@^26.6.2:
     jest-get-type "^26.3.0"
     pretty-format "^26.6.2"
 
-jest-diff@^27.2.5:
-  version "27.2.5"
-  resolved "https://registry.yarnpkg.com/jest-diff/-/jest-diff-27.2.5.tgz#908f7a6aca5653824516ad30e0a9fd9767e53623"
-  integrity sha512-7gfwwyYkeslOOVQY4tVq5TaQa92mWfC9COsVYMNVYyJTOYAqbIkoD3twi5A+h+tAPtAelRxkqY6/xu+jwTr0dA==
+jest-diff@^27.3.0:
+  version "27.3.0"
+  resolved "https://registry.yarnpkg.com/jest-diff/-/jest-diff-27.3.0.tgz#4d6f6f9d34f7e2a359b3c7eb142bba4de1e37695"
+  integrity sha512-Nl2rE58B2ye+RvPcU4hN+6wBCHxX7aWz6RMTMFxe9jAg8ZueMj5QQ+T/nmHRutbBc5BEjrbbEWOrRzp9rUEsYA==
   dependencies:
     chalk "^4.0.0"
     diff-sequences "^27.0.6"
     jest-get-type "^27.0.6"
-    pretty-format "^27.2.5"
+    pretty-format "^27.3.0"
 
 jest-get-type@^26.3.0:
   version "26.3.0"
@@ -2702,15 +2721,15 @@ jest-matcher-utils@^26.6.2:
     jest-get-type "^26.3.0"
     pretty-format "^26.6.2"
 
-jest-matcher-utils@^27.2.5:
-  version "27.2.5"
-  resolved "https://registry.yarnpkg.com/jest-matcher-utils/-/jest-matcher-utils-27.2.5.tgz#4684faaa8eb32bf15e6edaead6834031897e2980"
-  integrity sha512-qNR/kh6bz0Dyv3m68Ck2g1fLW5KlSOUNcFQh87VXHZwWc/gY6XwnKofx76Qytz3x5LDWT09/2+yXndTkaG4aWg==
+jest-matcher-utils@^27.3.0:
+  version "27.3.0"
+  resolved "https://registry.yarnpkg.com/jest-matcher-utils/-/jest-matcher-utils-27.3.0.tgz#82c41750db4384d7a8db319348752df2bb0acf7a"
+  integrity sha512-AK2ds5J29PJcZhfJ/5J8ycbjCXTHnwc6lQeOV1a1GahU1MCpSvyHG1iIevyvp6PXPy6r0q9ywGdCObWHmkK16g==
   dependencies:
     chalk "^4.0.0"
-    jest-diff "^27.2.5"
+    jest-diff "^27.3.0"
     jest-get-type "^27.0.6"
-    pretty-format "^27.2.5"
+    pretty-format "^27.3.0"
 
 jest-message-util@^26.6.2:
   version "26.6.2"
@@ -2727,10 +2746,10 @@ jest-message-util@^26.6.2:
     slash "^3.0.0"
     stack-utils "^2.0.2"
 
-jest-message-util@^27.2.5:
-  version "27.2.5"
-  resolved "https://registry.yarnpkg.com/jest-message-util/-/jest-message-util-27.2.5.tgz#ed8b7b0965247bb875a49c1f9b9ab2d1d0820028"
-  integrity sha512-ggXSLoPfIYcbmZ8glgEJZ8b+e0Msw/iddRmgkoO7lDAr9SmI65IIfv7VnvTnV4FGnIIUIjzM+fHRHO5RBvyAbQ==
+jest-message-util@^27.3.0:
+  version "27.3.0"
+  resolved "https://registry.yarnpkg.com/jest-message-util/-/jest-message-util-27.3.0.tgz#d64d24c2f19111ea916c092fea015076bb7615fe"
+  integrity sha512-0c79aomiyE3mlta4NCWsICydvv2W0HlM/eVx46YEO+vdDuwUvNuQn8LqOtcHC1hSd25i03RrPvscrWgHBJQpRQ==
   dependencies:
     "@babel/code-frame" "^7.12.13"
     "@jest/types" "^27.2.5"
@@ -2738,7 +2757,7 @@ jest-message-util@^27.2.5:
     chalk "^4.0.0"
     graceful-fs "^4.2.4"
     micromatch "^4.0.4"
-    pretty-format "^27.2.5"
+    pretty-format "^27.3.0"
     slash "^3.0.0"
     stack-utils "^2.0.3"
 
@@ -3619,10 +3638,10 @@ pretty-format@^26.6.2:
     ansi-styles "^4.0.0"
     react-is "^17.0.1"
 
-pretty-format@^27.2.5:
-  version "27.2.5"
-  resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-27.2.5.tgz#7cfe2a8e8f01a5b5b29296a0b70f4140df0830c5"
-  integrity sha512-+nYn2z9GgicO9JiqmY25Xtq8SYfZ/5VCpEU3pppHHNAhd1y+ZXxmNPd1evmNcAd6Hz4iBV2kf0UpGth5A/VJ7g==
+pretty-format@^27.3.0:
+  version "27.3.0"
+  resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-27.3.0.tgz#ab4679ffc25dd9bc29bab220a4a70a873a19600e"
+  integrity sha512-Nkdd0xmxZdjCe6GoJomHnrLcCYGYzZKI/fRnUX0sCwDai2mmCHJfC9Ecx33lYgaxAFS/pJCAqhfxmWlm1wNVag==
   dependencies:
     "@jest/types" "^27.2.5"
     ansi-regex "^5.0.1"
@@ -4361,13 +4380,13 @@ tsconfig-paths@^3.11.0:
     minimist "^1.2.0"
     strip-bom "^3.0.0"
 
-tsd@^0.17.0:
-  version "0.17.0"
-  resolved "https://registry.yarnpkg.com/tsd/-/tsd-0.17.0.tgz#e5aa66d6598d0b66628784ecb4c0c27795b47317"
-  integrity sha512-+HUwya2NgoP/g9t2gRCC3I8VtGu65NgG9Lv75vNzMaxjMFo+0VXF9c4sj3remSzJYeBHLNKzWMbFOinPqrL20Q==
+tsd@^0.18.0:
+  version "0.18.0"
+  resolved "https://registry.yarnpkg.com/tsd/-/tsd-0.18.0.tgz#d653f87e05ea0d07348601660e41b84c9cc81b5b"
+  integrity sha512-UIkxm2CLmSjXlQs4zqxgVV9UmzK8VgJ63eBpgkH/ZsMkiUdzxxHvdCCg8F314HDxzfQl2muJEy/TEcXHIFIPXg==
   dependencies:
-    "@tsd/typescript" "~4.3.2"
-    eslint-formatter-pretty "^4.0.0"
+    "@tsd/typescript" "~4.4.3"
+    eslint-formatter-pretty "^4.1.0"
     globby "^11.0.1"
     meow "^9.0.0"
     path-exists "^4.0.0"
