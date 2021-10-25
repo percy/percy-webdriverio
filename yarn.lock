@@ -502,15 +502,15 @@
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-9.0.0.tgz#3205bcd15ada9bc681ac20bef64e9e6df88fd297"
   integrity sha512-scN0hAWyLVAvLR9AyW7HoFF5sJZglyBsbPuHO4fv7JRvfmPBMfp1ozWqOf/e4wwPNxezBZXRfWzMb6iFLgEVRA==
 
-"@types/node@*", "@types/node@^15.12.5":
-  version "15.14.2"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-15.14.2.tgz#7af8ab20156586f076f4760bc1b3c5ddfffd1ff2"
-  integrity sha512-dvMUE/m2LbXPwlvVuzCyslTEtQ2ZwuuFClDrOQ6mp2CenCg971719PTILZ4I6bTP27xfFFc+o7x2TkLuun/MPw==
-
-"@types/node@^16.11.1":
+"@types/node@*", "@types/node@^16.11.1":
   version "16.11.5"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-16.11.5.tgz#e91be5ba4ab88c06095e7b61f9ad1767a1093faf"
   integrity sha512-NyUV2DGcqYIx9op++MG2+Z4Nhw1tPhi0Wfs81TgncuX1aJC4zf2fgCJlJhl4BW9bCSS04e34VkqmOS96w0XQdg==
+
+"@types/node@^15.12.5":
+  version "15.14.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-15.14.2.tgz#7af8ab20156586f076f4760bc1b3c5ddfffd1ff2"
+  integrity sha512-dvMUE/m2LbXPwlvVuzCyslTEtQ2ZwuuFClDrOQ6mp2CenCg971719PTILZ4I6bTP27xfFFc+o7x2TkLuun/MPw==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -4570,7 +4570,7 @@ webdriver@7.16.1:
     ky "^0.28.5"
     lodash.merge "^4.6.1"
 
-webdriverio@7.14.1, webdriverio@^7.0.9:
+webdriverio@7.14.1:
   version "7.14.1"
   resolved "https://registry.yarnpkg.com/webdriverio/-/webdriverio-7.14.1.tgz#357003a084efb23c472efc06a0fe7a92ad43f5c6"
   integrity sha512-LE3YbEkzqqpCt2lN4JIYSpfv1mOXUk2SCglUXHD1O/uNY/Z1hUM5iL0X7tW0Wg5QKvH5YYJ/YPmtqza1OrtNAg==
@@ -4605,7 +4605,7 @@ webdriverio@7.14.1, webdriverio@^7.0.9:
     serialize-error "^8.0.0"
     webdriver "7.14.1"
 
-webdriverio@7.16.2:
+webdriverio@7.16.2, webdriverio@^7.0.9:
   version "7.16.2"
   resolved "https://registry.yarnpkg.com/webdriverio/-/webdriverio-7.16.2.tgz#acf9f28385d0827b6c56dbcbb2e339383474c92d"
   integrity sha512-YU5wCJHNi9ArfpxyVcacI0p2qg5dKlvUBlMjuPW3hr3GwLrHnZkoMp7z40PFdd8QiHmweA/SQXD3rDdlFFBB3Q==
