@@ -333,12 +333,17 @@
   resolved "https://registry.yarnpkg.com/@percy/logger/-/logger-1.0.0-beta.69.tgz#29fcd7431f3d5a2cc55c4d7849d6ac340ad7ad03"
   integrity sha512-8RRJijvspQGMeHIlh6jppTT0Jz2uH4o7XBQfWEtJ6EyI54MHYWMULeNoVLl51BNNDk8N2GvgIBOX9eCnOhIVzw==
 
+"@percy/logger@1.0.0-beta.70":
+  version "1.0.0-beta.70"
+  resolved "https://registry.yarnpkg.com/@percy/logger/-/logger-1.0.0-beta.70.tgz#1fe0a234ea1d249c3e3667870a31d59de56bf78a"
+  integrity sha512-QUVdp/FEsoHYftakuxe67/e/OVeVX6d2Fgur+thhqgHZ5GD87TwFsB+PH8kP6b5/ZZ+bOysT6bbxbiDvGEqWwg==
+
 "@percy/sdk-utils@~1.0.0-beta.44":
-  version "1.0.0-beta.69"
-  resolved "https://registry.yarnpkg.com/@percy/sdk-utils/-/sdk-utils-1.0.0-beta.69.tgz#0458050e9db5f0b05b54cf942f70432f93366fbb"
-  integrity sha512-+KqlsLYw5dD+dy1DC9gllk2Br55OEzmIG9+nsGlVmJvB6ENz8C2CCpNJqp/1yY9metNw4JNaDY7c826OTBwfLw==
+  version "1.0.0-beta.70"
+  resolved "https://registry.yarnpkg.com/@percy/sdk-utils/-/sdk-utils-1.0.0-beta.70.tgz#6a0f65fc338a2eb76eb85646deb650a64d65876c"
+  integrity sha512-kxdMpvVnj4GUUhEYQ9j+qWUm1SJXkeqhcpbxrrfmE9wFpw2TgKWUTOwLS6im68cY6A03P9F4UAGSNWnE0ZHneA==
   dependencies:
-    "@percy/logger" "1.0.0-beta.69"
+    "@percy/logger" "1.0.0-beta.70"
 
 "@sindresorhus/is@^4.0.0":
   version "4.0.0"
@@ -560,6 +565,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/tmp@^0.2.0":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@types/tmp/-/tmp-0.2.2.tgz#424537a3b91828cb26aaf697f21ae3cd1b69f7e7"
+  integrity sha512-MhSa0yylXtVMsyT8qFpHA1DLHj4DvQGH5ntxrhHSh8PxUVNi35Wk+P5hVgqbO2qZqOotqr9jaoPRL+iRjWYm/A==
+
 "@types/yargs-parser@*":
   version "15.0.0"
   resolved "https://registry.yarnpkg.com/@types/yargs-parser/-/yargs-parser-15.0.0.tgz#cb3f9f741869e20cce330ffbeb9271590483882d"
@@ -714,16 +724,17 @@
   dependencies:
     "@wdio/utils" "7.16.1"
 
-"@wdio/reporter@7.14.1":
-  version "7.14.1"
-  resolved "https://registry.yarnpkg.com/@wdio/reporter/-/reporter-7.14.1.tgz#7b0c714a5e13eae950435650873687065f2044cf"
-  integrity sha512-x/rV+aTTYf0Kj4Ti/6Yq/XEiA9k3StM6EnkMhaA3S/J6TeuQ8ZHZf6T4Lu/Izafg8F25ky0yH98HxZi2b2Fw1g==
+"@wdio/reporter@7.16.1":
+  version "7.16.1"
+  resolved "https://registry.yarnpkg.com/@wdio/reporter/-/reporter-7.16.1.tgz#24a755e9a04f8931df5017904917ce5b01fbda3e"
+  integrity sha512-bdMVEvQa4B4oAk9f5FQcUL6XjS3/Djo/Syq9mqslcvJQCPBdVFZznzTpPqmP8m6ZMVn5bLCJzU+MpwSB+wXz/g==
   dependencies:
     "@types/diff" "^5.0.0"
-    "@types/node" "^15.12.5"
+    "@types/node" "^16.11.1"
     "@types/object-inspect" "^1.8.0"
     "@types/supports-color" "^8.1.0"
-    "@wdio/types" "7.14.1"
+    "@types/tmp" "^0.2.0"
+    "@wdio/types" "7.16.1"
     diff "^5.0.0"
     fs-extra "^10.0.0"
     object-inspect "^1.10.3"
@@ -744,13 +755,13 @@
     webdriverio "7.16.2"
 
 "@wdio/spec-reporter@^7.0.0":
-  version "7.14.1"
-  resolved "https://registry.yarnpkg.com/@wdio/spec-reporter/-/spec-reporter-7.14.1.tgz#2a486d7b8784587d3b51f77e7550b8bf4162fa4f"
-  integrity sha512-vViWdv2ExsgyN04QZ0w+Kj1Qi03/WR2kriOJCrGmCVZFXpZKFFOscf6irLeGL6zMRy6k86mf+AwFxV6PZB9K/w==
+  version "7.16.1"
+  resolved "https://registry.yarnpkg.com/@wdio/spec-reporter/-/spec-reporter-7.16.1.tgz#6ff99cb9fa39a519f53e9ad6aa8cd879a8d566a3"
+  integrity sha512-6Q++FGnG5SrxSwRzyG/9GNT4lK1Jz1sxBVHQiXVHEc8d/hdG/yVVmwwz3xnptSXB4zVZn8cS5riXjE/GYDc9dg==
   dependencies:
     "@types/easy-table" "^0.0.33"
-    "@wdio/reporter" "7.14.1"
-    "@wdio/types" "7.14.1"
+    "@wdio/reporter" "7.16.1"
+    "@wdio/types" "7.16.1"
     chalk "^4.0.0"
     easy-table "^1.1.1"
     pretty-ms "^7.0.0"
