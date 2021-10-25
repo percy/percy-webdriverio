@@ -339,11 +339,11 @@
   integrity sha512-QUVdp/FEsoHYftakuxe67/e/OVeVX6d2Fgur+thhqgHZ5GD87TwFsB+PH8kP6b5/ZZ+bOysT6bbxbiDvGEqWwg==
 
 "@percy/sdk-utils@~1.0.0-beta.44":
-  version "1.0.0-beta.69"
-  resolved "https://registry.yarnpkg.com/@percy/sdk-utils/-/sdk-utils-1.0.0-beta.69.tgz#0458050e9db5f0b05b54cf942f70432f93366fbb"
-  integrity sha512-+KqlsLYw5dD+dy1DC9gllk2Br55OEzmIG9+nsGlVmJvB6ENz8C2CCpNJqp/1yY9metNw4JNaDY7c826OTBwfLw==
+  version "1.0.0-beta.70"
+  resolved "https://registry.yarnpkg.com/@percy/sdk-utils/-/sdk-utils-1.0.0-beta.70.tgz#6a0f65fc338a2eb76eb85646deb650a64d65876c"
+  integrity sha512-kxdMpvVnj4GUUhEYQ9j+qWUm1SJXkeqhcpbxrrfmE9wFpw2TgKWUTOwLS6im68cY6A03P9F4UAGSNWnE0ZHneA==
   dependencies:
-    "@percy/logger" "1.0.0-beta.69"
+    "@percy/logger" "1.0.0-beta.70"
 
 "@sindresorhus/is@^4.0.0":
   version "4.0.0"
