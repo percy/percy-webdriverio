@@ -682,17 +682,17 @@
   dependencies:
     "@wdio/utils" "7.16.1"
 
-"@wdio/reporter@7.16.1":
-  version "7.16.1"
-  resolved "https://registry.yarnpkg.com/@wdio/reporter/-/reporter-7.16.1.tgz#24a755e9a04f8931df5017904917ce5b01fbda3e"
-  integrity sha512-bdMVEvQa4B4oAk9f5FQcUL6XjS3/Djo/Syq9mqslcvJQCPBdVFZznzTpPqmP8m6ZMVn5bLCJzU+MpwSB+wXz/g==
+"@wdio/reporter@7.16.3":
+  version "7.16.3"
+  resolved "https://registry.yarnpkg.com/@wdio/reporter/-/reporter-7.16.3.tgz#9cd3f62914ca60b5628a5217fdcdf55a445fbcad"
+  integrity sha512-DL6FaO8/ULHv4ET0ZVdg9+ZAP7ZzhZc8qP5slZTwMQ5vnXOHEO9JrALFtcEO8OkyZfaZKbI9oE2d96zli+wT9g==
   dependencies:
     "@types/diff" "^5.0.0"
     "@types/node" "^16.11.1"
     "@types/object-inspect" "^1.8.0"
     "@types/supports-color" "^8.1.0"
     "@types/tmp" "^0.2.0"
-    "@wdio/types" "7.16.1"
+    "@wdio/types" "7.16.3"
     diff "^5.0.0"
     fs-extra "^10.0.0"
     object-inspect "^1.10.3"
@@ -713,13 +713,13 @@
     webdriverio "7.16.2"
 
 "@wdio/spec-reporter@^7.0.0":
-  version "7.16.1"
-  resolved "https://registry.yarnpkg.com/@wdio/spec-reporter/-/spec-reporter-7.16.1.tgz#6ff99cb9fa39a519f53e9ad6aa8cd879a8d566a3"
-  integrity sha512-6Q++FGnG5SrxSwRzyG/9GNT4lK1Jz1sxBVHQiXVHEc8d/hdG/yVVmwwz3xnptSXB4zVZn8cS5riXjE/GYDc9dg==
+  version "7.16.3"
+  resolved "https://registry.yarnpkg.com/@wdio/spec-reporter/-/spec-reporter-7.16.3.tgz#9b7191faf63d34458016bd988bbbe1fcf851f373"
+  integrity sha512-MprsLcS36N0cfrY8D/1ya2nJTqtRNmT9LzUidFUSbMSLj0oL/uZUioMBk9IRXPdnrgfBUoNrijbLqqo5G+vKAQ==
   dependencies:
     "@types/easy-table" "^0.0.33"
-    "@wdio/reporter" "7.16.1"
-    "@wdio/types" "7.16.1"
+    "@wdio/reporter" "7.16.3"
+    "@wdio/types" "7.16.3"
     chalk "^4.0.0"
     easy-table "^1.1.1"
     pretty-ms "^7.0.0"
@@ -728,6 +728,14 @@
   version "7.16.1"
   resolved "https://registry.yarnpkg.com/@wdio/types/-/types-7.16.1.tgz#099947f2095ffd4c701608be394f58cfc2563a10"
   integrity sha512-Rc/OMPnVCjo9aCeXZBC9r0Wf8P5wR9HojoIq80N2Ef89jDd0Oefj9xZEnaTRpTkBNL09c52CLTDtGne0uehOYg==
+  dependencies:
+    "@types/node" "^16.11.1"
+    got "^11.8.1"
+
+"@wdio/types@7.16.3":
+  version "7.16.3"
+  resolved "https://registry.yarnpkg.com/@wdio/types/-/types-7.16.3.tgz#7fff2f2b8d13e3ef23f641fcd8f6ace52befedfd"
+  integrity sha512-iJLtJrOJZSJrXR1zseCkVWUFs477FngjWz2HTMfGHR69LzfmxC0RNagemjZuLTfhTqWp/FBbqaA/F+7xJdNKag==
   dependencies:
     "@types/node" "^16.11.1"
     got "^11.8.1"
