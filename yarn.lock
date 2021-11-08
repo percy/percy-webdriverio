@@ -597,9 +597,9 @@
   integrity sha512-sL/cEvJWAnClXw0wHk85/2L0G6Sj8UB0Ctc1TEMbKSsmpRosqhwj9gWgFRZSrBr2f9tiXISwNhCPmlfqUqyb9Q==
 
 "@wdio/cli@^7.0.8":
-  version "7.16.3"
-  resolved "https://registry.yarnpkg.com/@wdio/cli/-/cli-7.16.3.tgz#72d8a3682c82d80963714972950ef2757bf96bdd"
-  integrity sha512-0y1/tJ5rPAx98VcPBczxNk2TdxDFer3gfqOI/Cowrt2VarIm1HiL2m/tPxenIQiqFHJCba9TN5Iho9g1JQbCEg==
+  version "7.16.4"
+  resolved "https://registry.yarnpkg.com/@wdio/cli/-/cli-7.16.4.tgz#43ec10b304cd64bd7713d0a5338212556211ec5c"
+  integrity sha512-5DgLCvRZigmyDeBXFXiHgloVpC+JJYrQHSNWH9Ji0BEFv80+lwvwYXEatBMXOxCjQC1yQZFKVScrKsJYaF9/AQ==
   dependencies:
     "@types/ejs" "^3.0.5"
     "@types/fs-extra" "^9.0.4"
@@ -625,7 +625,7 @@
     lodash.union "^4.6.0"
     mkdirp "^1.0.4"
     recursive-readdir "^2.2.2"
-    webdriverio "7.16.3"
+    webdriverio "7.16.4"
     yargs "^17.0.0"
     yarn-install "^1.0.0"
 
@@ -4519,7 +4519,7 @@ webdriverio@7.16.3:
     serialize-error "^8.0.0"
     webdriver "7.16.3"
 
-webdriverio@^7.0.9:
+webdriverio@7.16.4, webdriverio@^7.0.9:
   version "7.16.4"
   resolved "https://registry.yarnpkg.com/webdriverio/-/webdriverio-7.16.4.tgz#8fc907ed07694f57b435ec8480517d4a984b13f1"
   integrity sha512-DQH103SbY4gF6vxUIE2Q/BZfgqnQrf4/A47iPc48P76CKFjwHEX5Gyi07fVgwVVDNPTiHfiMBlR381rKAlj3Rw==
