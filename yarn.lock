@@ -718,9 +718,9 @@
     webdriverio "7.16.8"
 
 "@wdio/spec-reporter@^7.0.0":
-  version "7.16.4"
-  resolved "https://registry.yarnpkg.com/@wdio/spec-reporter/-/spec-reporter-7.16.4.tgz#90c9a3a6eb498ddf52eadb5e72572572d27a538e"
-  integrity sha512-AtGiHPecAo5QlhNhnxSSjoZpnaNQQ3apbTWAGmhQT+HTSfu/srgeCynI0LdiTLDhtQtDSL3oPOiuw7icViK/VQ==
+  version "7.16.9"
+  resolved "https://registry.yarnpkg.com/@wdio/spec-reporter/-/spec-reporter-7.16.9.tgz#ac674816cf9d58900377031e61eedcefd1369edb"
+  integrity sha512-iJ6II/58oCshs2h3HvQHTRcPZFLqfmHivXie09A4Uehs3axfPGyUpY/c4Nf/uz3qOVAgTalkRHONf6Hr/sOeZw==
   dependencies:
     "@types/easy-table" "^0.0.33"
     "@wdio/reporter" "7.16.3"
