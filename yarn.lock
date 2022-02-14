@@ -669,9 +669,9 @@
     strip-ansi "^6.0.0"
 
 "@wdio/mocha-framework@^7.0.7":
-  version "7.16.14"
-  resolved "https://registry.yarnpkg.com/@wdio/mocha-framework/-/mocha-framework-7.16.14.tgz#a7e406b58a73be2cd1ad7f02d4982113c6ff6687"
-  integrity sha512-NvhdOe8xliNq988ex/fT5jyMJOwibE4VA/7bUKcT+nUQPkQVtoLRiXXncUYvKi755qEY3Q+12GnGGDuIUMOY+w==
+  version "7.16.15"
+  resolved "https://registry.yarnpkg.com/@wdio/mocha-framework/-/mocha-framework-7.16.15.tgz#3eec88296ad637c3fc6a85ac8d37772b9c7f886b"
+  integrity sha512-XRya85/RYPZk4MZ7Cvl3oudTdrOo+RyO8b5Ff+dH8hD3GBCACaWgW9AjbsyhvbSTdUlF0gNLPdqOCsxV5XyM3w==
   dependencies:
     "@types/mocha" "^9.0.0"
     "@wdio/logger" "7.16.0"
