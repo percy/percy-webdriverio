@@ -666,15 +666,25 @@
     loglevel-plugin-prefix "^0.8.4"
     strip-ansi "^6.0.0"
 
+"@wdio/logger@7.19.0":
+  version "7.19.0"
+  resolved "https://registry.yarnpkg.com/@wdio/logger/-/logger-7.19.0.tgz#23697a4b4aaea56c3bd477a0393af2a5c175fc85"
+  integrity sha512-xR7SN/kGei1QJD1aagzxs3KMuzNxdT/7LYYx+lt6BII49+fqL/SO+5X0FDCZD0Ds93AuQvvz9eGyzrBI2FFXmQ==
+  dependencies:
+    chalk "^4.0.0"
+    loglevel "^1.6.0"
+    loglevel-plugin-prefix "^0.8.4"
+    strip-ansi "^6.0.0"
+
 "@wdio/mocha-framework@^7.0.7":
-  version "7.18.0"
-  resolved "https://registry.yarnpkg.com/@wdio/mocha-framework/-/mocha-framework-7.18.0.tgz#4b08da3649899d4db069ceb0ef1ff71b91adbd24"
-  integrity sha512-n1Nj6+rP0/i9eSq8E3z6X2K7mpVulGw558kiVoWl5nxhmvJOykLo3hsrt2aHaX+pjv4nFxh+BQ3f/iOL6B1TRg==
+  version "7.19.1"
+  resolved "https://registry.yarnpkg.com/@wdio/mocha-framework/-/mocha-framework-7.19.1.tgz#c2bd26eb661aa323ff28fbd2921841346962b838"
+  integrity sha512-cM4C8QuZpsAE5DK0kEJa81IIyrq2uJQ0RgyM6ef/BlldrdRzEF9dBE5bv3Ho60wvVd574HpNnicKjxcIjdQgug==
   dependencies:
     "@types/mocha" "^9.0.0"
-    "@wdio/logger" "7.17.3"
-    "@wdio/types" "7.18.0"
-    "@wdio/utils" "7.18.0"
+    "@wdio/logger" "7.19.0"
+    "@wdio/types" "7.19.1"
+    "@wdio/utils" "7.19.1"
     expect-webdriverio "^3.0.0"
     mocha "^9.0.0"
 
@@ -740,6 +750,14 @@
     "@types/node" "^17.0.4"
     got "^11.8.1"
 
+"@wdio/types@7.19.1":
+  version "7.19.1"
+  resolved "https://registry.yarnpkg.com/@wdio/types/-/types-7.19.1.tgz#9e7d67cb7b25876f26e20c7c22a8ce78fb294685"
+  integrity sha512-mOodKlmvYxpj8P5BhjggEGpXuiRSlsyn2ClG8QqJ3lfXgOtOVEzFNfv/Ai7TkHr+lHDQNXLjllCjSqoCHhwlqg==
+  dependencies:
+    "@types/node" "^17.0.4"
+    got "^11.8.1"
+
 "@wdio/utils@7.18.0":
   version "7.18.0"
   resolved "https://registry.yarnpkg.com/@wdio/utils/-/utils-7.18.0.tgz#743e5db774a564ebc0e8588a5ca4ae3bc4629ebc"
@@ -747,6 +765,15 @@
   dependencies:
     "@wdio/logger" "7.17.3"
     "@wdio/types" "7.18.0"
+    p-iteration "^1.1.8"
+
+"@wdio/utils@7.19.1":
+  version "7.19.1"
+  resolved "https://registry.yarnpkg.com/@wdio/utils/-/utils-7.19.1.tgz#e436959518e7effa1c2420bfc13793f94f6c2d28"
+  integrity sha512-Uynr6kUcXDjFqVlI7rgfcuUHGA7M1t+ICjc3R+Evr5cktBj2G8jb4S0SG0tGOPw9p7u5M49iyPy14oxTcb3aPw==
+  dependencies:
+    "@wdio/logger" "7.19.0"
+    "@wdio/types" "7.19.1"
     p-iteration "^1.1.8"
 
 acorn-jsx@^5.3.1:
