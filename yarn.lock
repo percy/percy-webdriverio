@@ -336,12 +336,17 @@
   resolved "https://registry.yarnpkg.com/@percy/logger/-/logger-1.0.0-beta.76.tgz#1a75c583670acc078389a43d8b7410fd655c0b92"
   integrity sha512-v5zIMNv1xqdcWBAOK5A6ZEO99ZBwzWS3phLEfkKbIlGIUxvjkJHSfZv/k1dnt2RRfpDNkM6X5pMg2yI8j1+d+g==
 
+"@percy/logger@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@percy/logger/-/logger-1.0.1.tgz#9fb7ad6d086f619faca1295651de93186e8a3392"
+  integrity sha512-M684ZsfnIsLSEaUp98X52wY82Hsc5FUWgZfAyTwOj/DYKaGyYHkx32MNA3LYTPZIXNnd2OxDj5LxsNPZFjXKig==
+
 "@percy/sdk-utils@~1.0.0-beta.44":
-  version "1.0.0-beta.76"
-  resolved "https://registry.yarnpkg.com/@percy/sdk-utils/-/sdk-utils-1.0.0-beta.76.tgz#71b4d7a7664b7029761aea5850295defeb134f98"
-  integrity sha512-5B070+VlTiCjxmwHU5Q8+ow1dGdmOkukY8TkSBkkbSs2OE4IPcYBlb+t/hGhpw7D34znPXc2dmUrZrbXwkRd2A==
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@percy/sdk-utils/-/sdk-utils-1.0.1.tgz#39170477d17b15b4377af30110db17ed44846bf8"
+  integrity sha512-MtuuvthLGuZIHnn+et4tUOz4KrjrIEaJuHvGqxSw8ygjyl2P/w8D60BlRQVyiAWuly6nzIhUgwyAvArx/tGNDQ==
   dependencies:
-    "@percy/logger" "1.0.0-beta.76"
+    "@percy/logger" "1.0.1"
 
 "@sindresorhus/is@^4.0.0":
   version "4.0.0"
@@ -687,14 +692,14 @@
     strip-ansi "^6.0.0"
 
 "@wdio/mocha-framework@^7.0.7":
-  version "7.19.1"
-  resolved "https://registry.yarnpkg.com/@wdio/mocha-framework/-/mocha-framework-7.19.1.tgz#c2bd26eb661aa323ff28fbd2921841346962b838"
-  integrity sha512-cM4C8QuZpsAE5DK0kEJa81IIyrq2uJQ0RgyM6ef/BlldrdRzEF9dBE5bv3Ho60wvVd574HpNnicKjxcIjdQgug==
+  version "7.19.3"
+  resolved "https://registry.yarnpkg.com/@wdio/mocha-framework/-/mocha-framework-7.19.3.tgz#db126c469ed4fabaae13517a7b9116829c816417"
+  integrity sha512-pT/mgvpFYG4R5QNu/pSdEP01Ae3A3Mt9R99GJcbl36lblvPOY7rRbCuyYEFINH5lQS7VAYk5aXXVVvNMQCrcgQ==
   dependencies:
     "@types/mocha" "^9.0.0"
     "@wdio/logger" "7.19.0"
     "@wdio/types" "7.19.1"
-    "@wdio/utils" "7.19.1"
+    "@wdio/utils" "7.19.3"
     expect-webdriverio "^3.0.0"
     mocha "^9.0.0"
 
@@ -793,6 +798,15 @@
   version "7.19.1"
   resolved "https://registry.yarnpkg.com/@wdio/utils/-/utils-7.19.1.tgz#e436959518e7effa1c2420bfc13793f94f6c2d28"
   integrity sha512-Uynr6kUcXDjFqVlI7rgfcuUHGA7M1t+ICjc3R+Evr5cktBj2G8jb4S0SG0tGOPw9p7u5M49iyPy14oxTcb3aPw==
+  dependencies:
+    "@wdio/logger" "7.19.0"
+    "@wdio/types" "7.19.1"
+    p-iteration "^1.1.8"
+
+"@wdio/utils@7.19.3":
+  version "7.19.3"
+  resolved "https://registry.yarnpkg.com/@wdio/utils/-/utils-7.19.3.tgz#1aa9e740d684bcc5f79d458a752fb738243bbf21"
+  integrity sha512-ZchrBeho8cj3lV6z44yiREJcEBm8Uw2mCX8o+P6YiSOrsnEdB9Oivo+6wkU8g9vI/7ZHIHps3w35P7sH9NryzA==
   dependencies:
     "@wdio/logger" "7.19.0"
     "@wdio/types" "7.19.1"
