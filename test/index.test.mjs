@@ -1,8 +1,9 @@
-const expect = require('expect');
-const helpers = require('@percy/sdk-utils/test/helpers');
+import expect from 'expect';
+import { helpers } from '@percy/sdk-utils/test/helpers';
+import percySnapshot from '../index.js';
 
 describe('percySnapshot', () => {
-  let percySnapshot, og;
+  let og;
 
   before(async () => {
     await helpers.mockSite();
@@ -17,8 +18,6 @@ describe('percySnapshot', () => {
     this.timeout(0);
     await helpers.setup();
     await browser.url('http://localhost:8000');
-    delete require.cache[require.resolve('..')];
-    percySnapshot = require('..');
   });
 
   afterEach(async () => {
