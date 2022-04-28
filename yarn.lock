@@ -607,9 +607,9 @@
   integrity sha512-sL/cEvJWAnClXw0wHk85/2L0G6Sj8UB0Ctc1TEMbKSsmpRosqhwj9gWgFRZSrBr2f9tiXISwNhCPmlfqUqyb9Q==
 
 "@wdio/cli@^7.0.8":
-  version "7.19.5"
-  resolved "https://registry.yarnpkg.com/@wdio/cli/-/cli-7.19.5.tgz#864809960ab6026d67aa070f79f0aea962db53e0"
-  integrity sha512-oy0OJOCd2Ksj7KmCtg9hFUgAUKzvHoDi8NJv3eEq7o//clAkDN5zQh+NqNe9nRtCfpoKNHRlZ4VBNzu8v5r9oA==
+  version "7.19.6"
+  resolved "https://registry.yarnpkg.com/@wdio/cli/-/cli-7.19.6.tgz#0b9054fba7f4161185ef80f20f259c9a45c3493a"
+  integrity sha512-lcHos0zyIQumdt+uzCbzVwJuzMyCI/Tv7nt6CcaJtIkpuut5WZ9H7V6IM3j1UYV0SEqz58KU+VPB82qazEP+YQ==
   dependencies:
     "@types/ejs" "^3.0.5"
     "@types/fs-extra" "^9.0.4"
