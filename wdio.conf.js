@@ -2,7 +2,7 @@ exports.config = {
   runner: 'local',
   framework: 'mocha',
   reporters: ['spec'],
-  specs: ['./test/*.test.mjs'],
+  specs: ['./test/*.test.js'],
 
   logLevel: 'silent',
   capabilities: [{

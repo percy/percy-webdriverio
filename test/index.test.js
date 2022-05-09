@@ -1,6 +1,6 @@
-import expect from 'expect';
-import { helpers } from '@percy/sdk-utils/test/helpers';
-import percySnapshot from '../index.js';
+const expect = require('expect');
+const helpers = require('@percy/sdk-utils/test/helpers');
+const percySnapshot = require('../index.js');
 
 describe('percySnapshot', () => {
   let og;
