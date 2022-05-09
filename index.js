@@ -1,3 +1,5 @@
+const utils = require('@percy/sdk-utils');
+
 // Collect client and environment information
 const sdkPkg = require('./package.json');
 const webdriverioPkg = require('webdriverio/package.json');
@@ -12,8 +14,6 @@ module.exports = function percySnapshot(b, name, options) {
   if (!name) throw new Error('The `name` argument is required.');
 
   return b.call(async () => {
-    let utils = await import('@percy/sdk-utils');
-
     if (!(await utils.isPercyEnabled())) return;
     let log = utils.logger('webdriverio');
 
