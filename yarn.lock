@@ -600,9 +600,9 @@
   integrity sha512-sL/cEvJWAnClXw0wHk85/2L0G6Sj8UB0Ctc1TEMbKSsmpRosqhwj9gWgFRZSrBr2f9tiXISwNhCPmlfqUqyb9Q==
 
 "@wdio/cli@^7.0.8":
-  version "7.20.1"
-  resolved "https://registry.yarnpkg.com/@wdio/cli/-/cli-7.20.1.tgz#b981e1d7d8a771b7848efa4274c4be795abfee80"
-  integrity sha512-DJj8mQ8/IRaKub5k8W6WjL/wrZqdDL9sjlN92vHRMr8MFprSoIGSu+hof/0qQhGGNho9g6VacIkguosBBS/6Ww==
+  version "7.20.2"
+  resolved "https://registry.yarnpkg.com/@wdio/cli/-/cli-7.20.2.tgz#eac754915f70e74c7c57ec0c01acfe68628e2c56"
+  integrity sha512-HgT3V8INy7Xe8ZdM7ZnMSAlsy19Mh9P7dmUwONWb2jPf2FNQAF75T5GVj4lQFwBaGP8TKhScYB5sU6phUDXnng==
   dependencies:
     "@types/ejs" "^3.0.5"
     "@types/fs-extra" "^9.0.4"
@@ -628,7 +628,7 @@
     lodash.union "^4.6.0"
     mkdirp "^1.0.4"
     recursive-readdir "^2.2.2"
-    webdriverio "7.20.1"
+    webdriverio "7.20.2"
     yargs "^17.0.0"
     yarn-install "^1.0.0"
 
