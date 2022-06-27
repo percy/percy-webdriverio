@@ -505,6 +505,11 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.8.tgz#50d680c8a8a78fe30abe6906453b21ad8ab0ad7b"
   integrity sha512-YofkM6fGv4gDJq78g4j0mMuGMkZVxZDgtU0JRdx6FgiJDG+0fY0GKVolOV8WqVmEhLCXkQRjwDdKyPxJp/uucg==
 
+"@types/node@^18.0.0":
+  version "18.0.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.0.0.tgz#67c7b724e1bcdd7a8821ce0d5ee184d3b4dd525a"
+  integrity sha512-cHlGmko4gWLVI27cGJntjs/Sj8th9aYwplmZFwmmgYQQvL5NUsgVJG7OddLvNfLqYS31KFN0s3qlaD9qCaxACA==
+
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/@types/normalize-package-data/-/normalize-package-data-2.4.0.tgz#e486d0d97396d79beedd0a6e33f4534ff6b4973e"
@@ -668,14 +673,14 @@
     strip-ansi "^6.0.0"
 
 "@wdio/mocha-framework@^7.0.7":
-  version "7.20.0"
-  resolved "https://registry.yarnpkg.com/@wdio/mocha-framework/-/mocha-framework-7.20.0.tgz#779e6ce2dc7efa905bc8562df92d79e4ec9bd3e6"
-  integrity sha512-wbRX5Z+jJP6rqXdoZrqx1qwnjSFL3JAsbjZ6/boIdvzvYlfSHVzi/sZr14SOH8ploHA4CEDPplKbaFQnNqVt2w==
+  version "7.20.3"
+  resolved "https://registry.yarnpkg.com/@wdio/mocha-framework/-/mocha-framework-7.20.3.tgz#328880e40432f37d17cad0da47b255b6fea27a2a"
+  integrity sha512-ZOY+MvOap8yrckRg86CIPu+H1ibSJp6nrKhkQqVsVUO/JLvUlVYUHJm8pVngrfbVtLljoldXuNdnnxm7oUNR9g==
   dependencies:
     "@types/mocha" "^9.0.0"
     "@wdio/logger" "7.19.0"
-    "@wdio/types" "7.20.0"
-    "@wdio/utils" "7.20.0"
+    "@wdio/types" "7.20.3"
+    "@wdio/utils" "7.20.3"
     expect-webdriverio "^3.0.0"
     mocha "^10.0.0"
 
@@ -741,6 +746,14 @@
     "@types/node" "^17.0.4"
     got "^11.8.1"
 
+"@wdio/types@7.20.3":
+  version "7.20.3"
+  resolved "https://registry.yarnpkg.com/@wdio/types/-/types-7.20.3.tgz#c8fab460b1ff75a698d17465af63753114c4281e"
+  integrity sha512-5q1urjM2Q1eYFZSxKO9Uhj86rt2NWS70c2rbbnKaB9oNNHUVtFFqSKNKAkJ84rNAfo/atWqWup7VSlg3BLrGNg==
+  dependencies:
+    "@types/node" "^18.0.0"
+    got "^11.8.1"
+
 "@wdio/utils@7.20.0":
   version "7.20.0"
   resolved "https://registry.yarnpkg.com/@wdio/utils/-/utils-7.20.0.tgz#a71d30e4781ec96f6f7a7e2045a8cd4ddb0f9a24"
@@ -748,6 +761,15 @@
   dependencies:
     "@wdio/logger" "7.19.0"
     "@wdio/types" "7.20.0"
+    p-iteration "^1.1.8"
+
+"@wdio/utils@7.20.3":
+  version "7.20.3"
+  resolved "https://registry.yarnpkg.com/@wdio/utils/-/utils-7.20.3.tgz#fb09866217a36bfededd5ba020522e4843ba211e"
+  integrity sha512-7huX4kusjr8ssN/lv0nN8nD4ZmuQ31bi+HOMdc9XI06NFQKNGfk2D1YoH1uNSd81OF6cSuPWfO9YRDmH1lvNLg==
+  dependencies:
+    "@wdio/logger" "7.19.0"
+    "@wdio/types" "7.20.3"
     p-iteration "^1.1.8"
 
 acorn-jsx@^5.3.1:
