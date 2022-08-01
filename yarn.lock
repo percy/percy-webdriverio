@@ -385,10 +385,12 @@
   resolved "https://registry.yarnpkg.com/@types/diff/-/diff-5.0.1.tgz#9c9b9a331d4e41ccccff553f5d7ef964c6cf4042"
   integrity sha512-XIpxU6Qdvp1ZE6Kr3yrkv1qgUab0fyf4mHYvW8N3Bx3PCsbN6or1q9/q72cv5jIFWolaGH08U9XyYoLLIykyKQ==
 
-"@types/easy-table@^0.0.33":
-  version "0.0.33"
-  resolved "https://registry.yarnpkg.com/@types/easy-table/-/easy-table-0.0.33.tgz#b1f7ec29014ec24906b4f28d8368e2e99b399313"
-  integrity sha512-/vvqcJPmZUfQwCgemL0/34G7bIQnCuvgls379ygRlcC1FqNqk3n+VZ15dAO51yl6JNDoWd8vsk+kT8zfZ1VZSw==
+"@types/easy-table@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@types/easy-table/-/easy-table-1.2.0.tgz#d7153551a2c3f6571dddff974b05aa2fb1a4a948"
+  integrity sha512-gVQkR2G/q6UK3wQT+waY9tCrbFauzMoBfJpMxHSuemHLQ8HpHdUIQ9YyRwYMfNX4CfoAoj/eJATyECGkFr65Pg==
+  dependencies:
+    easy-table "*"
 
 "@types/ejs@^3.0.5":
   version "3.0.5"
@@ -757,11 +759,11 @@
     webdriverio "7.20.9"
 
 "@wdio/spec-reporter@^7.0.0":
-  version "7.20.7"
-  resolved "https://registry.yarnpkg.com/@wdio/spec-reporter/-/spec-reporter-7.20.7.tgz#b5b42be9438b48855fb64468802f5c8843cad0bd"
-  integrity sha512-h5u/Zv+ImL7gIViuLP/p517aOK2CyE1m7wcbJmWHRVsKVsipc6OWVmfmjZr3zeM6zHtMmmeTJj3WIryY01UmoQ==
+  version "7.20.8"
+  resolved "https://registry.yarnpkg.com/@wdio/spec-reporter/-/spec-reporter-7.20.8.tgz#71485d1ae46f34e4fd56298080c8a4d68ecaee7d"
+  integrity sha512-/e9QsdrPnYUSEJM/mossPSJ01h6cy/1ePhJXWM7+1HBdN9+VycT7ilYQ7zKCAu9G6LRg70bx03Nm9ZbgT94YCQ==
   dependencies:
-    "@types/easy-table" "^0.0.33"
+    "@types/easy-table" "^1.2.0"
     "@wdio/reporter" "7.20.7"
     "@wdio/types" "7.20.7"
     chalk "^4.0.0"
@@ -868,11 +870,6 @@ ansi-regex@^2.0.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-2.1.1.tgz#c3b33ab5ee360d86e0e628f0468ae7ef27d654df"
   integrity sha1-w7M6te42DYbg5ijwRorn7yfWVN8=
-
-ansi-regex@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-3.0.0.tgz#ed0317c322064f79466c02966bddb605ab37d998"
-  integrity sha1-7QMXwyIGT3lGbAKWa922Bas32Zg=
 
 ansi-regex@^4.1.0:
   version "4.1.0"
@@ -1669,14 +1666,14 @@ doctrine@^3.0.0:
   dependencies:
     esutils "^2.0.2"
 
-easy-table@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/easy-table/-/easy-table-1.1.1.tgz#c1b9b9ad68a017091a1c235e4bcba277540e143f"
-  integrity sha512-C9Lvm0WFcn2RgxbMnTbXZenMIWcBtkzMr+dWqq/JsVoGFSVUVlPqeOa5LP5kM0I3zoOazFpckOEb2/0LDFfToQ==
+easy-table@*, easy-table@^1.1.1:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/easy-table/-/easy-table-1.2.0.tgz#ba9225d7138fee307bfd4f0b5bc3c04bdc7c54eb"
+  integrity sha512-OFzVOv03YpvtcWGe5AayU5G2hgybsg3iqA6drU8UaoZyB9jLGMTrz9+asnLp/E+6qPh88yEI1gvyZFZ41dmgww==
   dependencies:
-    ansi-regex "^3.0.0"
+    ansi-regex "^5.0.1"
   optionalDependencies:
-    wcwidth ">=1.0.1"
+    wcwidth "^1.0.1"
 
 edge-paths@^2.1.0:
   version "2.1.0"
@@ -4655,7 +4652,7 @@ validate-npm-package-license@^3.0.1:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
 
-wcwidth@>=1.0.1, wcwidth@^1.0.1:
+wcwidth@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/wcwidth/-/wcwidth-1.0.1.tgz#f0b0dcf915bc5ff1528afadb2c0e17b532da2fe8"
   integrity sha1-8LDc+RW8X/FSivrbLA4XtTLaL+g=
