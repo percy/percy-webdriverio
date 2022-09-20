@@ -1,4 +1,4 @@
 env:
-  mocha: true
+  jasmine: true
 globals:
   browser: writable

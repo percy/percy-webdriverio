@@ -1,6 +1,6 @@
 exports.config = {
   runner: 'local',
-  framework: 'mocha',
+  framework: 'jasmine',
   reporters: ['spec'],
   specs: ['./test/*.test.js'],
 
