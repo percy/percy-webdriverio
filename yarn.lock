@@ -707,15 +707,15 @@
     glob "^8.0.3"
 
 "@wdio/jasmine-framework@^7.24.0":
-  version "7.24.0"
-  resolved "https://registry.yarnpkg.com/@wdio/jasmine-framework/-/jasmine-framework-7.24.0.tgz#b2650a25b461df00217d094849f75d3d954f660b"
-  integrity sha512-TVXj+m7feScaeZbN17T63ZXF8nDhY0zEi4TSizM2Yi42cKsissQJ4JJ571oBChSqX3mslk9LQLrBpXyuLCIKKg==
+  version "7.25.0"
+  resolved "https://registry.yarnpkg.com/@wdio/jasmine-framework/-/jasmine-framework-7.25.0.tgz#495643fe10ab668826a534fa269066547fa7058c"
+  integrity sha512-/A9exSgl8gsmhp2FHVX06x/JqRA6TSTCG7nH4jarJANpRi9nWlm30sqpxzq1tcrva4TMpAhyHwDza1d3AMQ2Sw==
   dependencies:
     "@types/jasmine" "3.10.3"
     "@types/node" "^18.0.0"
     "@wdio/logger" "7.19.0"
-    "@wdio/types" "7.24.0"
-    "@wdio/utils" "7.24.0"
+    "@wdio/types" "7.25.0"
+    "@wdio/utils" "7.25.0"
     expect-webdriverio "^3.0.0"
     jasmine "3.10.0"
 
