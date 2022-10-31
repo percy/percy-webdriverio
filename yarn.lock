@@ -696,15 +696,15 @@
     glob "^8.0.3"
 
 "@wdio/jasmine-framework@^7.24.0":
-  version "7.25.1"
-  resolved "https://registry.yarnpkg.com/@wdio/jasmine-framework/-/jasmine-framework-7.25.1.tgz#6d3e2a796e133fd2a4efe459ef7f7ec58591b8c1"
-  integrity sha512-qj9UUAa6vzeolQaJ1v941774S/mSXe432rN5zKqkatXDBRDW+l1UDKd+5lX9CdMhDkDa2Heujo6QRFskVa5GGA==
+  version "7.25.4"
+  resolved "https://registry.yarnpkg.com/@wdio/jasmine-framework/-/jasmine-framework-7.25.4.tgz#9982c89cf953aba244bc8a99a1c4bb443b571566"
+  integrity sha512-/+9sd13tXmvJ4BNxqf1stTyUHZiYpRcFDgArctKTbbjk2acB5IEC6xAzJFNAvexlRHUtQQK6v+XuGIztKAd5hw==
   dependencies:
     "@types/jasmine" "3.10.3"
     "@types/node" "^18.0.0"
     "@wdio/logger" "7.19.0"
-    "@wdio/types" "7.25.1"
-    "@wdio/utils" "7.25.1"
+    "@wdio/types" "7.25.4"
+    "@wdio/utils" "7.25.4"
     expect-webdriverio "^3.0.0"
     jasmine "3.10.0"
 
@@ -794,6 +794,14 @@
     "@types/node" "^18.0.0"
     got "^11.8.1"
 
+"@wdio/types@7.25.4":
+  version "7.25.4"
+  resolved "https://registry.yarnpkg.com/@wdio/types/-/types-7.25.4.tgz#6f8f028e3108dc880de5068264695f1572e65352"
+  integrity sha512-muvNmq48QZCvocctnbe0URq2FjJjUPIG4iLoeMmyF0AQgdbjaUkMkw3BHYNHVTbSOU9WMsr2z8alhj/I2H6NRQ==
+  dependencies:
+    "@types/node" "^18.0.0"
+    got "^11.8.1"
+
 "@wdio/utils@7.25.1":
   version "7.25.1"
   resolved "https://registry.yarnpkg.com/@wdio/utils/-/utils-7.25.1.tgz#29bfe7e2dcd4f9b31868f069afa1eb761e96b8a7"
@@ -801,6 +809,15 @@
   dependencies:
     "@wdio/logger" "7.19.0"
     "@wdio/types" "7.25.1"
+    p-iteration "^1.1.8"
+
+"@wdio/utils@7.25.4":
+  version "7.25.4"
+  resolved "https://registry.yarnpkg.com/@wdio/utils/-/utils-7.25.4.tgz#ea8745a1fe4933f5fd0e2b80283043fd1a371cbd"
+  integrity sha512-8iwQDk+foUqSzKZKfhLxjlCKOkfRJPNHaezQoevNgnrTq/t0ek+ldZCATezb9B8jprAuP4mgS9xi22akc6RkzA==
+  dependencies:
+    "@wdio/logger" "7.19.0"
+    "@wdio/types" "7.25.4"
     p-iteration "^1.1.8"
 
 acorn-jsx@^5.3.1:
