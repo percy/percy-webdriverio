@@ -6,7 +6,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [14, 18]
+        node: [18]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -14,11 +14,9 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - name: Setup firefox nightly
+        # A hack to mock @wdio/runner in believing that we're using firefox nightly since it fails otherwise
         run: |
-          # A hack to mock @wdio/runner that we're using firefox nightly
-          # since it fails otherwise
           sudo cp /usr/bin/firefox /usr/bin/firefox-nightly
-          echo "**********"
           firefox-nightly --version
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -28,12 +26,5 @@ jobs:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: v1/${{ runner.os }}/node-${{ matrix.node }}/${{ hashFiles('**/yarn.lock') }}
           restore-keys: v1/${{ runner.os }}/node-${{ matrix.node }}/
-      # we'll run wdio v7 on node 14
-      - name: setup wdio v7
-        run: |
-          jq -s '.[0] * .[1]' package.json package.v7-diff.json > package.v7.json
-          mv package.v7.json package.json
-          mv yarn.v7.lock yarn.lock
-        if: ${{ matrix.node == 14 }}
       - run: yarn
       - run: yarn test:coverage
