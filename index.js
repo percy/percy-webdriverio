@@ -2,7 +2,8 @@ const utils = require('@percy/sdk-utils');
 
 // Collect client and environment information
 const sdkPkg = require('./package.json');
-const webdriverioPkg = require('webdriverio/package.json');
+// use absolute path to fetch package.json information from v6/v7/v8 webdriverio
+const webdriverioPkg = require(require.resolve('webdriverio').replace(/build\/.*/, 'package.json'));
 const CLIENT_INFO = `${sdkPkg.name}/${sdkPkg.version}`;
 const ENV_INFO = `${webdriverioPkg.name}/${webdriverioPkg.version}`;
 
