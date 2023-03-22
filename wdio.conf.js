@@ -3,6 +3,7 @@ exports.config = {
   framework: 'jasmine',
   reporters: ['spec'],
   specs: ['./test/*.test.js'],
+
   logLevel: 'silent',
   capabilities: [{
     maxInstances: 5,

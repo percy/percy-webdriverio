@@ -29,7 +29,7 @@
     "@percy/sdk-utils": "^1.0.0"
   },
   "peerDependencies": {
-    "webdriverio": "~6 || ~7 || ~8"
+    "webdriverio": "~6 || ~7"
   },
   "devDependencies": {
     "@percy/cli": "^1.10.4",
@@ -49,6 +49,6 @@
     "ts-node": "^9.1.1",
     "tsd": "^0.24.1",
     "typescript": "^4.2.3",
-    "webdriverio": "^8.6.0"
+    "webdriverio": "^7.0.9"
   }
 }

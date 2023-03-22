@@ -1,4 +1,4 @@
-/// <reference types="webdriverio" />
+/// <reference types="webdriverio/sync" />
 import { expectType, expectError } from 'tsd';
 import percySnapshot from '.';
 
