@@ -20,6 +20,11 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
+      - name: Setup firefox nightly
+        # A hack to mock @wdio/runner in believing that we're using firefox nightly since it fails otherwise
+        run: |
+          sudo cp /usr/bin/firefox /usr/bin/firefox-nightly
+          firefox-nightly --version
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
