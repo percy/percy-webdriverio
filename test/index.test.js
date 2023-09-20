@@ -41,6 +41,9 @@ describe('percySnapshot', () => {
     await percySnapshot('Snapshot 1');
     await percySnapshot('Snapshot 2');
 
+    expect(helpers.logger.stderr).toEqual(jasmine.arrayContaining([
+      '[percy] For using webdriver io with percy on automate session please use https://github.com/percy/percy-selenium-js/ or https://github.com/percy/percy-appium-js/'
+    ]));
     expect(await helpers.get('logs')).toEqual(jasmine.arrayContaining([
       'Snapshot found: Snapshot 1',
       'Snapshot found: Snapshot 2',
