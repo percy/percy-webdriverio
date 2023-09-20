@@ -17,6 +17,7 @@ module.exports = function percySnapshot(b, name, options) {
   return b.call(async () => {
     if (!(await utils.isPercyEnabled())) return;
     let log = utils.logger('webdriverio');
+    log.warn("For using webdriver io with percy on automate session please use https://github.com/percy/percy-selenium-js/ or https://github.com/percy/percy-appium-js/")
 
     try {
       // Inject the DOM serialization script
