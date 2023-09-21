@@ -1,4 +1,5 @@
 const helpers = require('@percy/sdk-utils/test/helpers');
+const utils = require('@percy/sdk-utils');
 const percySnapshot = require('../index.js');
 
 describe('percySnapshot', () => {
@@ -41,9 +42,6 @@ describe('percySnapshot', () => {
     await percySnapshot('Snapshot 1');
     await percySnapshot('Snapshot 2');
 
-    expect(helpers.logger.stderr).toEqual(jasmine.arrayContaining([
-      '[percy] For using webdriver io with percy on automate session please use https://github.com/percy/percy-selenium-js/ or https://github.com/percy/percy-appium-js/'
-    ]));
     expect(await helpers.get('logs')).toEqual(jasmine.arrayContaining([
       'Snapshot found: Snapshot 1',
       'Snapshot found: Snapshot 2',
@@ -83,5 +81,18 @@ describe('percySnapshot', () => {
 
     expect(() => percySnapshot())
       .toThrowError('The WebdriverIO `browser` object is required.');
+  });
+
+  it('throws error for percy on automate session', async () => {
+    spyOn(percySnapshot, 'isPercyEnabled').and.returnValue(Promise.resolve(true));
+    utils.percy.type = 'automate';
+
+    let error = null;
+    try {
+      await percySnapshot('Snapshot 2');
+    } catch (e) {
+      error = e.message;
+    }
+    expect(error).toEqual('You are using Percy on Automate session with WebdriverIO. For using WebdriverIO correctly, please use https://github.com/percy/percy-selenium-js/ or https://github.com/percy/percy-appium-js/');
   });
 });

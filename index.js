@@ -15,9 +15,11 @@ module.exports = function percySnapshot(b, name, options) {
   if (!name) throw new Error('The `name` argument is required.');
 
   return b.call(async () => {
-    if (!(await utils.isPercyEnabled())) return;
+    if (!(await module.exports.isPercyEnabled())) return;
     let log = utils.logger('webdriverio');
-    log.warn('For using webdriver io with percy on automate session please use https://github.com/percy/percy-selenium-js/ or https://github.com/percy/percy-appium-js/');
+    if (utils.percy?.type === 'automate') {
+      throw new Error('You are using Percy on Automate session with WebdriverIO. For using WebdriverIO correctly, please use https://github.com/percy/percy-selenium-js/ or https://github.com/percy/percy-appium-js/');
+    }
 
     try {
       // Inject the DOM serialization script
@@ -46,4 +48,10 @@ module.exports = function percySnapshot(b, name, options) {
       log.error(error);
     }
   });
+};
+
+// jasmine cannot mock individual functions, hence adding isPercyEnabled to the exports object
+// also need to define this at the end of the file or else default exports will over-ride this
+module.exports.isPercyEnabled = async function isPercyEnabled(driver) {
+  return await utils.isPercyEnabled();
 };
