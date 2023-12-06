@@ -1,5 +1,4 @@
 const utils = require('@percy/sdk-utils');
-const path = require('path');
 
 // Collect client and environment information
 const sdkPkg = require('./package.json');
