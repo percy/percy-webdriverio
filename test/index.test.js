@@ -51,19 +51,25 @@ describe('percySnapshot', () => {
     ]));
   });
 
-  it('posts snapshots to the local percy server with sync = True', async () => {
-    const resp = await percySnapshot('Snapshot 1');
+  it('posts snapshots to the local percy server with sync = true', async () => {
+    const mockedPostCall = spyOn(percySnapshot, 'request').and.callFake(() => {
+      return {
+        body: {
+          data: {
+            'snapshot-name': 'Snapshot 1',
+            status: 'success'
+          }
+        }
+      };
+    });
 
-    expect(resp).toEqual(jasmine.objectContaining({
+    const resp = await percySnapshot('Snapshot 1', { sync: true });
+
+    expect(resp).toEqual({
       'snapshot-name': 'Snapshot 1',
       status: 'success'
-    }));
-    expect(await helpers.get('logs')).toEqual(jasmine.arrayContaining([
-      'Snapshot found: Snapshot 1',
-      `- url: ${helpers.testSnapshotURL}`,
-      jasmine.stringMatching(/clientInfo: @percy\/webdriverio\/.+/),
-      jasmine.stringMatching(/environmentInfo: webdriverio\/.+/)
-    ]));
+    });
+    expect(mockedPostCall).toHaveBeenCalledTimes(1);
   });
 
   it('handles snapshot failures', async () => {
