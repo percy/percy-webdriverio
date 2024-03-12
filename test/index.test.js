@@ -51,6 +51,21 @@ describe('percySnapshot', () => {
     ]));
   });
 
+  it('posts snapshots to the local percy server with sync = True', async () => {
+    const resp = await percySnapshot('Snapshot 1');
+
+    expect(resp).toEqual(jasmine.objectContaining({
+      'snapshot-name': 'Snapshot 1',
+      status: 'success'
+    }));
+    expect(await helpers.get('logs')).toEqual(jasmine.arrayContaining([
+      'Snapshot found: Snapshot 1',
+      `- url: ${helpers.testSnapshotURL}`,
+      jasmine.stringMatching(/clientInfo: @percy\/webdriverio\/.+/),
+      jasmine.stringMatching(/environmentInfo: webdriverio\/.+/)
+    ]));
+  });
+
   it('handles snapshot failures', async () => {
     await helpers.test('error', '/percy/snapshot');
 

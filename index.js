@@ -33,7 +33,7 @@ module.exports = function percySnapshot(b, name, options) {
       }), options);
 
       // Post the DOM to the snapshot endpoint with snapshot options and other info
-      await utils.postSnapshot({
+      const response = await utils.postSnapshot({
         ...options,
         environmentInfo: ENV_INFO,
         clientInfo: CLIENT_INFO,
@@ -41,6 +41,7 @@ module.exports = function percySnapshot(b, name, options) {
         name,
         url
       });
+      return response?.body?.data;
     } catch (error) {
       // Handle errors
       log.error(`Could not take DOM snapshot "${name}"`);
