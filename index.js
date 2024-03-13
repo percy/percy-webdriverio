@@ -33,7 +33,7 @@ module.exports = function percySnapshot(b, name, options) {
       }), options);
 
       // Post the DOM to the snapshot endpoint with snapshot options and other info
-      await utils.postSnapshot({
+      const response = await module.exports.request({
         ...options,
         environmentInfo: ENV_INFO,
         clientInfo: CLIENT_INFO,
@@ -41,12 +41,18 @@ module.exports = function percySnapshot(b, name, options) {
         name,
         url
       });
+      return response?.body?.data;
     } catch (error) {
       // Handle errors
       log.error(`Could not take DOM snapshot "${name}"`);
       log.error(error);
     }
   });
+};
+
+// To mock the test case
+module.exports.request = async function request(data) {
+  return await utils.postSnapshot(data);
 };
 
 // jasmine cannot mock individual functions, hence adding isPercyEnabled to the exports object

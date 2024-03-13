@@ -26,13 +26,13 @@
     "test:types": "tsd"
   },
   "dependencies": {
-    "@percy/sdk-utils": "^1.0.0"
+    "@percy/sdk-utils": "^1.28.1"
   },
   "peerDependencies": {
     "webdriverio": "~6 || ~7 || ^8.6.6"
   },
   "devDependencies": {
-    "@percy/cli": "^1.10.4",
+    "@percy/cli": "^1.28.1",
     "@wdio/cli": "^7.0.8",
     "@wdio/jasmine-framework": "^7.24.0",
     "@wdio/local-runner": "^7.0.0",

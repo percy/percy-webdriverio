@@ -51,6 +51,27 @@ describe('percySnapshot', () => {
     ]));
   });
 
+  it('posts snapshots to the local percy server with sync = true', async () => {
+    const mockedPostCall = spyOn(percySnapshot, 'request').and.callFake(() => {
+      return {
+        body: {
+          data: {
+            'snapshot-name': 'Snapshot 1',
+            status: 'success'
+          }
+        }
+      };
+    });
+
+    const resp = await percySnapshot('Snapshot 1', { sync: true });
+
+    expect(resp).toEqual({
+      'snapshot-name': 'Snapshot 1',
+      status: 'success'
+    });
+    expect(mockedPostCall).toHaveBeenCalledTimes(1);
+  });
+
   it('handles snapshot failures', async () => {
     await helpers.test('error', '/percy/snapshot');
 
