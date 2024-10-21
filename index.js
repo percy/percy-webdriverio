@@ -14,6 +14,9 @@ try {
 
     webdriverioPkg = require(`${webdriverioDir}/../package.json`);
   } catch {
+    // next is only fallback if everything else fails just to make sure that version info
+    // is not the reason why we break
+    /* istanbul ignore next */
     webdriverioPkg = {
       name: 'unknown-webdriverio',
       version: 'unknown'
