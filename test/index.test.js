@@ -69,6 +69,7 @@ describe('percySnapshot', () => {
       'snapshot-name': 'Snapshot 1',
       status: 'success'
     });
+
     expect(mockedPostCall).toHaveBeenCalledTimes(1);
   });
 
@@ -105,7 +106,7 @@ describe('percySnapshot', () => {
   });
 
   it('throws error for percy on automate session', async () => {
-    spyOn(percySnapshot, 'isPercyEnabled').and.returnValue(Promise.resolve(true));
+    spyOn(percySnapshot, 'isPercyEnabled').and.resolveTo(true);
     utils.percy.type = 'automate';
 
     let error = null;
@@ -114,6 +115,7 @@ describe('percySnapshot', () => {
     } catch (e) {
       error = e.message;
     }
+
     expect(error).toEqual('You are using Percy on Automate session with WebdriverIO. For using WebdriverIO correctly, please use https://github.com/percy/percy-selenium-js/ or https://github.com/percy/percy-appium-js/');
   });
 });

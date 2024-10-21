@@ -48,7 +48,6 @@ module.exports = function percySnapshot(b, name, options) {
       // Serialize and capture the DOM
       /* istanbul ignore next: no instrumenting injected code */
       let { domSnapshot, url } = await b.execute(options => ({
-        /* eslint-disable-next-line no-undef */
         domSnapshot: PercyDOM.serialize(options),
         url: document.URL
       }), options);
@@ -78,6 +77,6 @@ module.exports.request = async function request(data) {
 
 // jasmine cannot mock individual functions, hence adding isPercyEnabled to the exports object
 // also need to define this at the end of the file or else default exports will over-ride this
-module.exports.isPercyEnabled = async function isPercyEnabled(driver) {
+module.exports.isPercyEnabled = async function isPercyEnabled() {
   return await utils.isPercyEnabled();
 };
