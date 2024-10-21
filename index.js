@@ -2,7 +2,25 @@ const utils = require('@percy/sdk-utils');
 
 // Collect client and environment information
 const sdkPkg = require('./package.json');
-const webdriverioPkg = require('webdriverio/package.json');
+
+let webdriverioPkg = null;
+try {
+  webdriverioPkg = require('webdriverio/package.json');
+} catch {
+  try {
+    // this handles webdriverio 9
+    const path = require('path');
+    const webdriverioDir = path.dirname(require.resolve('webdriverio'));
+
+    webdriverioPkg = require(`${webdriverioDir}/../package.json`);
+  } catch {
+    webdriverioPkg = {
+      name: 'unknown-webdriverio',
+      version: 'unknown'
+    };
+  }
+}
+
 const CLIENT_INFO = `${sdkPkg.name}/${sdkPkg.version}`;
 const ENV_INFO = `${webdriverioPkg.name}/${webdriverioPkg.version}`;
 
