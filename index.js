@@ -42,15 +42,32 @@ module.exports = function percySnapshot(b, name, options) {
     }
 
     try {
-      // Inject the DOM serialization script
-      await b.execute(await utils.fetchPercyDOM());
+      tryCount = 3;
+      injectedScript = false;
+      let { domSnapshot, url } = {};
+      while(tryCount) {
+        try {
+          if (!injectedScript) {
+            // Inject the DOM serialization script
+            await b.execute(await utils.fetchPercyDOM());
+            injectedScript = true;
+          }
 
-      // Serialize and capture the DOM
-      /* istanbul ignore next: no instrumenting injected code */
-      let { domSnapshot, url } = await b.execute(options => ({
-        domSnapshot: PercyDOM.serialize(options),
-        url: document.URL
-      }), options);
+          // Serialize and capture the DOM
+          /* istanbul ignore next: no instrumenting injected code */
+          ({ domSnapshot, url } = await b.execute(options => ({
+            domSnapshot: PercyDOM.serialize(options),
+            url: document.URL
+          }), options));
+          break;
+        } catch (e) {
+          tryCount -= 1;
+          if (tryCount === 0) throw e;
+
+          log.warn(`Could not take DOM snapshot "${name}", Retrying...`);
+          log.warn(e.message);
+        }
+      }
 
       // Post the DOM to the snapshot endpoint with snapshot options and other info
       const response = await module.exports.request({

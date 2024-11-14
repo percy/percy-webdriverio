@@ -4,6 +4,21 @@ const percySnapshot = require('../index.js');
 
 describe('percySnapshot', () => {
   let og;
+  let executeErrorsAfter = 0;
+  let executeErrors = 0;
+
+  beforeAll(async function() {
+    // mock execute to return errors when we need
+    await browser.overwriteCommand('execute', (orig, ...args) => {
+      if (executeErrorsAfter > 0) {
+        executeErrorsAfter -= 1;
+      } else if (executeErrors > 0) {
+        executeErrors -= 1;
+        throw new Error("Something went wrong");
+      }
+      return orig(...args);
+    })
+  })
 
   beforeEach(async function() {
     og = browser;
@@ -11,8 +26,10 @@ describe('percySnapshot', () => {
     await browser.url(helpers.testSnapshotURL);
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     browser = og;
+    executeErrorsAfter = 0;
+    executeErrors = 0;
   });
 
   it('throws an error when the browser object is missing', () => {
@@ -49,6 +66,63 @@ describe('percySnapshot', () => {
       jasmine.stringMatching(/clientInfo: @percy\/webdriverio\/.+/),
       jasmine.stringMatching(/environmentInfo: webdriverio\/.+/)
     ]));
+  });
+
+  it('retying dom capture if it throws exception', async () => {
+    executeErrors = 2;
+
+    await percySnapshot('Snapshot 1');
+
+    expect(helpers.logger.stderr).toEqual([
+      '[percy] Could not take DOM snapshot "Snapshot 1", Retrying...',
+      '[percy] Something went wrong',
+      '[percy] Could not take DOM snapshot "Snapshot 1", Retrying...',
+      '[percy] Something went wrong',
+    ])
+
+    expect(await helpers.get('logs')).toEqual(jasmine.arrayContaining([
+      'Snapshot found: Snapshot 1',
+      `- url: ${helpers.testSnapshotURL}`,
+      jasmine.stringMatching(/clientInfo: @percy\/webdriverio\/.+/),
+      jasmine.stringMatching(/environmentInfo: webdriverio\/.+/)
+    ]));
+  });
+
+  it('does not inject dom script multiple times in retry on success', async () => {
+    executeErrorsAfter = 1;
+    executeErrors = 2;
+
+    await percySnapshot('Snapshot 1');
+
+    expect(helpers.logger.stderr).toEqual([
+      '[percy] Could not take DOM snapshot "Snapshot 1", Retrying...',
+      '[percy] Something went wrong',
+      '[percy] Could not take DOM snapshot "Snapshot 1", Retrying...',
+      '[percy] Something went wrong',
+    ])
+
+    expect(await helpers.get('logs')).toEqual(jasmine.arrayContaining([
+      'Snapshot found: Snapshot 1',
+      `- url: ${helpers.testSnapshotURL}`,
+      jasmine.stringMatching(/clientInfo: @percy\/webdriverio\/.+/),
+      jasmine.stringMatching(/environmentInfo: webdriverio\/.+/)
+    ]));
+  });
+
+  it('retying dom capture throws if all retries exhausted', async () => {
+      executeErrors = 10;
+      await percySnapshot('Snapshot 1');
+
+      expect(helpers.logger.stderr).toEqual([
+        '[percy] Could not take DOM snapshot "Snapshot 1", Retrying...',
+        '[percy] Something went wrong',
+        '[percy] Could not take DOM snapshot "Snapshot 1", Retrying...',
+        '[percy] Something went wrong',
+        '[percy] Could not take DOM snapshot "Snapshot 1"',
+        '[percy] Error: Something went wrong'
+      ])
+
+      expect(helpers.logger.stdout).toEqual([]);
   });
 
   it('posts snapshots to the local percy server with sync = true', async () => {
