@@ -74,9 +74,9 @@ describe('percySnapshot', () => {
     await percySnapshot('Snapshot 1');
 
     expect(helpers.logger.stderr).toEqual([
-      '[percy] Could not take DOM snapshot "Snapshot 1", Retrying...',
+      '[percy] Could not take DOM snapshot "Snapshot 1" injectedScript: false, capturedDOM: false, Retrying...',
       '[percy] Something went wrong',
-      '[percy] Could not take DOM snapshot "Snapshot 1", Retrying...',
+      '[percy] Could not take DOM snapshot "Snapshot 1" injectedScript: false, capturedDOM: false, Retrying...',
       '[percy] Something went wrong',
     ])
 
@@ -95,9 +95,9 @@ describe('percySnapshot', () => {
     await percySnapshot('Snapshot 1');
 
     expect(helpers.logger.stderr).toEqual([
-      '[percy] Could not take DOM snapshot "Snapshot 1", Retrying...',
+      '[percy] Could not take DOM snapshot "Snapshot 1" injectedScript: true, capturedDOM: false, Retrying...',
       '[percy] Something went wrong',
-      '[percy] Could not take DOM snapshot "Snapshot 1", Retrying...',
+      '[percy] Could not take DOM snapshot "Snapshot 1" injectedScript: true, capturedDOM: false, Retrying...',
       '[percy] Something went wrong',
     ])
 
@@ -109,14 +109,29 @@ describe('percySnapshot', () => {
     ]));
   });
 
+  it('does not capture dom multiple times in retry on success', async () => {
+    await helpers.test('error', '/percy/snapshot');
+
+    await percySnapshot('Snapshot 1');
+
+    expect(helpers.logger.stderr).toEqual([
+      '[percy] Could not take DOM snapshot "Snapshot 1" injectedScript: true, capturedDOM: true, Retrying...',
+      '[percy] testing',
+      '[percy] Could not take DOM snapshot "Snapshot 1" injectedScript: true, capturedDOM: true, Retrying...',
+      '[percy] testing',
+      '[percy] Could not take DOM snapshot "Snapshot 1"',
+      '[percy] Error: testing'
+    ])
+  });
+
   it('retying dom capture throws if all retries exhausted', async () => {
       executeErrors = 10;
       await percySnapshot('Snapshot 1');
 
       expect(helpers.logger.stderr).toEqual([
-        '[percy] Could not take DOM snapshot "Snapshot 1", Retrying...',
+        '[percy] Could not take DOM snapshot "Snapshot 1" injectedScript: false, capturedDOM: false, Retrying...',
         '[percy] Something went wrong',
-        '[percy] Could not take DOM snapshot "Snapshot 1", Retrying...',
+        '[percy] Could not take DOM snapshot "Snapshot 1" injectedScript: false, capturedDOM: false, Retrying...',
         '[percy] Something went wrong',
         '[percy] Could not take DOM snapshot "Snapshot 1"',
         '[percy] Error: Something went wrong'
