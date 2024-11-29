@@ -1147,15 +1147,15 @@
     webdriverio "9.4.1"
 
 "@wdio/jasmine-framework@^9.2.1":
-  version "9.2.1"
-  resolved "https://registry.yarnpkg.com/@wdio/jasmine-framework/-/jasmine-framework-9.2.1.tgz#dad94df3af24ad9b3975071215091077d76ace82"
-  integrity sha512-I6qih7nbGlU/5NskyknYRd1fMSwKaentBuZVrMIjHIg+OB0d8C9FF/pxlipJVPK1fuFADvxEoJIkOF4uB7I1ZA==
+  version "9.4.1"
+  resolved "https://registry.yarnpkg.com/@wdio/jasmine-framework/-/jasmine-framework-9.4.1.tgz#6b5bb86c9349b79daec5f5774c1067c645aee278"
+  integrity sha512-N2X8MfsfX8JemD4DQwvSksXmBzYZxCKwuB7LaBiw+hH2YuFu+0L2ekR0Xvwtr8SpiENVEHAoiNFEj4i9dMTqlA==
   dependencies:
     "@types/node" "^20.1.0"
-    "@wdio/globals" "9.2.1"
+    "@wdio/globals" "9.4.1"
     "@wdio/logger" "9.1.3"
-    "@wdio/types" "9.1.3"
-    "@wdio/utils" "9.1.3"
+    "@wdio/types" "9.2.2"
+    "@wdio/utils" "9.2.8"
     expect-webdriverio "^5.0.1"
     jasmine "^5.0.0"
 
