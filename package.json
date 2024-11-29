@@ -1,7 +1,7 @@
 {
   "name": "@percy/webdriverio",
   "description": "WebdriverIO client library for visual testing with Percy",
-  "version": "3.2.0",
+  "version": "3.3.0-alpha.2",
   "license": "MIT",
   "author": "Perceptual Inc.",
   "repository": "https://github.com/percy/percy-webdriverio",
@@ -10,6 +10,10 @@
     "percy",
     "visual testing"
   ],
+  "publishConfig": {
+    "access": "public",
+    "tag": "alpha"
+  },
   "main": "index.js",
   "types": "types/index.d.ts",
   "files": [

@@ -44,6 +44,7 @@ module.exports = function percySnapshot(b, name, options) {
     let tryCount = 3;
     let injectedScript = false;
     let capturedDOM = false;
+    let request = {};
     let { domSnapshot, url } = {};
     while(tryCount) {
       try {
@@ -64,14 +65,15 @@ module.exports = function percySnapshot(b, name, options) {
         }
         
         // Post the DOM to the snapshot endpoint with snapshot options and other info
-        const response = await module.exports.request({
+        request = {
           ...options,
           environmentInfo: ENV_INFO,
           clientInfo: CLIENT_INFO,
           domSnapshot,
           name,
           url
-        });
+        };
+        const response = await module.exports.request(request);
         return response?.body?.data;
       } catch (e) {
         tryCount -= 1;
@@ -84,6 +86,7 @@ module.exports = function percySnapshot(b, name, options) {
 
         log.warn(`Could not take DOM snapshot "${name}" injectedScript: ${injectedScript}, capturedDOM: ${capturedDOM}, Retrying...`);
         log.warn(e.message);
+        log.warn(JSON.stringify(request))
       }
     }
   });
