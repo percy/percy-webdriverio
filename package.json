@@ -45,7 +45,7 @@
     "eslint-plugin-promise": "^7.1.0",
     "eslint-plugin-standard": "^5.0.0",
     "eslint-plugin-jasmine": "^4.2.2",
-    "geckodriver": "^3.0.1",
+    "geckodriver": "^5.0.0",
     "globals": "^15.11.0",
     "jasmine": "^5.4.0",
     "nyc": "^17.1.0",
