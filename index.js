@@ -47,8 +47,8 @@ module.exports = function percySnapshot(b, name, options) {
 
       // Serialize and capture the DOM
       /* istanbul ignore next: no instrumenting injected code */
-      let { domSnapshot, url } = await b.execute(options => ({
-        domSnapshot: PercyDOM.serialize(options),
+      let { domSnapshot, url } = await b.execute(async (options) => ({
+        domSnapshot: await PercyDOM.serialize(options),
         url: document.URL
       }), options);
 
