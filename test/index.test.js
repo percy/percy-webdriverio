@@ -118,4 +118,41 @@ describe('percySnapshot', () => {
 
     expect(error).toEqual('You are using Percy on Automate session with WebdriverIO. For using WebdriverIO correctly, please use https://github.com/percy/percy-selenium-js/ or https://github.com/percy/percy-appium-js/');
   });
+
+  it('passes options to the DOM serialization and captures domSnapshot and url', async () => {
+    const requestSpy = spyOn(percySnapshot, 'request').and.callThrough();
+
+    const snapshotOptions = {
+      enableJavaScript: true,
+      widths: [375, 1280],
+      minHeight: 1024,
+      percyCSS: '.custom { display: none; }'
+    };
+
+    await percySnapshot('Snapshot with options', snapshotOptions);
+
+    // Verify the request was called with the snapshot data
+    expect(requestSpy).toHaveBeenCalledTimes(1);
+    
+    const callArgs = requestSpy.calls.mostRecent().args[0];
+    
+    // Verify that domSnapshot was captured
+    expect(callArgs.domSnapshot).toBeDefined();
+    
+    // Verify that url was captured
+    expect(callArgs.url).toBeDefined();
+    expect(callArgs.url).toBe(helpers.testSnapshotURL);
+    
+    // Verify that options were passed through
+    expect(callArgs.enableJavaScript).toBe(true);
+    expect(callArgs.widths).toEqual([375, 1280]);
+    expect(callArgs.minHeight).toBe(1024);
+    expect(callArgs.percyCSS).toBe('.custom { display: none; }');
+    expect(callArgs.name).toBe('Snapshot with options');
+
+    // Verify the snapshot was posted successfully
+    expect(await helpers.get('logs')).toEqual(jasmine.arrayContaining([
+      'Snapshot found: Snapshot with options'
+    ]));
+  });
 });
