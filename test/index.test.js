@@ -133,16 +133,16 @@ describe('percySnapshot', () => {
 
     // Verify the request was called with the snapshot data
     expect(requestSpy).toHaveBeenCalledTimes(1);
-    
+
     const callArgs = requestSpy.calls.mostRecent().args[0];
-    
+
     // Verify that domSnapshot was captured
     expect(callArgs.domSnapshot).toBeDefined();
-    
+
     // Verify that url was captured
     expect(callArgs.url).toBeDefined();
     expect(callArgs.url).toBe(helpers.testSnapshotURL);
-    
+
     // Verify that options were passed through
     expect(callArgs.enableJavaScript).toBe(true);
     expect(callArgs.widths).toEqual([375, 1280]);
@@ -154,5 +154,87 @@ describe('percySnapshot', () => {
     expect(await helpers.get('logs')).toEqual(jasmine.arrayContaining([
       'Snapshot found: Snapshot with options'
     ]));
+  });
+
+  it('does not include corsIframes when page has no iframes', async () => {
+    const requestSpy = spyOn(percySnapshot, 'request').and.callThrough();
+
+    await percySnapshot('No Iframes Snapshot');
+
+    expect(requestSpy).toHaveBeenCalledTimes(1);
+    const callArgs = requestSpy.calls.mostRecent().args[0];
+
+    expect(callArgs.domSnapshot).toBeDefined();
+    expect(callArgs.domSnapshot.corsIframes).toBeUndefined();
+  });
+});
+
+describe('isUnsupportedIframeSrc', () => {
+  const { isUnsupportedIframeSrc } = require('../index.js');
+
+  it('returns true for null/undefined/empty src', () => {
+    expect(isUnsupportedIframeSrc(null)).toBe(true);
+    expect(isUnsupportedIframeSrc(undefined)).toBe(true);
+    expect(isUnsupportedIframeSrc('')).toBe(true);
+  });
+
+  it('returns true for about:blank', () => {
+    expect(isUnsupportedIframeSrc('about:blank')).toBe(true);
+  });
+
+  it('returns true for about:srcdoc', () => {
+    expect(isUnsupportedIframeSrc('about:srcdoc')).toBe(true);
+  });
+
+  it('returns true for javascript: URLs', () => {
+    expect(isUnsupportedIframeSrc('javascript:void(0)')).toBe(true);
+  });
+
+  it('returns true for data: URLs', () => {
+    expect(isUnsupportedIframeSrc('data:text/html,<h1>Test</h1>')).toBe(true);
+  });
+
+  it('returns true for blob: URLs', () => {
+    expect(isUnsupportedIframeSrc('blob:http://example.com/abc')).toBe(true);
+  });
+
+  it('returns true for vbscript: URLs', () => {
+    expect(isUnsupportedIframeSrc('vbscript:msgbox')).toBe(true);
+  });
+
+  it('returns true for chrome: URLs', () => {
+    expect(isUnsupportedIframeSrc('chrome://settings')).toBe(true);
+  });
+
+  it('returns true for chrome-extension: URLs', () => {
+    expect(isUnsupportedIframeSrc('chrome-extension://abc/page.html')).toBe(true);
+  });
+
+  it('returns false for http URLs', () => {
+    expect(isUnsupportedIframeSrc('http://example.com')).toBe(false);
+  });
+
+  it('returns false for https URLs', () => {
+    expect(isUnsupportedIframeSrc('https://example.com/iframe')).toBe(false);
+  });
+});
+
+describe('getOrigin', () => {
+  const { getOrigin } = require('../index.js');
+
+  it('extracts origin from a valid URL', () => {
+    expect(getOrigin('https://example.com/path')).toBe('https://example.com');
+  });
+
+  it('includes port in origin when specified', () => {
+    expect(getOrigin('http://localhost:8080/page')).toBe('http://localhost:8080');
+  });
+
+  it('returns null for invalid URLs', () => {
+    expect(getOrigin('not-a-url')).toBeNull();
+  });
+
+  it('returns null for empty string', () => {
+    expect(getOrigin('')).toBeNull();
   });
 });
