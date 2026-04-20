@@ -45,12 +45,37 @@ module.exports = function percySnapshot(b, name, options) {
       // Inject the DOM serialization script
       await b.execute(await utils.fetchPercyDOM());
 
+      // Readiness gate — runs before serialize when CLI supports it (PER-7348).
+      // Uses executeAsync with a callback signal (robust across WebdriverIO
+      // Promise-handling variations). In-browser typeof guard makes this a
+      // no-op on older CLIs that lack PercyDOM.waitForReady.
+      let readinessDiagnostics;
+      const readinessConfig = options?.readiness || utils.percy?.config?.snapshot?.readiness || {};
+      if (readinessConfig.preset !== 'disabled') {
+        try {
+          readinessDiagnostics = await b.executeAsync(function(cfg, done) {
+            try {
+              if (typeof PercyDOM !== 'undefined' && typeof PercyDOM.waitForReady === 'function') {
+                PercyDOM.waitForReady(cfg).then(function(r) { done(r); }).catch(function() { done(); });
+              } else { done(); }
+            } catch (e) { done(); }
+          }, readinessConfig);
+        } catch (err) {
+          log.debug(`waitForReady failed, proceeding to serialize: ${err?.message || err}`);
+        }
+      }
+
       // Serialize and capture the DOM
       /* istanbul ignore next: no instrumenting injected code */
       let { domSnapshot, url } = await b.execute(async (options) => ({
         domSnapshot: await PercyDOM.serialize(options),
         url: document.URL
       }), options);
+
+      // Attach readiness diagnostics so the CLI can log timing and pass/fail
+      if (readinessDiagnostics && domSnapshot && typeof domSnapshot === 'object') {
+        domSnapshot.readiness_diagnostics = readinessDiagnostics;
+      }
 
       // Post the DOM to the snapshot endpoint with snapshot options and other info
       const response = await module.exports.request({

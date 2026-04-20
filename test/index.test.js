@@ -155,4 +155,44 @@ describe('percySnapshot', () => {
       'Snapshot found: Snapshot with options'
     ]));
   });
+
+  describe('readiness gate (PER-7348)', () => {
+    it('calls executeAsync with waitForReady before serialize', async () => {
+      const asyncSpy = spyOn(browser, 'executeAsync').and.returnValue(Promise.resolve({ ok: true }));
+
+      await percySnapshot('readiness-happy-path');
+
+      expect(asyncSpy).toHaveBeenCalled();
+      const call = asyncSpy.calls.first();
+      expect(call.args[0].toString()).toContain('waitForReady');
+    });
+
+    it('passes per-snapshot readiness config', async () => {
+      const asyncSpy = spyOn(browser, 'executeAsync').and.returnValue(Promise.resolve(null));
+      const readiness = { preset: 'strict', stabilityWindowMs: 500 };
+
+      await percySnapshot('readiness-config', { readiness });
+
+      expect(asyncSpy).toHaveBeenCalled();
+      expect(asyncSpy.calls.first().args[1]).toEqual(readiness);
+    });
+
+    it('skips executeAsync when preset is disabled', async () => {
+      const asyncSpy = spyOn(browser, 'executeAsync').and.returnValue(Promise.resolve());
+
+      await percySnapshot('readiness-disabled', { readiness: { preset: 'disabled' } });
+
+      expect(asyncSpy).not.toHaveBeenCalled();
+    });
+
+    it('still serializes when executeAsync rejects', async () => {
+      spyOn(browser, 'executeAsync').and.returnValue(Promise.reject(new Error('readiness boom')));
+
+      await percySnapshot('readiness-reject');
+
+      expect(helpers.logger.stderr).not.toEqual(jasmine.arrayContaining([
+        '[percy] Could not take DOM snapshot "readiness-reject"'
+      ]));
+    });
+  });
 });
