@@ -86,14 +86,17 @@ function shouldSkipIframe(meta, currentOrigin, log) {
 }
 
 // Switches up one frame in the WebDriver context. WebdriverIO doesn't surface
-// switchToParentFrame on the high-level Browser object in every version, so we
-// fall back to switching to the top frame if the parent-frame command isn't
-// available — this still leaves the browser in a known good state.
+// switchToParentFrame on the high-level Browser object in every version. When
+// it's missing or fails, we can't reliably step up one level — falling back to
+// switchFrame(null) jumps to the top, which would corrupt sibling iteration in
+// outer recursion levels. Returns true on a successful one-step parent switch
+// and false otherwise; callers must abort sibling iteration when this returns
+// false to avoid resolving subsequent iframe lookups against the wrong context.
 async function switchToParent(b, log) {
   try {
     if (typeof b.switchToParentFrame === 'function') {
       await b.switchToParentFrame();
-      return;
+      return true;
     }
   } catch (e) {
     log.debug(`switchToParentFrame failed: ${e.message}; falling back to top`);
@@ -103,6 +106,7 @@ async function switchToParent(b, log) {
   } catch (e) {
     log.debug(`Failed to switch back to top frame: ${e.message}`);
   }
+  return false;
 }
 
 async function processFrameTree(b, iframeElement, iframeMeta, depth, options, percyDOMScript, log) {
@@ -160,10 +164,23 @@ async function processFrameTree(b, iframeElement, iframeMeta, depth, options, pe
 
     return collected;
   } catch (error) {
+    if (error && error.percyContextLost) throw error;
     log.debug(`Failed to process cross-origin iframe ${iframeMeta.src}: ${error.message}`);
     return collected;
   } finally {
-    if (switchedIn) await switchToParent(b, log);
+    if (switchedIn) {
+      const ok = await switchToParent(b, log);
+      if (!ok && depth > 1) {
+        // We were inside a nested frame and couldn't reliably step up one
+        // level. Falling back to top would leave the outer loop iterating
+        // child element handles in the wrong context — abort to avoid wrong
+        // percyElementId resolutions.
+        const err = new Error(`Lost parent frame context for ${iframeMeta.src}`);
+        err.percyContextLost = true;
+        // eslint-disable-next-line no-unsafe-finally
+        throw err;
+      }
+    }
   }
 }
 
@@ -195,7 +212,16 @@ async function captureSerializedDOM(b, options, percyDOMScript, log) {
           continue;
         }
         if (shouldSkipIframe(meta, pageOrigin, log)) continue;
-        let entries = await processFrameTree(b, iframeElement, meta, 1, options, percyDOMScript, log);
+        let entries;
+        try {
+          entries = await processFrameTree(b, iframeElement, meta, 1, options, percyDOMScript, log);
+        } catch (error) {
+          if (error && error.percyContextLost) {
+            log.debug('Aborting further nested CORS capture due to lost frame context');
+            break;
+          }
+          throw error;
+        }
         if (entries.length) corsIframes.push(...entries);
       }
 
