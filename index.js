@@ -38,6 +38,8 @@ const UNSUPPORTED_IFRAME_SRCS = [
   'chrome-extension:'
 ];
 
+const MAX_FRAME_DEPTH = 10;
+
 function isUnsupportedIframeSrc(src) {
   if (!src) return true;
   return UNSUPPORTED_IFRAME_SRCS.some(prefix => src === prefix || src.startsWith(prefix));
@@ -51,19 +53,76 @@ function getOrigin(url) {
   }
 }
 
-// Processes a single cross-origin iframe element to capture its snapshot
-async function processFrame(b, iframeElement, iframeMeta, options, percyDOMScript, log) {
+async function getIframeMeta(iframeElement) {
+  let src = (await iframeElement.getAttribute('src')) || '';
+  let srcdoc = await iframeElement.getAttribute('srcdoc');
+  let percyElementId = await iframeElement.getAttribute('data-percy-element-id');
+  return { src, srcdoc, percyElementId };
+}
+
+function shouldSkipIframe(meta, currentOrigin, log) {
+  if (!meta.src || isUnsupportedIframeSrc(meta.src)) {
+    if (meta.src) log.debug(`Skipping unsupported iframe src: ${meta.src}`);
+    return true;
+  }
+  if (meta.srcdoc) {
+    log.debug(`Skipping srcdoc iframe: ${meta.src}`);
+    return true;
+  }
+  let frameOrigin = getOrigin(meta.src);
+  if (!frameOrigin) {
+    log.debug(`Skipping iframe with invalid URL: ${meta.src}`);
+    return true;
+  }
+  if (frameOrigin === currentOrigin) {
+    log.debug(`Skipping same-origin iframe: ${meta.src}`);
+    return true;
+  }
+  if (!meta.percyElementId) {
+    log.debug(`Skipping cross-origin iframe without data-percy-element-id: ${meta.src}`);
+    return true;
+  }
+  return false;
+}
+
+// Switches up one frame in the WebDriver context. WebdriverIO doesn't surface
+// switchToParentFrame on the high-level Browser object in every version, so we
+// fall back to switching to the top frame if the parent-frame command isn't
+// available — this still leaves the browser in a known good state.
+async function switchToParent(b, log) {
   try {
-    log.debug(`Processing cross-origin iframe: ${iframeMeta.src}`);
+    if (typeof b.switchToParentFrame === 'function') {
+      await b.switchToParentFrame();
+      return;
+    }
+  } catch (e) {
+    log.debug(`switchToParentFrame failed: ${e.message}; falling back to top`);
+  }
+  try {
+    await b.switchFrame(null);
+  } catch (e) {
+    log.debug(`Failed to switch back to top frame: ${e.message}`);
+  }
+}
 
-    // Switch to the iframe using element reference (WebdriverIO v9 switchFrame)
+async function processFrameTree(b, iframeElement, iframeMeta, depth, options, percyDOMScript, log) {
+  if (depth > MAX_FRAME_DEPTH) {
+    log.debug(`Reached max iframe nesting depth (${MAX_FRAME_DEPTH}); stopping at ${iframeMeta.src}`);
+    return [];
+  }
+
+  const collected = [];
+  let switchedIn = false;
+  try {
+    log.debug(`Processing cross-origin iframe (depth ${depth}): ${iframeMeta.src}`);
+
     await b.switchFrame(iframeElement);
+    switchedIn = true;
 
-    // Inject PercyDOM into the frame
     await b.execute(percyDOMScript);
-    log.debug(`Injected PercyDOM into frame: ${iframeMeta.src}`);
 
-    // Serialize the frame's DOM with enableJavaScript: true
+    /* istanbul ignore next: no instrumenting injected code */
+    let frameUrl = await b.execute(function() { return document.URL; });
     /* istanbul ignore next: no instrumenting injected code */
     let iframeSnapshot = await b.execute(function(opts) {
       return PercyDOM.serialize(opts);
@@ -71,30 +130,45 @@ async function processFrame(b, iframeElement, iframeMeta, options, percyDOMScrip
 
     if (!iframeSnapshot) {
       log.debug(`Serialization returned empty result for frame: ${iframeMeta.src}`);
-      return null;
+      return [];
     }
 
-    log.debug(`Successfully captured cross-origin iframe: ${iframeMeta.src} (percyElementId: ${iframeMeta.percyElementId})`);
-
-    return {
-      frameUrl: iframeMeta.src,
+    collected.push({
+      frameUrl: frameUrl || iframeMeta.src,
       iframeData: { percyElementId: iframeMeta.percyElementId },
       iframeSnapshot
-    };
+    });
+
+    log.debug(`Captured cross-origin iframe (depth ${depth}): ${frameUrl || iframeMeta.src}`);
+
+    if (depth < MAX_FRAME_DEPTH) {
+      let currentOrigin = getOrigin(frameUrl || iframeMeta.src);
+      let childElements = await b.$$('iframe');
+      for (let child of childElements) {
+        let childMeta;
+        try {
+          childMeta = await getIframeMeta(child);
+        } catch (e) {
+          log.debug(`Could not read child iframe attributes: ${e.message}`);
+          continue;
+        }
+        if (shouldSkipIframe(childMeta, currentOrigin, log)) continue;
+        let nested = await processFrameTree(b, child, childMeta, depth + 1, options, percyDOMScript, log);
+        if (nested.length) collected.push(...nested);
+      }
+    }
+
+    return collected;
   } catch (error) {
     log.debug(`Failed to process cross-origin iframe ${iframeMeta.src}: ${error.message}`);
-    return null;
+    return collected;
   } finally {
-    // Always restore context to the top-level page
-    try {
-      await b.switchFrame(null);
-    } catch (e) {
-      log.debug(`Failed to switch back to parent frame: ${e.message}`);
-    }
+    if (switchedIn) await switchToParent(b, log);
   }
 }
 
-// Captures the main page DOM and cross-origin iframe snapshots
+// Captures the main page DOM and cross-origin iframe snapshots (including
+// nested cross-origin iframes up to MAX_FRAME_DEPTH).
 async function captureSerializedDOM(b, options, percyDOMScript, log) {
   // Serialize the main page DOM
   /* istanbul ignore next: no instrumenting injected code */
@@ -103,55 +177,31 @@ async function captureSerializedDOM(b, options, percyDOMScript, log) {
     url: document.URL
   }), options);
 
-  // Process cross-origin iframes
   try {
-    // Use WebdriverIO's native $$ to get iframe element references
     let iframeElements = await b.$$('iframe');
 
     if (iframeElements && iframeElements.length) {
-      log.debug(`Found ${iframeElements.length} total iframe(s) on page`);
+      log.debug(`Found ${iframeElements.length} top-level iframe(s)`);
 
       let pageOrigin = getOrigin(url);
       let corsIframes = [];
 
       for (let iframeElement of iframeElements) {
-        // Get iframe metadata using element attribute methods
-        let src = await iframeElement.getAttribute('src') || '';
-        let srcdoc = await iframeElement.getAttribute('srcdoc');
-        let percyElementId = await iframeElement.getAttribute('data-percy-element-id');
-
-        if (!src || isUnsupportedIframeSrc(src)) {
-          if (src) log.debug(`Skipping unsupported iframe src: ${src}`);
+        let meta;
+        try {
+          meta = await getIframeMeta(iframeElement);
+        } catch (e) {
+          log.debug(`Could not read top-level iframe attributes: ${e.message}`);
           continue;
         }
-        if (srcdoc) {
-          log.debug(`Skipping srcdoc iframe: ${src}`);
-          continue;
-        }
-
-        let frameOrigin = getOrigin(src);
-        if (!frameOrigin) {
-          log.debug(`Skipping iframe with invalid URL: ${src}`);
-          continue;
-        }
-        if (frameOrigin === pageOrigin) {
-          log.debug(`Skipping same-origin iframe: ${src}`);
-          continue;
-        }
-
-        if (!percyElementId) {
-          log.debug(`Skipping cross-origin iframe without data-percy-element-id: ${src}`);
-          continue;
-        }
-
-        let iframeMeta = { src, percyElementId };
-        let result = await processFrame(b, iframeElement, iframeMeta, options, percyDOMScript, log);
-        if (result) corsIframes.push(result);
+        if (shouldSkipIframe(meta, pageOrigin, log)) continue;
+        let entries = await processFrameTree(b, iframeElement, meta, 1, options, percyDOMScript, log);
+        if (entries.length) corsIframes.push(...entries);
       }
 
       if (corsIframes.length > 0) {
         domSnapshot.corsIframes = corsIframes;
-        log.debug(`Captured ${corsIframes.length} cross-origin iframe(s)`);
+        log.debug(`Captured ${corsIframes.length} cross-origin iframe(s) (across all depths)`);
       }
     }
   } catch (error) {
