@@ -38,7 +38,20 @@ const UNSUPPORTED_IFRAME_SRCS = [
   'chrome-extension:'
 ];
 
-const MAX_FRAME_DEPTH = 10;
+const DEFAULT_MAX_FRAME_DEPTH = 10;
+const HARD_MAX_FRAME_DEPTH = 25;
+
+function resolveMaxFrameDepth(options = {}) {
+  const raw = options.maxIframeDepth ?? DEFAULT_MAX_FRAME_DEPTH;
+  const n = Number(raw);
+  if (!Number.isFinite(n) || n < 1) return DEFAULT_MAX_FRAME_DEPTH;
+  return Math.min(n, HARD_MAX_FRAME_DEPTH);
+}
+
+function resolveIgnoreSelectors(options = {}) {
+  const list = options.ignoreIframeSelectors ?? [];
+  return Array.isArray(list) ? list.filter(s => typeof s === 'string' && s.trim()) : [];
+}
 
 function isUnsupportedIframeSrc(src) {
   if (!src) return true;
@@ -53,14 +66,43 @@ function getOrigin(url) {
   }
 }
 
-async function getIframeMeta(iframeElement) {
+async function getIframeMeta(iframeElement, ignoreSelectors = []) {
   let src = (await iframeElement.getAttribute('src')) || '';
   let srcdoc = await iframeElement.getAttribute('srcdoc');
   let percyElementId = await iframeElement.getAttribute('data-percy-element-id');
-  return { src, srcdoc, percyElementId };
+  let dataPercyIgnore = (await iframeElement.getAttribute('data-percy-ignore')) !== null;
+  let matchesIgnoreSelector = false;
+  if (ignoreSelectors.length) {
+    // Run a one-shot script in the browser that asks the element whether it
+    // matches any of the configured ignore selectors. The webdriverio
+    // element handle exposes elementId; we pass that to a client-side helper
+    // that resolves it back to the live element via WebDriver's element ref
+    // protocol — using `iframeElement.execute` keeps us within wdio's API.
+    try {
+      matchesIgnoreSelector = await iframeElement.execute(function(selectors) {
+        for (let i = 0; i < selectors.length; i++) {
+          try { if (this.matches(selectors[i])) return true; } catch (e) { /* invalid selector */ }
+        }
+        return false;
+      }, ignoreSelectors);
+    } catch (e) {
+      // Older wdio versions or non-Bidi sessions may not support element-context
+      // execute; fall back to false (match the behavior of unsupported drivers).
+      matchesIgnoreSelector = false;
+    }
+  }
+  return { src, srcdoc, percyElementId, dataPercyIgnore, matchesIgnoreSelector };
 }
 
 function shouldSkipIframe(meta, currentOrigin, log) {
+  if (meta.dataPercyIgnore) {
+    log.debug(`Skipping iframe marked with data-percy-ignore: ${meta.src || '(no src)'}`);
+    return true;
+  }
+  if (meta.matchesIgnoreSelector) {
+    log.debug(`Skipping iframe matching ignoreIframeSelectors: ${meta.src || '(no src)'}`);
+    return true;
+  }
   if (!meta.src || isUnsupportedIframeSrc(meta.src)) {
     if (meta.src) log.debug(`Skipping unsupported iframe src: ${meta.src}`);
     return true;
@@ -109,9 +151,10 @@ async function switchToParent(b, log) {
   return false;
 }
 
-async function processFrameTree(b, iframeElement, iframeMeta, depth, ancestorUrls, options, percyDOMScript, log) {
-  if (depth > MAX_FRAME_DEPTH) {
-    log.debug(`Reached max iframe nesting depth (${MAX_FRAME_DEPTH}); stopping at ${iframeMeta.src}`);
+async function processFrameTree(b, iframeElement, iframeMeta, depth, ancestorUrls, ctx) {
+  const { maxFrameDepth, ignoreSelectors, options, percyDOMScript, log } = ctx;
+  if (depth > maxFrameDepth) {
+    log.debug(`Reached max iframe nesting depth (${maxFrameDepth}); stopping at ${iframeMeta.src}`);
     return [];
   }
   if (ancestorUrls && ancestorUrls.has(iframeMeta.src)) {
@@ -150,7 +193,7 @@ async function processFrameTree(b, iframeElement, iframeMeta, depth, ancestorUrl
 
     log.debug(`Captured cross-origin iframe (depth ${depth}): ${frameUrl || iframeMeta.src}`);
 
-    if (depth < MAX_FRAME_DEPTH) {
+    if (depth < maxFrameDepth) {
       let currentOrigin = getOrigin(frameUrl || iframeMeta.src);
       let nextAncestors = new Set(ancestorUrls || []);
       nextAncestors.add(iframeMeta.src);
@@ -159,13 +202,13 @@ async function processFrameTree(b, iframeElement, iframeMeta, depth, ancestorUrl
       for (let child of childElements) {
         let childMeta;
         try {
-          childMeta = await getIframeMeta(child);
+          childMeta = await getIframeMeta(child, ignoreSelectors);
         } catch (e) {
           log.debug(`Could not read child iframe attributes: ${e.message}`);
           continue;
         }
         if (shouldSkipIframe(childMeta, currentOrigin, log)) continue;
-        let nested = await processFrameTree(b, child, childMeta, depth + 1, nextAncestors, options, percyDOMScript, log);
+        let nested = await processFrameTree(b, child, childMeta, depth + 1, nextAncestors, ctx);
         if (nested.length) collected.push(...nested);
       }
     }
@@ -212,6 +255,14 @@ async function captureSerializedDOM(b, options, percyDOMScript, log) {
   }), options);
 
   try {
+    const ignoreSelectors = resolveIgnoreSelectors(options);
+    const ctx = {
+      maxFrameDepth: resolveMaxFrameDepth(options),
+      ignoreSelectors,
+      options,
+      percyDOMScript,
+      log
+    };
     let iframeElements = await b.$$('iframe');
 
     if (iframeElements && iframeElements.length) {
@@ -223,7 +274,7 @@ async function captureSerializedDOM(b, options, percyDOMScript, log) {
       for (let iframeElement of iframeElements) {
         let meta;
         try {
-          meta = await getIframeMeta(iframeElement);
+          meta = await getIframeMeta(iframeElement, ignoreSelectors);
         } catch (e) {
           log.debug(`Could not read top-level iframe attributes: ${e.message}`);
           continue;
@@ -231,7 +282,7 @@ async function captureSerializedDOM(b, options, percyDOMScript, log) {
         if (shouldSkipIframe(meta, pageOrigin, log)) continue;
         let entries;
         try {
-          entries = await processFrameTree(b, iframeElement, meta, 1, new Set([url]), options, percyDOMScript, log);
+          entries = await processFrameTree(b, iframeElement, meta, 1, new Set([url]), ctx);
         } catch (error) {
           if (error && error.percyContextLost) {
             log.debug('Aborting further nested CORS capture due to lost frame context');
