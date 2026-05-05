@@ -336,3 +336,5 @@ module.exports.isPercyEnabled = async function isPercyEnabled() {
 // Export helpers for testing
 module.exports.isUnsupportedIframeSrc = isUnsupportedIframeSrc;
 module.exports.getOrigin = getOrigin;
+module.exports.shouldSkipIframe = shouldSkipIframe;
+module.exports.switchToParent = switchToParent;
