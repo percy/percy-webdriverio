@@ -1,4 +1,9 @@
 const utils = require('@percy/sdk-utils');
+const {
+  resolveMaxFrameDepth,
+  resolveIgnoreSelectors,
+  isUnsupportedIframeSrc
+} = require('./iframe-utils');
 
 // Collect client and environment information
 const sdkPkg = require('./package.json');
@@ -26,37 +31,6 @@ try {
 
 const CLIENT_INFO = `${sdkPkg.name}/${sdkPkg.version}`;
 const ENV_INFO = `${webdriverioPkg.name}/${webdriverioPkg.version}`;
-
-const UNSUPPORTED_IFRAME_SRCS = [
-  'about:blank',
-  'about:srcdoc',
-  'javascript:',
-  'data:',
-  'blob:',
-  'vbscript:',
-  'chrome:',
-  'chrome-extension:'
-];
-
-const DEFAULT_MAX_FRAME_DEPTH = 10;
-const HARD_MAX_FRAME_DEPTH = 25;
-
-function resolveMaxFrameDepth(options = {}) {
-  const raw = options.maxIframeDepth ?? DEFAULT_MAX_FRAME_DEPTH;
-  const n = Number(raw);
-  if (!Number.isFinite(n) || n < 1) return DEFAULT_MAX_FRAME_DEPTH;
-  return Math.min(n, HARD_MAX_FRAME_DEPTH);
-}
-
-function resolveIgnoreSelectors(options = {}) {
-  const list = options.ignoreIframeSelectors ?? [];
-  return Array.isArray(list) ? list.filter(s => typeof s === 'string' && s.trim()) : [];
-}
-
-function isUnsupportedIframeSrc(src) {
-  if (!src) return true;
-  return UNSUPPORTED_IFRAME_SRCS.some(prefix => src === prefix || src.startsWith(prefix));
-}
 
 function getOrigin(url) {
   try {
