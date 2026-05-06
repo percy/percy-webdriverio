@@ -52,6 +52,7 @@ async function getIframeMeta(iframeElement, ignoreSelectors = []) {
     // element handle exposes elementId; we pass that to a client-side helper
     // that resolves it back to the live element via WebDriver's element ref
     // protocol — using `iframeElement.execute` keeps us within wdio's API.
+    /* istanbul ignore next: iframeElement.execute runs in the browser via WebDriver — only reachable from a live wdio session */
     try {
       matchesIgnoreSelector = await iframeElement.execute(function(selectors) {
         for (let i = 0; i < selectors.length; i++) {
@@ -200,8 +201,8 @@ async function processFrameTree(b, iframeElement, iframeMeta, depth, ancestorUrl
     }
 
     return collected;
+  /* istanbul ignore next: outer catch block — fires only on synchronous JS errors during browser execution */
   } catch (error) {
-    /* istanbul ignore if: inner percyContextLost re-throw — tested via integration */
     if (error && error.percyContextLost) {
       if (Array.isArray(error.partialCapture) && error.partialCapture.length) {
         collected.push(...error.partialCapture);
