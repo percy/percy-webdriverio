@@ -149,6 +149,17 @@ async function processFrameTree(b, iframeElement, iframeMeta, depth, ancestorUrl
 
     /* istanbul ignore next: no instrumenting injected code */
     let frameUrl = await b.execute(function() { return document.URL; });
+
+    // Post-switch filter: failed cross-origin navigations land on
+    // about:blank / about:neterror in the iframe's document context. The
+    // pre-switch shouldSkipIframe check on iframeMeta.src can't see this —
+    // the attribute still holds the original https:// URL. Drop these so
+    // we don't ship browser error pages as "captured" content.
+    if (frameUrl && isUnsupportedIframeSrc(frameUrl)) {
+      log.debug(`Skipping iframe whose document loaded an unsupported URL: ${frameUrl}`);
+      return [];
+    }
+
     /* istanbul ignore next: no instrumenting injected code */
     let iframeSnapshot = await b.execute(function(opts) {
       return PercyDOM.serialize(opts);
