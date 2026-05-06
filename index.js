@@ -349,3 +349,5 @@ module.exports.isUnsupportedIframeSrc = isUnsupportedIframeSrc;
 module.exports.getOrigin = getOrigin;
 module.exports.shouldSkipIframe = shouldSkipIframe;
 module.exports.switchToParent = switchToParent;
+module.exports.processFrameTree = processFrameTree;
+module.exports.captureSerializedDOM = captureSerializedDOM;

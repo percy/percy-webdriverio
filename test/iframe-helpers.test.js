@@ -1,4 +1,4 @@
-const { shouldSkipIframe, switchToParent } = require('../index.js');
+const { shouldSkipIframe, switchToParent, processFrameTree, captureSerializedDOM } = require('../index.js');
 
 describe('shouldSkipIframe', () => {
   let log;
@@ -78,5 +78,120 @@ describe('switchToParent', () => {
   it('returns false when both switchToParentFrame and switchFrame are missing', async () => {
     const b = {};
     expect(await switchToParent(b, log)).toBe(false);
+  });
+});
+
+describe('processFrameTree', () => {
+  let log;
+  beforeEach(() => {
+    log = { debug: jasmine.createSpy('debug') };
+  });
+
+  it('returns [] when depth exceeds maxFrameDepth', async () => {
+    const b = {};
+    const ctx = { maxFrameDepth: 2, ignoreSelectors: [], options: {}, percyDOMScript: '', log };
+    const result = await processFrameTree(b, {}, { src: 'https://x.com', percyElementId: 'pe' }, 3, new Set(), ctx);
+    expect(result).toEqual([]);
+  });
+
+  it('returns [] when iframe URL is in ancestor chain (cyclic)', async () => {
+    const b = {};
+    const ancestors = new Set(['https://cyclic.com']);
+    const ctx = { maxFrameDepth: 10, ignoreSelectors: [], options: {}, percyDOMScript: '', log };
+    const result = await processFrameTree(b, {}, { src: 'https://cyclic.com', percyElementId: 'pe' }, 1, ancestors, ctx);
+    expect(result).toEqual([]);
+  });
+
+  it('returns [] when post-switch document.URL is unsupported', async () => {
+    const b = {
+      switchFrame: () => Promise.resolve(),
+      execute: jasmine.createSpy('execute').and.callFake((arg) => {
+        if (typeof arg === 'string') return Promise.resolve(); // percyDOMScript inject
+        // First execute for document.URL — return about:blank
+        return Promise.resolve('about:blank');
+      })
+    };
+    const ctx = { maxFrameDepth: 10, ignoreSelectors: [], options: {}, percyDOMScript: '', log };
+    const result = await processFrameTree(b, {}, { src: 'https://x.com', percyElementId: 'pe' }, 1, new Set(), ctx);
+    expect(result).toEqual([]);
+    expect(log.debug).toHaveBeenCalledWith(jasmine.stringMatching(/unsupported URL/));
+  });
+
+  it('returns [] when serialization yields no snapshot', async () => {
+    let executeCalls = 0;
+    const b = {
+      switchFrame: () => Promise.resolve(),
+      execute: jasmine.createSpy('execute').and.callFake((arg) => {
+        executeCalls++;
+        // 1: percyDOMScript inject (string)
+        // 2: document.URL
+        // 3: PercyDOM.serialize → null
+        if (executeCalls === 1) return Promise.resolve();
+        if (executeCalls === 2) return Promise.resolve('https://x.com/');
+        return Promise.resolve(null);
+      })
+    };
+    const ctx = { maxFrameDepth: 10, ignoreSelectors: [], options: {}, percyDOMScript: '', log };
+    const result = await processFrameTree(b, {}, { src: 'https://x.com', percyElementId: 'pe' }, 1, new Set(), ctx);
+    expect(result).toEqual([]);
+  });
+
+  it('throws percyContextLost when depth>1 and parent restore fails', async () => {
+    let executeCalls = 0;
+    const b = {
+      switchFrame: () => Promise.resolve(),
+      execute: jasmine.createSpy('execute').and.callFake((arg) => {
+        executeCalls++;
+        if (executeCalls === 1) return Promise.resolve();
+        if (executeCalls === 2) return Promise.resolve('https://x.com/');
+        return Promise.resolve({ html: '<html></html>' });
+      }),
+      $$: () => Promise.resolve([])
+    };
+    const ctx = { maxFrameDepth: 10, ignoreSelectors: [], options: {}, percyDOMScript: '', log };
+    let thrown;
+    try {
+      await processFrameTree(b, {}, { src: 'https://x.com', percyElementId: 'pe' }, 2, new Set(), ctx);
+    } catch (e) { thrown = e; }
+    expect(thrown).toBeDefined();
+    expect(thrown.percyContextLost).toBe(true);
+    expect(Array.isArray(thrown.partialCapture)).toBe(true);
+  });
+
+  it('does not throw at depth=1 when parent restore fails', async () => {
+    let executeCalls = 0;
+    const b = {
+      switchFrame: () => Promise.resolve(),
+      execute: jasmine.createSpy('execute').and.callFake((arg) => {
+        executeCalls++;
+        if (executeCalls === 1) return Promise.resolve();
+        if (executeCalls === 2) return Promise.resolve('https://x.com/');
+        return Promise.resolve({ html: '<html></html>' });
+      }),
+      $$: () => Promise.resolve([])
+    };
+    const ctx = { maxFrameDepth: 10, ignoreSelectors: [], options: {}, percyDOMScript: '', log };
+    const result = await processFrameTree(b, {}, { src: 'https://x.com', percyElementId: 'pe' }, 1, new Set(), ctx);
+    expect(result.length).toBe(1);
+  });
+
+  it('handles getIframeMeta failures on child iframes by skipping that child', async () => {
+    let executeCalls = 0;
+    const badChild = { getAttribute: () => { throw new Error('child read fail'); } };
+    const b = {
+      switchFrame: () => Promise.resolve(),
+      switchToParentFrame: () => Promise.resolve(),
+      execute: jasmine.createSpy('execute').and.callFake((arg) => {
+        executeCalls++;
+        if (executeCalls === 1) return Promise.resolve();
+        if (executeCalls === 2) return Promise.resolve('https://x.com/');
+        return Promise.resolve({ html: '<html></html>' });
+      }),
+      $$: () => Promise.resolve([badChild])
+    };
+    const ctx = { maxFrameDepth: 10, ignoreSelectors: [], options: {}, percyDOMScript: '', log };
+    const result = await processFrameTree(b, {}, { src: 'https://x.com', percyElementId: 'pe' }, 1, new Set(), ctx);
+    expect(result.length).toBe(1); // parent captured; bad child skipped
+    expect(log.debug).toHaveBeenCalledWith(jasmine.stringMatching(/Could not read child iframe attributes/));
   });
 });
