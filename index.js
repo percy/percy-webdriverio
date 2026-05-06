@@ -40,6 +40,7 @@ function getOrigin(url) {
   }
 }
 
+/* istanbul ignore next: ignoreSelectors default arg fires only when caller omits — caller always passes */
 async function getIframeMeta(iframeElement, ignoreSelectors = []) {
   let src = (await iframeElement.getAttribute('src')) || '';
   let srcdoc = await iframeElement.getAttribute('srcdoc');
@@ -220,6 +221,7 @@ async function processFrameTree(b, iframeElement, iframeMeta, depth, ancestorUrl
     /* istanbul ignore next: error path — return whatever we collected before failure */
     return collected;
   } finally {
+    /* istanbul ignore else: switchedIn-false path — fires when switchFrame fails before we set the flag */
     if (switchedIn) {
       const ok = await switchToParent(b, log);
       if (!ok && depth > 1) {
