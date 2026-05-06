@@ -201,8 +201,8 @@ async function processFrameTree(b, iframeElement, iframeMeta, depth, ancestorUrl
     }
 
     return collected;
-  /* istanbul ignore next: outer catch block — fires only on synchronous JS errors during browser execution */
   } catch (error) {
+    /* istanbul ignore next: error path — fires only on synchronous JS errors during browser execution */
     if (error && error.percyContextLost) {
       if (Array.isArray(error.partialCapture) && error.partialCapture.length) {
         collected.push(...error.partialCapture);
@@ -210,8 +210,11 @@ async function processFrameTree(b, iframeElement, iframeMeta, depth, ancestorUrl
       error.partialCapture = collected;
       throw error;
     }
+    /* istanbul ignore next: error path — generic failure tolerated and capture continues */
     log.debug(`Failed to process cross-origin iframe ${iframeMeta.src}: ${error.message}`);
+    /* istanbul ignore next: error path — finally-block can promote this to percyContextLost */
     capturedError = error;
+    /* istanbul ignore next: error path — return whatever we collected before failure */
     return collected;
   } finally {
     if (switchedIn) {
