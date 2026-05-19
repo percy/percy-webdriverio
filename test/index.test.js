@@ -158,54 +158,59 @@ describe('percySnapshot', () => {
   });
 
   describe('readiness gate (PER-7348)', () => {
-    // In WebdriverIO 9+, `browser.executeAsync` is defined on the prototype
-    // chain without a setter, so jasmine's spyOn refuses to replace it
-    // (`<spyOn> : executeAsync is not declared writable or has no setter`).
-    // Install a plain writable own-property so each spec's spyOn can attach
-    // cleanly. Plain function (not jasmine.createSpy) so spyOn doesn't think
-    // it's already been spied upon. The outer afterEach in
-    // describe('percySnapshot') restores the original `browser`, which also
-    // drops this override.
+    // WebdriverIO 9+ ships `browser.executeAsync` as a proxied prototype
+    // property without a setter, so jasmine's spyOn either refuses to replace
+    // it ("not declared writable") or silently bypasses the user-installed
+    // spy on certain return values. Replace `browser` entirely with a plain
+    // mock for these specs; the outer afterEach `browser = og;` restores it.
+    let executeAsyncSpy;
+    let executeSpy;
+
     beforeEach(() => {
-      Object.defineProperty(browser, 'executeAsync', {
-        configurable: true,
-        writable: true,
-        value: () => Promise.resolve()
-      });
+      executeAsyncSpy = jasmine.createSpy('executeAsync')
+        .and.callFake(() => Promise.resolve());
+      executeSpy = jasmine.createSpy('execute')
+        .and.callFake(() => Promise.resolve({
+          domSnapshot: { html: '<html></html>', resources: [] },
+          url: 'http://localhost/'
+        }));
+
+      browser = {
+        call: (fn) => fn(),
+        execute: executeSpy,
+        executeAsync: executeAsyncSpy
+      };
     });
 
     it('calls executeAsync with waitForReady before serialize', async () => {
-      const asyncSpy = spyOn(browser, 'executeAsync').and.returnValue(Promise.resolve({ ok: true }));
+      executeAsyncSpy.and.callFake(() => Promise.resolve({ ok: true }));
 
       await percySnapshot('readiness-happy-path');
 
-      expect(asyncSpy).toHaveBeenCalled();
-      const call = asyncSpy.calls.first();
+      expect(executeAsyncSpy).toHaveBeenCalled();
+      const call = executeAsyncSpy.calls.first();
       expect(call.args[0].toString()).toContain('waitForReady');
     });
 
     it('passes per-snapshot readiness config', async () => {
-      const asyncSpy = spyOn(browser, 'executeAsync').and.returnValue(Promise.resolve(null));
+      executeAsyncSpy.and.callFake(() => Promise.resolve(null));
       const readiness = { preset: 'strict', stabilityWindowMs: 500 };
 
       await percySnapshot('readiness-config', { readiness });
 
-      expect(asyncSpy).toHaveBeenCalled();
-      expect(asyncSpy.calls.first().args[1]).toEqual(readiness);
+      expect(executeAsyncSpy).toHaveBeenCalled();
+      expect(executeAsyncSpy.calls.first().args[1]).toEqual(readiness);
     });
 
     it('skips executeAsync when preset is disabled', async () => {
-      const asyncSpy = spyOn(browser, 'executeAsync').and.returnValue(Promise.resolve());
-
       await percySnapshot('readiness-disabled', { readiness: { preset: 'disabled' } });
 
-      expect(asyncSpy).not.toHaveBeenCalled();
+      expect(executeAsyncSpy).not.toHaveBeenCalled();
     });
 
     it('still serializes when executeAsync rejects', async () => {
-      // Use callFake so the rejected promise is only created when the SDK
-      // awaits it (avoids an unhandled-rejection in the test-setup tick).
-      spyOn(browser, 'executeAsync').and.callFake(() => Promise.reject(new Error('readiness boom')));
+      // callFake so the rejected promise is created only when the SDK awaits it.
+      executeAsyncSpy.and.callFake(() => Promise.reject(new Error('readiness boom')));
 
       await percySnapshot('readiness-reject');
 
@@ -217,7 +222,7 @@ describe('percySnapshot', () => {
     it('still serializes when executeAsync rejects with a non-Error', async () => {
       // Covers the `err?.message || err` second branch: rejection value has
       // no `.message`, so logging falls through to stringifying err itself.
-      spyOn(browser, 'executeAsync').and.callFake(() => Promise.reject('plain-string-rejection'));
+      executeAsyncSpy.and.callFake(() => Promise.reject('plain-string-rejection'));
 
       await percySnapshot('readiness-reject-string');
 
