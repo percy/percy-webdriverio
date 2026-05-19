@@ -158,59 +158,73 @@ describe('percySnapshot', () => {
   });
 
   describe('readiness gate (PER-7348)', () => {
-    // WebdriverIO 9+ ships `browser.executeAsync` as a proxied prototype
-    // property without a setter, so jasmine's spyOn either refuses to replace
-    // it ("not declared writable") or silently bypasses the user-installed
-    // spy on certain return values. Replace `browser` entirely with a plain
-    // mock for these specs; the outer afterEach `browser = og;` restores it.
-    let executeAsyncSpy;
-    let executeSpy;
-
-    beforeEach(() => {
-      executeAsyncSpy = jasmine.createSpy('executeAsync')
-        .and.callFake(() => Promise.resolve());
-      executeSpy = jasmine.createSpy('execute')
-        .and.callFake(() => Promise.resolve({
-          domSnapshot: { html: '<html></html>', resources: [] },
-          url: 'http://localhost/'
-        }));
-
+    // wdio 9+ ships `browser` as a proxy with non-writable accessors;
+    // jasmine's `spyOn` either refuses to attach ("not declared writable")
+    // or silently misbehaves depending on the resolved/rejected value. Build
+    // a plain object with hand-rolled call recorders per spec so behaviour
+    // is deterministic. The outer afterEach in `describe('percySnapshot')`
+    // restores `browser = og`, so this swap is scoped to each spec.
+    function buildBrowser({ executeAsyncImpl, executeImpl } = {}) {
+      const executeAsyncCalls = [];
+      const executeCalls = [];
       browser = {
         call: (fn) => fn(),
-        execute: executeSpy,
-        executeAsync: executeAsyncSpy
+        executeAsync: (...args) => {
+          executeAsyncCalls.push(args);
+          return executeAsyncImpl ? executeAsyncImpl(...args) : Promise.resolve();
+        },
+        execute: (...args) => {
+          executeCalls.push(args);
+          return executeImpl
+            ? executeImpl(...args)
+            : Promise.resolve({
+              domSnapshot: { html: '<html></html>', resources: [] },
+              url: 'http://localhost/'
+            });
+        }
       };
-    });
+      return { executeAsyncCalls, executeCalls };
+    }
 
     it('calls executeAsync with waitForReady before serialize', async () => {
-      executeAsyncSpy.and.callFake(() => Promise.resolve({ ok: true }));
+      const { executeAsyncCalls, executeCalls } = buildBrowser({
+        executeAsyncImpl: () => Promise.resolve({ ok: true })
+      });
 
       await percySnapshot('readiness-happy-path');
 
-      expect(executeAsyncSpy).toHaveBeenCalled();
-      const call = executeAsyncSpy.calls.first();
-      expect(call.args[0].toString()).toContain('waitForReady');
+      expect(executeAsyncCalls.length).toBe(1);
+      expect(executeAsyncCalls[0][0].toString()).toContain('waitForReady');
+      // execute is called twice: once to inject PercyDOM, once to serialize.
+      expect(executeCalls.length).toBeGreaterThan(0);
     });
 
     it('passes per-snapshot readiness config', async () => {
-      executeAsyncSpy.and.callFake(() => Promise.resolve(null));
+      const { executeAsyncCalls } = buildBrowser({
+        executeAsyncImpl: () => Promise.resolve(null)
+      });
       const readiness = { preset: 'strict', stabilityWindowMs: 500 };
 
       await percySnapshot('readiness-config', { readiness });
 
-      expect(executeAsyncSpy).toHaveBeenCalled();
-      expect(executeAsyncSpy.calls.first().args[1]).toEqual(readiness);
+      expect(executeAsyncCalls.length).toBe(1);
+      expect(executeAsyncCalls[0][1]).toEqual(readiness);
     });
 
     it('skips executeAsync when preset is disabled', async () => {
+      const { executeAsyncCalls } = buildBrowser();
+
       await percySnapshot('readiness-disabled', { readiness: { preset: 'disabled' } });
 
-      expect(executeAsyncSpy).not.toHaveBeenCalled();
+      expect(executeAsyncCalls.length).toBe(0);
     });
 
     it('still serializes when executeAsync rejects', async () => {
-      // callFake so the rejected promise is created only when the SDK awaits it.
-      executeAsyncSpy.and.callFake(() => Promise.reject(new Error('readiness boom')));
+      // Factory function (not Promise.reject literal) so the rejection is
+      // produced only when the SDK awaits — avoids an unhandled-rejection.
+      buildBrowser({
+        executeAsyncImpl: () => Promise.reject(new Error('readiness boom'))
+      });
 
       await percySnapshot('readiness-reject');
 
@@ -222,7 +236,9 @@ describe('percySnapshot', () => {
     it('still serializes when executeAsync rejects with a non-Error', async () => {
       // Covers the `err?.message || err` second branch: rejection value has
       // no `.message`, so logging falls through to stringifying err itself.
-      executeAsyncSpy.and.callFake(() => Promise.reject('plain-string-rejection'));
+      buildBrowser({
+        executeAsyncImpl: () => Promise.reject('plain-string-rejection')
+      });
 
       await percySnapshot('readiness-reject-string');
 
