@@ -161,14 +161,16 @@ describe('percySnapshot', () => {
     // In WebdriverIO 9+, `browser.executeAsync` is defined on the prototype
     // chain without a setter, so jasmine's spyOn refuses to replace it
     // (`<spyOn> : executeAsync is not declared writable or has no setter`).
-    // Define a writable own-property here so each spec's spyOn can attach
-    // cleanly. The afterEach in the outer `describe('percySnapshot')` swaps
-    // the original `browser` back, which also drops this override.
+    // Install a plain writable own-property so each spec's spyOn can attach
+    // cleanly. Plain function (not jasmine.createSpy) so spyOn doesn't think
+    // it's already been spied upon. The outer afterEach in
+    // describe('percySnapshot') restores the original `browser`, which also
+    // drops this override.
     beforeEach(() => {
       Object.defineProperty(browser, 'executeAsync', {
         configurable: true,
         writable: true,
-        value: jasmine.createSpy('executeAsync').and.returnValue(Promise.resolve())
+        value: () => Promise.resolve()
       });
     });
 
