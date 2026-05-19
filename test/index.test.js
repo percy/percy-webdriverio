@@ -158,6 +158,20 @@ describe('percySnapshot', () => {
   });
 
   describe('readiness gate (PER-7348)', () => {
+    // In WebdriverIO 9+, `browser.executeAsync` is defined on the prototype
+    // chain without a setter, so jasmine's spyOn refuses to replace it
+    // (`<spyOn> : executeAsync is not declared writable or has no setter`).
+    // Define a writable own-property here so each spec's spyOn can attach
+    // cleanly. The afterEach in the outer `describe('percySnapshot')` swaps
+    // the original `browser` back, which also drops this override.
+    beforeEach(() => {
+      Object.defineProperty(browser, 'executeAsync', {
+        configurable: true,
+        writable: true,
+        value: jasmine.createSpy('executeAsync').and.returnValue(Promise.resolve())
+      });
+    });
+
     it('calls executeAsync with waitForReady before serialize', async () => {
       const asyncSpy = spyOn(browser, 'executeAsync').and.returnValue(Promise.resolve({ ok: true }));
 
