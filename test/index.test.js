@@ -2,6 +2,37 @@ const helpers = require('@percy/sdk-utils/test/helpers');
 const utils = require('@percy/sdk-utils');
 const percySnapshot = require('../index.js');
 
+// Forward-compat shim: `utils.runReadinessGate` is the orchestrator added
+// in @percy/sdk-utils 1.31.15. Until that version is published, polyfill
+// it here so tests exercise the real call shape instead of being skipped
+// by the SDK's typeof guard. Once 1.31.15 lands, this becomes a no-op.
+if (typeof utils.runReadinessGate !== 'function') {
+  utils.runReadinessGate = async function runReadinessGate(evalScript, snapshotOptions, opts) {
+    snapshotOptions = snapshotOptions || {};
+    opts = opts || {};
+    const callback = !!opts.callback;
+    const log = opts.log;
+    if (typeof utils.isReadinessDisabled === 'function' && utils.isReadinessDisabled(snapshotOptions)) return null;
+    const cfg = typeof utils.getReadinessConfig === 'function'
+      ? utils.getReadinessConfig(snapshotOptions)
+      : Object.assign({},
+          (utils.percy && utils.percy.config && utils.percy.config.snapshot && utils.percy.config.snapshot.readiness) || {},
+          (snapshotOptions && snapshotOptions.readiness) || {});
+    const script = typeof utils.waitForReadyScript === 'function'
+      ? utils.waitForReadyScript(cfg, { callback })
+      : null;
+    if (!script) return null;
+    try {
+      return await evalScript(script);
+    } catch (err) {
+      if (log && typeof log.debug === 'function') {
+        log.debug('waitForReady failed, proceeding to serialize: ' + ((err && err.message) || err));
+      }
+      return null;
+    }
+  };
+}
+
 describe('percySnapshot', () => {
   let og;
 
