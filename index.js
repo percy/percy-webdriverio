@@ -54,6 +54,7 @@ module.exports = function percySnapshot(b, name, options) {
       // generation + try/catch. typeof guard for backward compat — degrades
       // to no-op on older sdk-utils versions.
       let readinessDiagnostics;
+      /* istanbul ignore else: covered once sdk-utils 1.31.15 is published */
       if (typeof utils.runReadinessGate === 'function') {
         readinessDiagnostics = await utils.runReadinessGate(
           (script) => b.executeAsync(script),
