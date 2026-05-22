@@ -1,4 +1,4 @@
-const utils = require('@percy/sdk-utils');
+const utils = require('./_iframe_shim');
 const {
   resolveMaxFrameDepth,
   resolveIgnoreSelectors,
@@ -224,11 +224,13 @@ async function processFrameTree(b, iframeElement, iframeMeta, depth, ancestorUrl
     /* istanbul ignore else: switchedIn-false path — fires when switchFrame fails before we set the flag */
     if (switchedIn) {
       const ok = await switchToParent(b, log);
-      if (!ok && depth > 1) {
-        // We were inside a nested frame and couldn't reliably step up one
-        // level. Falling back to top would leave the outer loop iterating
-        // child element handles in the wrong context — abort to avoid wrong
-        // percyElementId resolutions.
+      if (!ok) {
+        // Couldn't reliably step up one level. At depth > 1 the outer loop is
+        // iterating child element handles in the wrong context; at depth === 1
+        // captureSerializedDOM is iterating top-level handles that were
+        // resolved against the page, but our session may now be on
+        // defaultContent (fallback) or somewhere unexpected. Either way,
+        // signal the caller to stop iterating siblings and merge what we have.
         const err = new Error(`Lost parent frame context for ${iframeMeta.src}`);
         err.percyContextLost = true;
         err.partialCapture = collected;
