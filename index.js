@@ -27,23 +27,6 @@ try {
 const CLIENT_INFO = `${sdkPkg.name}/${sdkPkg.version}`;
 const ENV_INFO = `${webdriverioPkg.name}/${webdriverioPkg.version}`;
 
-// In-browser readiness invoker. Defined at module scope so the typeof
-// guard branches are unit-testable in Node against a stubbed `PercyDOM`
-// global — that's how we cover the body without `istanbul ignore`. Uses
-// the executeAsync callback convention: the trailing `done` argument is
-// invoked once with the diagnostics (or no args on fallthrough). The
-// outer try/catch is defensive against any synchronous throw inside
-// PercyDOM.waitForReady.
-function browserWaitForReady(cfg, done) {
-  try {
-    /* eslint-disable-next-line no-undef */
-    if (typeof PercyDOM !== 'undefined' && typeof PercyDOM.waitForReady === 'function') {
-      /* eslint-disable-next-line no-undef */
-      PercyDOM.waitForReady(cfg).then(function(r) { done(r); }).catch(function() { done(); });
-    } else { done(); }
-  } catch (e) { done(); }
-}
-
 // Take a DOM snapshot and post it to the snapshot endpoint
 module.exports = function percySnapshot(b, name, options) {
   // allow working with or without standalone mode
@@ -62,14 +45,16 @@ module.exports = function percySnapshot(b, name, options) {
       // Inject the DOM serialization script
       await b.execute(await utils.fetchPercyDOM());
 
-      // Readiness gate — runs before serialize when CLI supports it (PER-7348).
-      // executeAsync with the callback signal is robust across WebdriverIO
-      // Promise-handling variations.
+      // Readiness gate (PER-7348). `waitForReadyScript({ callback: true })` is
+      // the shared callback-mode helper from @percy/sdk-utils — uses
+      // `arguments[arguments.length - 1]` for the executeAsync done callback,
+      // which is robust across WebdriverIO Promise-handling variations.
       let readinessDiagnostics;
-      const readinessConfig = options?.readiness || utils.percy?.config?.snapshot?.readiness || {};
-      if (readinessConfig.preset !== 'disabled') {
+      if (!utils.isReadinessDisabled(options)) {
         try {
-          readinessDiagnostics = await b.executeAsync(browserWaitForReady, readinessConfig);
+          readinessDiagnostics = await b.executeAsync(
+            utils.waitForReadyScript(utils.getReadinessConfig(options), { callback: true })
+          );
         } catch (err) {
           log.debug(`waitForReady failed, proceeding to serialize: ${err?.message || err}`);
         }
@@ -115,5 +100,3 @@ module.exports.request = async function request(data) {
 module.exports.isPercyEnabled = async function isPercyEnabled() {
   return await utils.isPercyEnabled();
 };
-
-module.exports.__test__ = { browserWaitForReady };
