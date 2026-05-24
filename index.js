@@ -104,28 +104,48 @@ function shouldSkipIframe(meta, currentOrigin, log) {
   return false;
 }
 
+// Cache the per-browser capability check so we only probe `switchToParentFrame`
+// once. Using a WeakMap keyed on the browser instance avoids leaking between
+// independent sessions while still letting us reuse the result inside a run.
+const _switchToParentCapability = new WeakMap();
+function hasSwitchToParentFrame(b) {
+  /* istanbul ignore next: non-object browsers are caller errors — not exercised in unit tests */
+  if (!b || typeof b !== 'object') return typeof b?.switchToParentFrame === 'function';
+  if (_switchToParentCapability.has(b)) return _switchToParentCapability.get(b);
+  const present = typeof b.switchToParentFrame === 'function';
+  _switchToParentCapability.set(b, present);
+  return present;
+}
+
 // Switches up one frame in the WebDriver context. WebdriverIO doesn't surface
 // switchToParentFrame on the high-level Browser object in every version. When
-// it's missing or fails, we can't reliably step up one level — falling back to
-// switchFrame(null) jumps to the top, which would corrupt sibling iteration in
-// outer recursion levels. Returns true on a successful one-step parent switch
-// and false otherwise; callers must abort sibling iteration when this returns
-// false to avoid resolving subsequent iframe lookups against the wrong context.
-async function switchToParent(b, log) {
-  try {
-    if (typeof b.switchToParentFrame === 'function') {
+// the native parent-switch isn't available we fall back to switchFrame(null),
+// which jumps all the way to the top — for callers at depth === 1 that *is*
+// the correct parent (the page itself), so we still report success. For
+// callers deeper in the recursion we can't reliably step up exactly one
+// level, so we return false and let the caller raise percyContextLost. That
+// preserves the partial capture while preventing sibling iteration from
+// continuing in the wrong context.
+/* istanbul ignore next: depth default-arg fires only when caller omits — production code always passes depth */
+async function switchToParent(b, log, depth = 1) {
+  if (hasSwitchToParentFrame(b)) {
+    try {
       await b.switchToParentFrame();
       return true;
+    } catch (e) {
+      log.debug(`switchToParentFrame failed: ${e.message}; falling back to top`);
     }
-  } catch (e) {
-    log.debug(`switchToParentFrame failed: ${e.message}; falling back to top`);
   }
   try {
     await b.switchFrame(null);
   } catch (e) {
     log.debug(`Failed to switch back to top frame: ${e.message}`);
+    return false;
   }
-  return false;
+  // switchFrame(null) succeeded. At depth === 1 the page IS the parent, so
+  // this is a real success. Deeper than that, we've over-shot — caller must
+  // abort sibling iteration.
+  return depth === 1;
 }
 
 async function processFrameTree(b, iframeElement, iframeMeta, depth, ancestorUrls, ctx) {
@@ -223,19 +243,22 @@ async function processFrameTree(b, iframeElement, iframeMeta, depth, ancestorUrl
   } finally {
     /* istanbul ignore else: switchedIn-false path — fires when switchFrame fails before we set the flag */
     if (switchedIn) {
-      const ok = await switchToParent(b, log);
+      const ok = await switchToParent(b, log, depth);
       if (!ok) {
         // Couldn't reliably step up one level. At depth > 1 the outer loop is
-        // iterating child element handles in the wrong context; at depth === 1
-        // captureSerializedDOM is iterating top-level handles that were
-        // resolved against the page, but our session may now be on
-        // defaultContent (fallback) or somewhere unexpected. Either way,
-        // signal the caller to stop iterating siblings and merge what we have.
-        const err = new Error(`Lost parent frame context for ${iframeMeta.src}`);
+        // iterating child element handles in the wrong context — we have to
+        // abort and surface partial capture to the top-level caller. (At
+        // depth === 1 switchToParent reports success when it lands on the
+        // page via switchFrame(null), so we never reach here for top-level
+        // frames; that's how sibling top-level iframes keep being captured
+        // on wdio versions without switchToParentFrame.)
+        const msg = `Lost parent frame context for ${iframeMeta.src}`;
+        /* istanbul ignore next: capturedError-cause merge fires only on rare combined inner failure + parent-restore failure */
+        const err = capturedError
+          ? new Error(msg, { cause: capturedError })
+          : new Error(msg);
         err.percyContextLost = true;
         err.partialCapture = collected;
-        /* istanbul ignore next: capturedError-cause merge fires only on rare combined inner failure + parent-restore failure */
-        if (capturedError) err.cause = capturedError;
         // eslint-disable-next-line no-unsafe-finally
         throw err;
       }
