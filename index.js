@@ -45,11 +45,11 @@ module.exports = function percySnapshot(b, name, options) {
       // Inject the DOM serialization script
       await b.execute(await utils.fetchPercyDOM());
 
-      // Readiness gate (PER-7348). `waitForReadyScript({ callback: true })` is
+      // Readiness gate. `waitForReadyScript({ callback: true })` is
       // the shared callback-mode helper from @percy/sdk-utils — uses
       // `arguments[arguments.length - 1]` for the executeAsync done callback,
       // which is robust across WebdriverIO Promise-handling variations.
-      // Readiness gate (PER-7348). All orchestration lives in @percy/sdk-utils
+      // Readiness gate. All orchestration lives in @percy/sdk-utils
       // 1.31.15+: disabled-check + shallow-merge config + callback-mode script
       // generation + try/catch. typeof guard for backward compat — degrades
       // to no-op on older sdk-utils versions.

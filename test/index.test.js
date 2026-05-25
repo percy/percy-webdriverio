@@ -187,7 +187,7 @@ describe('percySnapshot', () => {
     ]));
   });
 
-  describe('readiness gate (PER-7348)', () => {
+  describe('readiness gate', () => {
     // wdio 9+ ships `browser` as a proxy with non-writable accessors;
     // jasmine's `spyOn` either refuses to attach ("not declared writable")
     // or silently misbehaves depending on the resolved/rejected value. Build
