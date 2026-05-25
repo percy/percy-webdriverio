@@ -45,23 +45,18 @@ module.exports = function percySnapshot(b, name, options) {
       // Inject the DOM serialization script
       await b.execute(await utils.fetchPercyDOM());
 
-      // Readiness gate. `waitForReadyScript({ callback: true })` is
-      // the shared callback-mode helper from @percy/sdk-utils — uses
-      // `arguments[arguments.length - 1]` for the executeAsync done callback,
-      // which is robust across WebdriverIO Promise-handling variations.
       // Readiness gate. All orchestration lives in @percy/sdk-utils
-      // 1.31.15+: disabled-check + shallow-merge config + callback-mode script
-      // generation + try/catch. typeof guard for backward compat — degrades
-      // to no-op on older sdk-utils versions.
-      let readinessDiagnostics;
-      /* istanbul ignore else: covered once sdk-utils 1.31.15 is published */
-      if (typeof utils.runReadinessGate === 'function') {
-        readinessDiagnostics = await utils.runReadinessGate(
-          (script) => b.executeAsync(script),
-          options,
-          { callback: true, log }
-        );
-      }
+      // (disabled-check + shallow-merge config + callback-mode script
+      // generation + try/catch). callback: true makes waitForReadyScript
+      // use arguments[arguments.length - 1] for the executeAsync done
+      // callback, which is robust across WebdriverIO Promise-handling
+      // variations. The package.json floor pins runReadinessGate to be
+      // present.
+      const readinessDiagnostics = await utils.runReadinessGate(
+        (script) => b.executeAsync(script),
+        options,
+        { callback: true, log }
+      );
 
       // Serialize and capture the DOM
       /* istanbul ignore next: no instrumenting injected code */
