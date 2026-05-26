@@ -352,8 +352,26 @@ module.exports = function percySnapshot(b, name, options) {
       let percyDOMScript = await utils.fetchPercyDOM();
       await b.execute(percyDOMScript);
 
+      // Readiness gate. All orchestration lives in @percy/sdk-utils
+      // (disabled-check + shallow-merge config + callback-mode script
+      // generation + try/catch). callback: true makes waitForReadyScript
+      // use arguments[arguments.length - 1] for the executeAsync done
+      // callback, which is robust across WebdriverIO Promise-handling
+      // variations. The package.json floor pins runReadinessGate to be
+      // present.
+      const readinessDiagnostics = await utils.runReadinessGate(
+        (script) => b.executeAsync(script),
+        options,
+        { callback: true, log }
+      );
+
       // Serialize and capture the DOM (including cross-origin iframes)
       let { domSnapshot, url } = await captureSerializedDOM(b, options || {}, percyDOMScript, log);
+
+      // Attach readiness diagnostics so the CLI can log timing and pass/fail
+      if (readinessDiagnostics && domSnapshot && typeof domSnapshot === 'object') {
+        domSnapshot.readiness_diagnostics = readinessDiagnostics;
+      }
 
       // Post the DOM to the snapshot endpoint with snapshot options and other info
       const response = await module.exports.request({
