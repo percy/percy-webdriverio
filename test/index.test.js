@@ -2,6 +2,37 @@ const helpers = require('@percy/sdk-utils/test/helpers');
 const utils = require('@percy/sdk-utils');
 const percySnapshot = require('../index.js');
 
+// Forward-compat shim: `utils.runReadinessGate` is the orchestrator added
+// in @percy/sdk-utils 1.31.15. Until that version is published, polyfill
+// it here so tests exercise the real call shape instead of being skipped
+// by the SDK's typeof guard. Once 1.31.15 lands, this becomes a no-op.
+if (typeof utils.runReadinessGate !== 'function') {
+  utils.runReadinessGate = async function runReadinessGate(evalScript, snapshotOptions, opts) {
+    snapshotOptions = snapshotOptions || {};
+    opts = opts || {};
+    const callback = !!opts.callback;
+    const log = opts.log;
+    if (typeof utils.isReadinessDisabled === 'function' && utils.isReadinessDisabled(snapshotOptions)) return null;
+    const cfg = typeof utils.getReadinessConfig === 'function'
+      ? utils.getReadinessConfig(snapshotOptions)
+      : Object.assign({},
+          (utils.percy && utils.percy.config && utils.percy.config.snapshot && utils.percy.config.snapshot.readiness) || {},
+          (snapshotOptions && snapshotOptions.readiness) || {});
+    const script = typeof utils.waitForReadyScript === 'function'
+      ? utils.waitForReadyScript(cfg, { callback })
+      : null;
+    if (!script) return null;
+    try {
+      return await evalScript(script);
+    } catch (err) {
+      if (log && typeof log.debug === 'function') {
+        log.debug('waitForReady failed, proceeding to serialize: ' + ((err && err.message) || err));
+      }
+      return null;
+    }
+  };
+}
+
 describe('percySnapshot', () => {
   let og;
 
@@ -155,4 +186,103 @@ describe('percySnapshot', () => {
       'Snapshot found: Snapshot with options'
     ]));
   });
+
+  describe('readiness gate', () => {
+    // wdio 9+ ships `browser` as a proxy with non-writable accessors;
+    // jasmine's `spyOn` either refuses to attach ("not declared writable")
+    // or silently misbehaves depending on the resolved/rejected value. Build
+    // a plain object with hand-rolled call recorders per spec so behaviour
+    // is deterministic. The outer afterEach in `describe('percySnapshot')`
+    // restores `browser = og`, so this swap is scoped to each spec.
+    function buildBrowser({ executeAsyncImpl, executeImpl } = {}) {
+      const executeAsyncCalls = [];
+      const executeCalls = [];
+      browser = {
+        call: (fn) => fn(),
+        executeAsync: (...args) => {
+          executeAsyncCalls.push(args);
+          return executeAsyncImpl ? executeAsyncImpl(...args) : Promise.resolve();
+        },
+        execute: (...args) => {
+          executeCalls.push(args);
+          return executeImpl
+            ? executeImpl(...args)
+            : Promise.resolve({
+              domSnapshot: { html: '<html></html>', resources: [] },
+              url: 'http://localhost/'
+            });
+        }
+      };
+      return { executeAsyncCalls, executeCalls };
+    }
+
+    it('calls executeAsync with waitForReady before serialize', async () => {
+      const { executeAsyncCalls, executeCalls } = buildBrowser({
+        executeAsyncImpl: () => Promise.resolve({ ok: true })
+      });
+
+      await percySnapshot('readiness-happy-path');
+
+      expect(executeAsyncCalls.length).toBe(1);
+      // sdk-utils.waitForReadyScript({ callback: true }) emits a STRING using
+      // `arguments[arguments.length - 1]` for the executeAsync done callback.
+      expect(typeof executeAsyncCalls[0][0]).toBe('string');
+      expect(executeAsyncCalls[0][0]).toContain('PercyDOM.waitForReady');
+      expect(executeAsyncCalls[0][0]).toContain('arguments[arguments.length - 1]');
+      // execute is called twice: once to inject PercyDOM, once to serialize.
+      expect(executeCalls.length).toBeGreaterThan(0);
+    });
+
+    it('inlines per-snapshot readiness config as JSON into the script', async () => {
+      const { executeAsyncCalls } = buildBrowser({
+        executeAsyncImpl: () => Promise.resolve(null)
+      });
+      const readiness = { preset: 'strict', stabilityWindowMs: 500 };
+
+      await percySnapshot('readiness-config', { readiness });
+
+      expect(executeAsyncCalls.length).toBe(1);
+      // sdk-utils inlines the config via JSON.stringify rather than passing
+      // it as a separate b.executeAsync argument.
+      expect(executeAsyncCalls[0][0]).toContain('"preset":"strict"');
+      expect(executeAsyncCalls[0][0]).toContain('"stabilityWindowMs":500');
+    });
+
+    it('skips executeAsync when preset is disabled', async () => {
+      const { executeAsyncCalls } = buildBrowser();
+
+      await percySnapshot('readiness-disabled', { readiness: { preset: 'disabled' } });
+
+      expect(executeAsyncCalls.length).toBe(0);
+    });
+
+    it('still serializes when executeAsync rejects', async () => {
+      // Factory function (not Promise.reject literal) so the rejection is
+      // produced only when the SDK awaits — avoids an unhandled-rejection.
+      buildBrowser({
+        executeAsyncImpl: () => Promise.reject(new Error('readiness boom'))
+      });
+
+      await percySnapshot('readiness-reject');
+
+      expect(helpers.logger.stderr).not.toEqual(jasmine.arrayContaining([
+        '[percy] Could not take DOM snapshot "readiness-reject"'
+      ]));
+    });
+
+    it('still serializes when executeAsync rejects with a non-Error', async () => {
+      // Covers the `err?.message || err` second branch: rejection value has
+      // no `.message`, so logging falls through to stringifying err itself.
+      buildBrowser({
+        executeAsyncImpl: () => Promise.reject('plain-string-rejection')
+      });
+
+      await percySnapshot('readiness-reject-string');
+
+      expect(helpers.logger.stderr).not.toEqual(jasmine.arrayContaining([
+        '[percy] Could not take DOM snapshot "readiness-reject-string"'
+      ]));
+    });
+  });
 });
+
