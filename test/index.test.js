@@ -475,6 +475,11 @@ describe('isUnsupportedIframeSrc', () => {
     expect(isUnsupportedIframeSrc('chrome-extension://abc/page.html')).toBe(true);
   });
 
+  it('returns true for file: URLs (any case)', () => {
+    expect(isUnsupportedIframeSrc('file:///etc/passwd')).toBe(true);
+    expect(isUnsupportedIframeSrc('FILE:///C:/Users')).toBe(true);
+  });
+
   it('returns false for http URLs', () => {
     expect(isUnsupportedIframeSrc('http://example.com')).toBe(false);
   });

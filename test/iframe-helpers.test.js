@@ -322,6 +322,11 @@ describe('_iframe_shim helpers', () => {
       expect(shim.isUnsupportedIframeSrc('vbscript:msgbox')).toBe(true);
     });
 
+    it('flags file: to block local-FS iframe leaks', () => {
+      expect(shim.isUnsupportedIframeSrc('file:///etc/passwd')).toBe(true);
+      expect(shim.isUnsupportedIframeSrc('FILE:///C:/Users')).toBe(true);
+    });
+
     it('passes through https://', () => {
       expect(shim.isUnsupportedIframeSrc('https://example.com')).toBe(false);
     });

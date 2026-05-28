@@ -6,7 +6,7 @@ const utils = require('@percy/sdk-utils');
 const BROWSER_INTERNAL_PREFIXES = [
   'about:', 'chrome:', 'chrome-extension:', 'devtools:',
   'edge:', 'opera:', 'view-source:', 'data:', 'javascript:', 'blob:',
-  'vbscript:'
+  'vbscript:', 'file:'
 ];
 
 /* istanbul ignore next: default-arg branch fires only when caller passes undefined */
