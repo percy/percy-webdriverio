@@ -30,6 +30,19 @@ try {
 }
 
 const CLIENT_INFO = `${sdkPkg.name}/${sdkPkg.version}`;
+
+// The Percy CLI runs locally. Its address determines where the DOM-serialization
+// bundle is fetched+executed and where percy.type/options are sourced, so an
+// impostor (non-loopback) agent could misroute Automate snapshots, inject a DOM
+// script, and leak options (CWE-918 — PER-8707). Only trust a loopback address.
+const LOOPBACK_HOSTS = new Set(['localhost', '127.0.0.1', '::1', '[::1]']);
+function isLoopbackAddress(address) {
+  try {
+    return LOOPBACK_HOSTS.has(new URL(address).hostname.toLowerCase());
+  } catch (e) {
+    return false;
+  }
+}
 const ENV_INFO = `${webdriverioPkg.name}/${webdriverioPkg.version}`;
 
 function getOrigin(url) {
@@ -343,6 +356,14 @@ module.exports = function percySnapshot(b, name, options) {
   return b.call(async () => {
     if (!(await module.exports.isPercyEnabled())) return;
     let log = utils.logger('webdriverio');
+
+    // Refuse a non-loopback Percy server address before trusting percy.type or
+    // fetching/executing the DOM bundle from it (PER-8707).
+    if (utils.percy?.address && !isLoopbackAddress(utils.percy.address)) {
+      log.error(`Refusing non-loopback PERCY_SERVER_ADDRESS "${utils.percy.address}"; the Percy CLI must run on localhost.`);
+      return;
+    }
+
     if (utils.percy?.type === 'automate') {
       throw new Error('You are using Percy on Automate session with WebdriverIO. For using WebdriverIO correctly, please use https://github.com/percy/percy-selenium-js/ or https://github.com/percy/percy-appium-js/');
     }
