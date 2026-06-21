@@ -365,8 +365,11 @@ module.exports = function percySnapshot(b, name, options) {
         { callback: true, log }
       );
 
+      // Merge .percy.yml config options with snapshot options (snapshot options take priority)
+      const mergedOptions = utils.mergeSnapshotOptions(options);
+
       // Serialize and capture the DOM (including cross-origin iframes)
-      let { domSnapshot, url } = await captureSerializedDOM(b, options || {}, percyDOMScript, log);
+      let { domSnapshot, url } = await captureSerializedDOM(b, mergedOptions, percyDOMScript, log);
 
       // Attach readiness diagnostics so the CLI can log timing and pass/fail
       if (readinessDiagnostics && domSnapshot && typeof domSnapshot === 'object') {
