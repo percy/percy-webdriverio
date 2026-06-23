@@ -818,10 +818,10 @@
   dependencies:
     pac-proxy-agent "^7.0.2"
 
-"@percy/sdk-utils@1.31.14-beta.4":
-  version "1.31.14-beta.4"
-  resolved "https://registry.yarnpkg.com/@percy/sdk-utils/-/sdk-utils-1.31.14-beta.4.tgz#aaa62b7f2c3cfd3c008fa2ac38d325efe2ddbe70"
-  integrity sha512-9nJnb9DeO6e1w9POrB5f8tpYjloNqlwplhwGKFJsrLoSYTrUCm8lialZRRoxeeAJW5ybto5H+mHgXux7hkrw0Q==
+"@percy/sdk-utils@^1.31.15-beta.0":
+  version "1.32.2"
+  resolved "https://registry.yarnpkg.com/@percy/sdk-utils/-/sdk-utils-1.32.2.tgz#eb2e33282bc3aa6802270d03c53e1723111670f8"
+  integrity sha512-jc/O/ldQYk5S9mbSZKjSSe66UbsalzKfAYKIigZxXql8hxZASH3C0Gr8af7DUXTzuBzYc60ZiyxUcRzWj91vTg==
   dependencies:
     pac-proxy-agent "^7.0.2"
 
@@ -5904,15 +5904,10 @@ undici-types@~6.19.2:
   resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-6.19.8.tgz#35111c9d1437ab83a7cdc0abae2f26d88eda0a02"
   integrity sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==
 
-undici@^6.19.5:
-  version "6.20.1"
-  resolved "https://registry.yarnpkg.com/undici/-/undici-6.20.1.tgz#fbb87b1e2b69d963ff2d5410a40ffb4c9e81b621"
-  integrity sha512-AjQF1QsmqfJys+LXfGTNum+qw4S88CojRInG/6t31W/1fk6G59s92bnAvGz5Cmur+kQv2SURXEvvudLmbrE8QA==
-
-undici@^6.20.1:
-  version "6.21.0"
-  resolved "https://registry.yarnpkg.com/undici/-/undici-6.21.0.tgz#4b3d3afaef984e07b48e7620c34ed8a285ed4cd4"
-  integrity sha512-BUgJXc752Kou3oOIuU1i+yZZypyZRqNPW0vqoMPl8VaoalSfeR0D8/t4iAS3yirs79SSMTxTag+ZC86uswv+Cw==
+undici@^6.19.5, undici@^6.20.1:
+  version "6.27.0"
+  resolved "https://registry.yarnpkg.com/undici/-/undici-6.27.0.tgz#41f9e48f7c5a40d27376caaead8c9a9fc7bca9c4"
+  integrity sha512-YmfV3YnEDzXRC5lZ2jWtWWHKGUm1zIt8AhesR1tens+HTNv+YZlN/dp6G727LOvMJ8xjP9Be7Y2Sdr96LDm+pg==
 
 unicorn-magic@^0.3.0:
   version "0.3.0"
