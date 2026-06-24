@@ -351,10 +351,15 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
-"@eslint/js@9.13.0", "@eslint/js@^9.13.0":
+"@eslint/js@9.13.0":
   version "9.13.0"
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-9.13.0.tgz#c5f89bcd57eb54d5d4fa8b77693e9c28dc97e547"
   integrity sha512-IFLyoY4d72Z5y/6o/BazFBezupzI/taV8sGumxTAVw3lXG9A6md1Dc34T9s1FoD/an9pJH8RHbAxsaEbBed9lA==
+
+"@eslint/js@^10.0.1":
+  version "10.0.1"
+  resolved "https://registry.yarnpkg.com/@eslint/js/-/js-10.0.1.tgz#1e8a876f50117af8ab67e47d5ad94d38d6622583"
+  integrity sha512-zeR9k5pd4gxjZ0abRoIaxdc7I3nDktoXZk2qOv9gCNWx3mVwEn32VRhyLaRsDiJjTs0xq/T8mfPtyuXu7GWBcA==
 
 "@eslint/object-schema@^2.1.4":
   version "2.1.4"
@@ -818,10 +823,10 @@
   dependencies:
     pac-proxy-agent "^7.0.2"
 
-"@percy/sdk-utils@1.31.14-beta.4":
-  version "1.31.14-beta.4"
-  resolved "https://registry.yarnpkg.com/@percy/sdk-utils/-/sdk-utils-1.31.14-beta.4.tgz#aaa62b7f2c3cfd3c008fa2ac38d325efe2ddbe70"
-  integrity sha512-9nJnb9DeO6e1w9POrB5f8tpYjloNqlwplhwGKFJsrLoSYTrUCm8lialZRRoxeeAJW5ybto5H+mHgXux7hkrw0Q==
+"@percy/sdk-utils@^1.31.15-beta.0":
+  version "1.31.15-beta.0"
+  resolved "https://registry.yarnpkg.com/@percy/sdk-utils/-/sdk-utils-1.31.15-beta.0.tgz#47b2f27c40c1df2e8ec404126f14830bf6c725b4"
+  integrity sha512-ab15RQ6/o458nPJK4bNJdv1rt3QV3PWT0vxrAOhiM2AAkgrJmRWhEmNqKcFrsKtmM2RXvW6rQPAI/ZUFRk/t1Q==
   dependencies:
     pac-proxy-agent "^7.0.2"
 
