@@ -14,6 +14,7 @@
   "types": "types/index.d.ts",
   "files": [
     "index.js",
+    "_iframe_shim.js",
     "types/index.d.ts"
   ],
   "engines": {
