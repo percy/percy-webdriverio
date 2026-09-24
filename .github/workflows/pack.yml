@@ -1,0 +1,25 @@
+name: Pack
+on: push
+permissions:
+  contents: read
+
+jobs:
+  pack:
+    name: Pack smoke test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: 20
+      # Install the packed tarball into a clean project and require it, so a
+      # file missing from package.json "files" fails here instead of on npm.
+      - name: Pack and require in a clean install
+        run: |
+          TARBALL="$PWD/$(npm pack --silent)"
+          mkdir -p "$RUNNER_TEMP/smoke" && cd "$RUNNER_TEMP/smoke"
+          npm init -y > /dev/null
+          npm install --no-audit --no-fund "$TARBALL"
+          node -e "require('@percy/webdriverio')"
