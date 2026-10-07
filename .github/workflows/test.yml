@@ -10,14 +10,29 @@ on:
 permissions:
   contents: read
 
+# One run per branch (and so per PR): a new push cancels the run still in
+# progress on the same branch. Runs on master are not cancelled, so every
+# master commit keeps its result. Manual runs are grouped by their
+# @percy/cli branch input, apart from push runs.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}-${{ github.event.inputs.branch }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
+
 jobs:
   test:
-    name: Test
+    name: Test (wdio ${{ matrix.wdio }}${{ matrix.classic && ', classic' || '' }})
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-latest]
-        node: [20]
-    runs-on: ${{ matrix.os }}
+        include:
+          - { wdio: 8, node: 20 }
+          - { wdio: 9, node: 22 }
+          # webdriverio 9 and 10 default to BiDi; the classic jobs cover
+          # switchFrame in a WebDriver Classic session (Safari, many cloud grids).
+          - { wdio: 9, node: 22, classic: true }
+          - { wdio: 10, node: 24 }
+          - { wdio: 10, node: 24, classic: true }
+    runs-on: ubuntu-latest
     steps:
       - uses: actions-ecosystem/action-regex-match@9e6c4fb3d5e898f505be7a1fb6e7b0a278f6665b # v2.0.2
         id: regex-match
@@ -28,10 +43,10 @@ jobs:
       - name: Break on invalid branch name
         run: exit 1
         if: ${{ github.event_name == 'workflow_dispatch' && steps.regex-match.outputs && steps.regex-match.outputs.match == '' }}
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: ${{ matrix.node }}
       - name: Setup firefox nightly
@@ -41,13 +56,25 @@ jobs:
           firefox-nightly --version
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
+        run: echo "dir=$(yarn cache dir)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: v1/${{ runner.os }}/node-${{ matrix.node }}/${{ hashFiles('**/yarn.lock') }}
-          restore-keys: v1/${{ runner.os }}/node-${{ matrix.node }}/
-      - run: yarn
+          key: v1/${{ runner.os }}/node-${{ matrix.node }}/wdio-${{ matrix.wdio }}/${{ hashFiles('**/yarn.lock') }}
+          restore-keys: v1/${{ runner.os }}/node-${{ matrix.node }}/wdio-${{ matrix.wdio }}/
+      - name: Install dependencies (webdriverio 10, from yarn.lock)
+        if: ${{ matrix.wdio == 10 }}
+        run: yarn install --frozen-lockfile
+      # yarn.lock holds webdriverio 10 only, so the older majors install the
+      # exact versions in .github/wdio-versions.json: every run gets the same
+      # packages. --ignore-engines: the lockfile's v10 packages need Node 22.19.
+      - name: Install dependencies (webdriverio ${{ matrix.wdio }}, pinned)
+        if: ${{ matrix.wdio != 10 }}
+        env:
+          WDIO: ${{ matrix.wdio }}
+        run: >- # zizmor: ignore[adhoc-packages] exact versions from .github/wdio-versions.json
+          yarn add --dev --ignore-engines
+          $(node -p "require('./.github/wdio-versions.json')[process.env.WDIO].join(' ')")
       - name: Set up @percy/cli from git
         if: ${{ github.event_name == 'workflow_dispatch' }}
         env:
@@ -66,3 +93,6 @@ jobs:
           yarn remove @percy/cli && yarn link `echo $PERCY_PACKAGES`
           npx @percy/cli --version
       - run: yarn test:coverage
+        env:
+          WDIO_MAJOR: ${{ matrix.wdio }}
+          WDIO_CLASSIC: ${{ matrix.classic && '1' || '' }}

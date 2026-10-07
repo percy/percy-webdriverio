@@ -10,6 +10,29 @@
 ```sh-session
 $ npm install --save-dev @percy/cli @percy/webdriverio
 ```
+## Compatibility
+
+| `@percy/webdriverio` | WebdriverIO                |
+|----------------------|----------------------------|
+| 4.x                  | 8 (8.14.0 or later), 9, 10 |
+| 3.x                  | 6, 7, 8, 9                 |
+
+WebdriverIO sets the Node.js version you need. WebdriverIO 10 needs Node.js 22.19.0 or later.
+
+Cross-origin iframes are captured in WebDriver Classic sessions and in WebDriver BiDi sessions
+(the WebdriverIO 10 default for Chrome and Firefox).
+
+With WebdriverIO 10, you can also give a browsing context as the first argument. The result of
+`browser.url()` works in BiDi and Classic sessions:
+
+```javascript
+const page = await browser.url('https://example.com');
+await percySnapshot(page, 'Example page');
+```
+
+In a BiDi session, `browser.newWindow()` also returns a browsing context. In a Classic session it
+switches the session to the new window, so give `browser`.
+
 ## Usage
 
 This is an example using the `percySnapshot()` function in async mode.
@@ -87,7 +110,7 @@ const percySnapshot = require('@percy/webdriverio');
   await submitBtn.click();
 
   // the browser object is required in standalone mode
-  percySnapshot(browser, 'WebdriverIO at DuckDuckGo');
+  await percySnapshot(browser, 'WebdriverIO at DuckDuckGo');
 
   await browser.deleteSession();
 })().catch((e) => console.error(e));
@@ -97,9 +120,14 @@ const percySnapshot = require('@percy/webdriverio');
 
 `percySnapshot(name[, options])`
 
-`percySnapshot(browser, name[, options])` (standalone mode only)
+`percySnapshot(browser, name[, options])` (required in standalone mode)
 
-- `browser` (**required**) - The WebdriverIO browser object
+`percySnapshot(context, name[, options])` (WebdriverIO 10)
+
+- `browser` - The WebdriverIO browser object. Without it, the global `browser` of the testrunner
+  is used.
+- `context` - A WebdriverIO 10 browsing context, for example the result of `browser.url()`. See
+  [Compatibility](#compatibility).
 - `name` (**required**) - The snapshot name; must be unique to each snapshot
 - `options` - [See per-snapshot configuration options](https://www.browserstack.com/docs/percy/take-percy-snapshots/overview#per-snapshot-configuration)
 

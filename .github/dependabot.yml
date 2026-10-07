@@ -8,6 +8,13 @@ updates:
     interval: weekly
   commit-message:
     prefix: ⬆️
+  # Update webdriverio and every @wdio/* package in one PR, so they stay on
+  # the same version (WebdriverIO v10 migration guide).
+  groups:
+    webdriverio:
+      patterns:
+        - "webdriverio"
+        - "@wdio/*"
 - package-ecosystem: github-actions
   directory: /
   schedule:

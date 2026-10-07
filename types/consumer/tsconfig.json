@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es2024",
+    "lib": ["es2024", "dom"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": ["node", "jasmine", "@wdio/globals/types", "@wdio/jasmine-framework"],
+    "paths": { "@percy/webdriverio": ["../index.d.ts"] }
+  },
+  "include": ["*.ts"]
+}
