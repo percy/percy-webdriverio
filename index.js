@@ -333,6 +333,32 @@ async function captureSerializedDOM(b, options, percyDOMScript, log) {
   return { domSnapshot, url };
 }
 
+// Wait for the page to be ready before serializing. Mirrors
+// utils.runReadinessGate, but hands the readiness config to b.executeAsync as
+// a serialized argument instead of inlining it into the executed source, so
+// config values are only ever treated as data inside the browser. The
+// executeAsync done callback is appended after the config argument.
+async function runReadinessGate(b, options, log) {
+  if (utils.isReadinessDisabled(options)) return null;
+  const config = utils.getReadinessConfig(options);
+
+  try {
+    /* istanbul ignore next: no instrumenting injected code */
+    return await b.executeAsync(function(readinessConfig, done) {
+      try {
+        /* eslint-disable no-undef */
+        if (typeof PercyDOM !== 'undefined' && typeof PercyDOM.waitForReady === 'function') {
+          PercyDOM.waitForReady(readinessConfig).then(function(r) { done(r); }).catch(function() { done(); });
+        } else { done(); }
+        /* eslint-enable no-undef */
+      } catch (e) { done(); }
+    }, config);
+  } catch (err) {
+    log.debug(`waitForReady failed, proceeding to serialize: ${err?.message || err}`);
+    return null;
+  }
+}
+
 // Take a DOM snapshot and post it to the snapshot endpoint
 module.exports = function percySnapshot(b, name, options) {
   // allow working with or without standalone mode
@@ -352,18 +378,11 @@ module.exports = function percySnapshot(b, name, options) {
       let percyDOMScript = await utils.fetchPercyDOM();
       await b.execute(percyDOMScript);
 
-      // Readiness gate. All orchestration lives in @percy/sdk-utils
-      // (disabled-check + shallow-merge config + callback-mode script
-      // generation + try/catch). callback: true makes waitForReadyScript
-      // use arguments[arguments.length - 1] for the executeAsync done
-      // callback, which is robust across WebdriverIO Promise-handling
-      // variations. The package.json floor pins runReadinessGate to be
-      // present.
-      const readinessDiagnostics = await utils.runReadinessGate(
-        (script) => b.executeAsync(script),
-        options,
-        { callback: true, log }
-      );
+      // Readiness gate. The disabled-check and config merge live in
+      // @percy/sdk-utils; the config is passed to the browser as an argument.
+      // Callback-style executeAsync is robust across WebdriverIO
+      // Promise-handling variations.
+      const readinessDiagnostics = await runReadinessGate(b, options, log);
 
       // Merge .percy.yml config options with snapshot options (snapshot options take priority)
       const mergedOptions = utils.mergeSnapshotOptions(options);
