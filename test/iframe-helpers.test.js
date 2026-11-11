@@ -1,4 +1,12 @@
-const { shouldSkipIframe, switchToParent, processFrameTree, captureSerializedDOM } = require('../index.js');
+const {
+  shouldSkipIframe,
+  switchToParent,
+  processFrameTree,
+  captureSerializedDOM,
+  classicFrameStrategy,
+  contextFrameStrategy,
+  createFrameStrategy
+} = require('../index.js');
 
 // Build a minimal element handle stub for top-level iframe iteration.
 function makeIframeStub(attrs) {
@@ -443,5 +451,201 @@ describe('captureSerializedDOM multi top-level iframes without switchToParentFra
     expect(Array.isArray(thrown.partialCapture)).toBe(true);
     expect(thrown.partialCapture.length).toBe(1);
     expect(thrown.partialCapture[0].iframeData.percyElementId).toBe('d');
+  });
+});
+
+// A browsing-context stub whose execute answers the three calls that
+// processFrameTree makes inside a frame: inject PercyDOM, read document.URL,
+// serialize.
+function makeFrameScope(url, html, extra = {}) {
+  let calls = 0;
+  return {
+    execute: () => {
+      calls++;
+      if (calls === 1) return Promise.resolve();
+      if (calls === 2) return Promise.resolve(url);
+      return Promise.resolve({ html });
+    },
+    $$: () => Promise.resolve([]),
+    ...extra
+  };
+}
+
+describe('createFrameStrategy', () => {
+  const log = { debug: () => {} };
+
+  it('uses the classic strategy on the browser in a classic session', async () => {
+    const b = { isBidi: false, switchFrame: () => Promise.resolve() };
+    const { strategy, root } = await createFrameStrategy(b, log);
+    expect(strategy).not.toBe(contextFrameStrategy);
+    expect(root).toBe(b);
+  });
+
+  it('uses the classic strategy in a BiDi session without browsingContexts (wdio 9)', async () => {
+    const b = { isBidi: true, switchFrame: () => Promise.resolve() };
+    const { strategy, root } = await createFrameStrategy(b, log);
+    expect(strategy).not.toBe(contextFrameStrategy);
+    expect(root).toBe(b);
+  });
+
+  it('uses the browsing context of the current window in a wdio 10 BiDi session', async () => {
+    const c1 = { contextId: 'ctx-1' };
+    const c2 = { contextId: 'ctx-2' };
+    const b = {
+      isBidi: true,
+      getWindowHandle: () => Promise.resolve('ctx-2'),
+      browsingContexts: () => Promise.resolve([c1, c2])
+    };
+    const { strategy, root } = await createFrameStrategy(b, log);
+    expect(strategy).toBe(contextFrameStrategy);
+    expect(root).toBe(c2);
+  });
+
+  it('uses a held browsing context as the root (webdriverio 10 newWindow / url result)', async () => {
+    const held = { [Symbol.for('wdio.kind')]: 'browsing-context', isBidi: true, frame: () => Promise.resolve({}) };
+    const { strategy, root } = await createFrameStrategy(held, log);
+    expect(strategy).toBe(contextFrameStrategy);
+    expect(root).toBe(held);
+  });
+
+  it('does not treat an object as a browsing context without the wdio.kind marker', async () => {
+    const lookalike = { contextId: 'ctx-7', isBidi: false, frame: () => Promise.resolve({}), switchFrame: () => Promise.resolve() };
+    const { strategy, root } = await createFrameStrategy(lookalike, log);
+    expect(strategy).not.toBe(contextFrameStrategy);
+    expect(root).toBe(lookalike);
+  });
+
+  it('keeps the classic strategy for the Classic stand-in that browser.url() returns', async () => {
+    const standIn = {
+      contextId: undefined,
+      isBidi: false,
+      frame: () => Promise.reject(new Error('needs a WebDriver BiDi session')),
+      switchFrame: () => Promise.resolve()
+    };
+    const { strategy, root } = await createFrameStrategy(standIn, log);
+    expect(strategy).not.toBe(contextFrameStrategy);
+    expect(root).toBe(standIn);
+  });
+
+  it('falls back to the first browsing context when no context matches the window handle', async () => {
+    const c1 = { contextId: 'ctx-1' };
+    const b = {
+      isBidi: true,
+      getWindowHandle: () => Promise.resolve('other'),
+      browsingContexts: () => Promise.resolve([c1, { contextId: 'ctx-2' }])
+    };
+    const debugLog = { debug: jasmine.createSpy('debug') };
+    const { root } = await createFrameStrategy(b, debugLog);
+    expect(root).toBe(c1);
+    // The fallback can pick another tab than the one serialized, so say so.
+    expect(debugLog.debug).toHaveBeenCalledWith(
+      'No browsing context matches window handle other; using the first one (ctx-1)'
+    );
+  });
+
+  it('logs nothing when a browsing context matches the window handle', async () => {
+    const c1 = { contextId: 'ctx-1' };
+    const b = {
+      isBidi: true,
+      getWindowHandle: () => Promise.resolve('ctx-1'),
+      browsingContexts: () => Promise.resolve([c1])
+    };
+    const debugLog = { debug: jasmine.createSpy('debug') };
+    await createFrameStrategy(b, debugLog);
+    expect(debugLog.debug.calls.count()).toBe(0);
+  });
+});
+
+describe('processFrameTree with contextFrameStrategy', () => {
+  let log, ctx;
+  beforeEach(() => {
+    log = { debug: jasmine.createSpy('debug') };
+    ctx = { maxFrameDepth: 10, ignoreSelectors: [], options: {}, percyDOMScript: '', log, frames: contextFrameStrategy };
+  });
+
+  it('captures nested frames through frame() without switching the session', async () => {
+    const iframeEl = {};
+    const childEl = makeIframeStub({ src: 'https://leaf.example/', 'data-percy-element-id': 'leaf' });
+    const leafCtx = makeFrameScope('https://leaf.example/', 'leaf');
+    const frameCtx = makeFrameScope('https://mid.example/', 'mid', {
+      $$: () => Promise.resolve([childEl]),
+      frame: jasmine.createSpy('frame').and.resolveTo(leafCtx)
+    });
+    const root = {
+      frame: jasmine.createSpy('frame').and.resolveTo(frameCtx),
+      switchFrame: jasmine.createSpy('switchFrame')
+    };
+
+    const result = await processFrameTree(root, iframeEl, { src: 'https://mid.example/', percyElementId: 'mid' },
+      1, new Set(['https://page.example/']), ctx);
+
+    expect(root.frame).toHaveBeenCalledWith(iframeEl);
+    expect(frameCtx.frame).toHaveBeenCalledWith(childEl);
+    expect(root.switchFrame.calls.count()).toBe(0);
+    expect(result.map((r) => r.iframeData.percyElementId)).toEqual(['mid', 'leaf']);
+    expect(result.map((r) => r.iframeSnapshot.html)).toEqual(['mid', 'leaf']);
+  });
+
+  it('returns [] without a context-lost error when frame() rejects', async () => {
+    const root = { frame: () => Promise.reject(new Error('no such frame')) };
+
+    const result = await processFrameTree(root, {}, { src: 'https://mid.example/', percyElementId: 'mid' },
+      2, new Set(), ctx);
+
+    expect(result).toEqual([]);
+    expect(log.debug).toHaveBeenCalledWith(jasmine.stringMatching(/Failed to process cross-origin iframe/));
+  });
+});
+
+describe('captureSerializedDOM in a wdio 10 BiDi session', () => {
+  it('captures cross-origin iframes through the browsing context of the page', async () => {
+    const log = { debug: jasmine.createSpy('debug') };
+    const iframeEl = makeIframeStub({ src: 'https://mid.example/', 'data-percy-element-id': 'mid' });
+    const frameCtx = makeFrameScope('https://mid.example/', 'mid');
+    const root = {
+      contextId: 'ctx-1',
+      $$: () => Promise.resolve([iframeEl]),
+      frame: jasmine.createSpy('frame').and.resolveTo(frameCtx)
+    };
+    const b = {
+      isBidi: true,
+      getWindowHandle: () => Promise.resolve('ctx-1'),
+      browsingContexts: () => Promise.resolve([root]),
+      execute: () => Promise.resolve({ domSnapshot: { html: 'page' }, url: 'https://page.example/' }),
+      $$: jasmine.createSpy('$$').and.resolveTo([]),
+      switchFrame: jasmine.createSpy('switchFrame')
+    };
+
+    const { domSnapshot } = await captureSerializedDOM(b, {}, '', log);
+
+    expect(domSnapshot.corsIframes.length).toBe(1);
+    expect(domSnapshot.corsIframes[0].iframeData.percyElementId).toBe('mid');
+    expect(root.frame).toHaveBeenCalledWith(iframeEl);
+    expect(b.switchFrame.calls.count()).toBe(0);
+  });
+});
+
+describe('classic frame switching on wdio 8 (no switchFrame command)', () => {
+  const log = { debug: () => {} };
+
+  it('enters a frame with switchToFrame when switchFrame is missing', async () => {
+    const calls = [];
+    const b = { switchToFrame: (arg) => { calls.push(arg); return Promise.resolve(); } };
+    const iframeEl = { elementId: 'el-1' };
+
+    const scope = await classicFrameStrategy(b, log).enter(b, iframeEl);
+
+    expect(calls).toEqual([iframeEl]);
+    expect(scope).toBe(b);
+  });
+
+  it('returns to the top document with switchToFrame(null) when switchFrame is missing', async () => {
+    const calls = [];
+    const b = { switchToFrame: (arg) => { calls.push(arg); return Promise.resolve(); } };
+
+    const ok = await switchToParent(b, log, 1);
+
+    expect(calls).toEqual([null]);
+    expect(ok).toBe(true);
   });
 });

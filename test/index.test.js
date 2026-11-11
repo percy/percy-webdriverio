@@ -1,3 +1,4 @@
+const http = require('http');
 const helpers = require('@percy/sdk-utils/test/helpers');
 const utils = require('@percy/sdk-utils');
 const percySnapshot = require('../index.js');
@@ -202,6 +203,29 @@ describe('percySnapshot', () => {
     ]));
   });
 
+  it('reports the installed webdriverio version as environmentInfo', async () => {
+    const requestSpy = spyOn(percySnapshot, 'request').and.callThrough();
+
+    await percySnapshot('Environment info');
+
+    const { environmentInfo } = requestSpy.calls.mostRecent().args[0];
+    expect(environmentInfo).toMatch(/^webdriverio\/\d+\.\d+\.\d+/);
+    // CI sets WDIO_MAJOR per matrix job, so a job that installed another
+    // major fails here instead of testing the wrong version.
+    if (process.env.WDIO_MAJOR) {
+      expect(environmentInfo).toMatch(new RegExp(`^webdriverio/${process.env.WDIO_MAJOR}\\.`));
+    }
+  });
+
+  it('attaches readiness diagnostics from the real browser', async () => {
+    const requestSpy = spyOn(percySnapshot, 'request').and.callThrough();
+
+    await percySnapshot('Readiness diagnostics');
+
+    const { domSnapshot } = requestSpy.calls.mostRecent().args[0];
+    expect(domSnapshot.readiness_diagnostics).toEqual(jasmine.any(Object));
+  });
+
   it('does not include corsIframes when page has no iframes', async () => {
     const requestSpy = spyOn(percySnapshot, 'request').and.callThrough();
 
@@ -357,17 +381,23 @@ describe('percySnapshot', () => {
     // a plain object with hand-rolled call recorders per spec so behaviour
     // is deterministic. The outer afterEach in `describe('percySnapshot')`
     // restores `browser = og`, so this swap is scoped to each spec.
-    function buildBrowser({ executeAsyncImpl, executeImpl } = {}) {
-      const executeAsyncCalls = [];
+    // The injected PercyDOM bundle also mentions `PercyDOM.waitForReady`, so
+    // match the guard that only the sdk-utils readiness script contains.
+    function isReadinessScript(script) {
+      return typeof script === 'string' && script.includes("typeof PercyDOM !== 'undefined'");
+    }
+
+    function buildBrowser({ readinessImpl, executeImpl } = {}) {
+      const readinessCalls = [];
       const executeCalls = [];
       browser = {
         call: (fn) => fn(),
-        executeAsync: (...args) => {
-          executeAsyncCalls.push(args);
-          return executeAsyncImpl ? executeAsyncImpl(...args) : Promise.resolve();
-        },
         execute: (...args) => {
           executeCalls.push(args);
+          if (isReadinessScript(args[0])) {
+            readinessCalls.push(args);
+            return readinessImpl ? readinessImpl(...args) : Promise.resolve();
+          }
           return executeImpl
             ? executeImpl(...args)
             : Promise.resolve({
@@ -376,54 +406,56 @@ describe('percySnapshot', () => {
             });
         }
       };
-      return { executeAsyncCalls, executeCalls };
+      return { readinessCalls, executeCalls };
     }
 
-    it('calls executeAsync with waitForReady before serialize', async () => {
-      const { executeAsyncCalls, executeCalls } = buildBrowser({
-        executeAsyncImpl: () => Promise.resolve({ ok: true })
+    it('calls execute with a promise-returning waitForReady script before serialize', async () => {
+      const { readinessCalls, executeCalls } = buildBrowser({
+        readinessImpl: () => Promise.resolve({ ok: true })
       });
 
       await percySnapshot('readiness-happy-path');
 
-      expect(executeAsyncCalls.length).toBe(1);
-      // sdk-utils.waitForReadyScript({ callback: true }) emits a STRING using
-      // `arguments[arguments.length - 1]` for the executeAsync done callback.
-      expect(typeof executeAsyncCalls[0][0]).toBe('string');
-      expect(executeAsyncCalls[0][0]).toContain('PercyDOM.waitForReady');
-      expect(executeAsyncCalls[0][0]).toContain('arguments[arguments.length - 1]');
-      // execute is called twice: once to inject PercyDOM, once to serialize.
-      expect(executeCalls.length).toBeGreaterThan(0);
+      expect(readinessCalls.length).toBe(1);
+      // No extra arguments: the readiness config is inlined into the script.
+      expect(readinessCalls[0].length).toBe(1);
+      // execute runs the string as a function body, so it needs an explicit
+      // return; the promise-mode script has no done callback.
+      expect(readinessCalls[0][0]).toMatch(/^return \(/);
+      expect(readinessCalls[0][0]).not.toContain('arguments[arguments.length - 1]');
+      const serializeIndex = executeCalls.findIndex((args) => typeof args[0] === 'function');
+      const readinessIndex = executeCalls.findIndex((args) => isReadinessScript(args[0]));
+      expect(readinessIndex).toBeLessThan(serializeIndex);
     });
 
     it('inlines per-snapshot readiness config as JSON into the script', async () => {
-      const { executeAsyncCalls } = buildBrowser({
-        executeAsyncImpl: () => Promise.resolve(null)
+      const { readinessCalls } = buildBrowser({
+        readinessImpl: () => Promise.resolve(null)
       });
       const readiness = { preset: 'strict', stabilityWindowMs: 500 };
 
       await percySnapshot('readiness-config', { readiness });
 
-      expect(executeAsyncCalls.length).toBe(1);
+      expect(readinessCalls.length).toBe(1);
       // sdk-utils inlines the config via JSON.stringify rather than passing
-      // it as a separate b.executeAsync argument.
-      expect(executeAsyncCalls[0][0]).toContain('"preset":"strict"');
-      expect(executeAsyncCalls[0][0]).toContain('"stabilityWindowMs":500');
+      // it as a separate b.execute argument.
+      expect(readinessCalls[0][0]).toContain('"preset":"strict"');
+      expect(readinessCalls[0][0]).toContain('"stabilityWindowMs":500');
     });
 
-    it('skips executeAsync when preset is disabled', async () => {
-      const { executeAsyncCalls } = buildBrowser();
+    it('skips the readiness script when preset is disabled', async () => {
+      const { readinessCalls } = buildBrowser();
 
       await percySnapshot('readiness-disabled', { readiness: { preset: 'disabled' } });
 
-      expect(executeAsyncCalls.length).toBe(0);
+      expect(readinessCalls.length).toBe(0);
     });
 
-    it('still serializes when executeAsync rejects', async () => {
+    it('still serializes when the readiness script rejects', async () => {
       // Factory function (not Promise.reject literal) so the rejection is
       // produced only when the SDK awaits — avoids an unhandled-rejection.
       buildBrowser({
-        executeAsyncImpl: () => Promise.reject(new Error('readiness boom'))
+        readinessImpl: () => Promise.reject(new Error('readiness boom'))
       });
 
       await percySnapshot('readiness-reject');
@@ -433,11 +465,11 @@ describe('percySnapshot', () => {
       ]));
     });
 
-    it('still serializes when executeAsync rejects with a non-Error', async () => {
+    it('still serializes when the readiness script rejects with a non-Error', async () => {
       // Covers the `err?.message || err` second branch: rejection value has
       // no `.message`, so logging falls through to stringifying err itself.
       buildBrowser({
-        executeAsyncImpl: () => Promise.reject('plain-string-rejection')
+        readinessImpl: () => Promise.reject('plain-string-rejection')
       });
 
       await percySnapshot('readiness-reject-string');
@@ -446,6 +478,186 @@ describe('percySnapshot', () => {
         '[percy] Could not take DOM snapshot "readiness-reject-string"'
       ]));
     });
+  });
+});
+
+describe('cross-origin iframes in a real browser', () => {
+  // The page under test is served by the Percy test server on localhost.
+  // These fixtures are served on 127.0.0.1, so they are cross-origin to it;
+  // the leaf frame of /nested is on localhost again, so it is cross-origin
+  // to its 127.0.0.1 parent.
+  let server, port;
+
+  beforeAll(async () => {
+    server = http.createServer((req, res) => {
+      res.setHeader('Content-Type', 'text/html');
+      if (req.url === '/nested') {
+        res.end('<!doctype html><html><body><p>cors nested</p>' +
+          `<iframe src="http://localhost:${port}/child" data-percy-element-id="e2e-leaf"></iframe>` +
+          '</body></html>');
+      } else if (req.url === '/nested-ignore') {
+        res.end('<!doctype html><html><body><p>cors nested</p>' +
+          `<iframe src="http://localhost:${port}/child" data-percy-element-id="e2e-leaf" class="no-percy"></iframe>` +
+          '</body></html>');
+      } else {
+        res.end('<!doctype html><html><body><p>cors child</p></body></html>');
+      }
+    });
+    await new Promise((resolve) => server.listen(0, resolve));
+    port = server.address().port;
+  });
+
+  afterAll(async () => {
+    await new Promise((resolve) => server.close(resolve));
+  });
+
+  beforeEach(async () => {
+    await helpers.setupTest();
+    await browser.url(helpers.testSnapshotURL);
+  });
+
+  async function addIframe(src, id) {
+    await browser.execute(async (frameSrc, frameId) => {
+      let iframe = document.createElement('iframe');
+      iframe.src = frameSrc;
+      iframe.setAttribute('data-percy-element-id', frameId);
+      let loaded = new Promise((resolve) => { iframe.onload = resolve; });
+      document.body.appendChild(iframe);
+      await loaded;
+    }, src, id);
+  }
+
+  it('runs in the session protocol that the CI job asks for', () => {
+    // WDIO_CLASSIC=1 must give a Classic session, or the Classic switchFrame
+    // path is not what the e2e specs below exercise.
+    if (process.env.WDIO_CLASSIC) expect(browser.isBidi).toBe(false);
+  });
+
+  it('captures a cross-origin iframe', async () => {
+    const requestSpy = spyOn(percySnapshot, 'request').and.callThrough();
+    await addIframe(`http://127.0.0.1:${port}/child`, 'e2e-cors');
+
+    await percySnapshot('E2E cross-origin iframe');
+
+    const { corsIframes } = requestSpy.calls.mostRecent().args[0].domSnapshot;
+    expect(corsIframes.length).toBe(1);
+    expect(corsIframes[0].iframeData.percyElementId).toBe('e2e-cors');
+    expect(corsIframes[0].frameUrl).toBe(`http://127.0.0.1:${port}/child`);
+    expect(corsIframes[0].iframeSnapshot.html).toContain('cors child');
+  });
+
+  it('skips a cross-origin iframe matched by ignoreIframeSelectors', async () => {
+    const requestSpy = spyOn(percySnapshot, 'request').and.callThrough();
+    await addIframe(`http://127.0.0.1:${port}/child`, 'e2e-cors');
+
+    await percySnapshot('E2E ignored iframe', {
+      ignoreIframeSelectors: ['[data-percy-element-id="e2e-cors"]']
+    });
+
+    const { domSnapshot } = requestSpy.calls.mostRecent().args[0];
+    expect(domSnapshot.corsIframes).toBeUndefined();
+  });
+
+  it('captures a nested cross-origin iframe', async () => {
+    const requestSpy = spyOn(percySnapshot, 'request').and.callThrough();
+    await addIframe(`http://127.0.0.1:${port}/nested`, 'e2e-cors');
+
+    await percySnapshot('E2E nested cross-origin iframe');
+
+    const { corsIframes } = requestSpy.calls.mostRecent().args[0].domSnapshot;
+    expect(corsIframes.map((frame) => frame.iframeData.percyElementId)).toEqual(['e2e-cors', 'e2e-leaf']);
+  });
+
+  it('captures a tab held from newWindow, with its cross-origin iframes (webdriverio 10 BiDi)', async () => {
+    if (!browser.isBidi || typeof browser.browsingContexts !== 'function') {
+      pending('needs a webdriverio 10 BiDi session');
+      return;
+    }
+    const requestSpy = spyOn(percySnapshot, 'request').and.callThrough();
+    const tab = await browser.newWindow(`http://127.0.0.1:${port}/nested`, { type: 'tab' });
+    try {
+      await percySnapshot(tab, 'E2E held tab');
+    } finally {
+      await tab.closeWindow();
+    }
+
+    const { url, domSnapshot } = requestSpy.calls.mostRecent().args[0];
+    expect(url).toBe(`http://127.0.0.1:${port}/nested`);
+    expect(domSnapshot.html).toContain('cors nested');
+    expect(domSnapshot.corsIframes.map((frame) => frame.iframeData.percyElementId)).toEqual(['e2e-leaf']);
+  });
+
+  it('skips a nested cross-origin iframe matched by ignoreIframeSelectors', async () => {
+    // The check for the leaf runs inside the parent frame's scope; the
+    // parent frame itself must still be captured.
+    const requestSpy = spyOn(percySnapshot, 'request').and.callThrough();
+    await addIframe(`http://127.0.0.1:${port}/nested-ignore`, 'e2e-cors');
+
+    await percySnapshot('E2E nested ignored iframe', { ignoreIframeSelectors: ['.no-percy'] });
+
+    const { corsIframes } = requestSpy.calls.mostRecent().args[0].domSnapshot;
+    expect(corsIframes.map((frame) => frame.iframeData.percyElementId)).toEqual(['e2e-cors']);
+  });
+
+  it('captures through the browsing context that browser.url() returns', async () => {
+    const page = await browser.url(helpers.testSnapshotURL);
+    // webdriverio 8 returns nothing and 9 returns the request; only 10
+    // returns a browsing context (BiDi) or a Classic stand-in.
+    if (!page || typeof page.execute !== 'function') {
+      pending('browser.url() returns a browsing context only in webdriverio 10');
+      return;
+    }
+    const requestSpy = spyOn(percySnapshot, 'request').and.callThrough();
+    await addIframe(`http://127.0.0.1:${port}/nested`, 'e2e-cors');
+
+    await percySnapshot(page, 'E2E url() root');
+
+    const { url, domSnapshot } = requestSpy.calls.mostRecent().args[0];
+    expect(url).toBe(helpers.testSnapshotURL);
+    expect(domSnapshot.corsIframes.map((frame) => frame.iframeData.percyElementId)).toEqual(['e2e-cors', 'e2e-leaf']);
+  });
+
+  it('leaves the session on the top document after the capture', async () => {
+    await addIframe(`http://127.0.0.1:${port}/nested`, 'e2e-cors');
+
+    await percySnapshot('E2E restore');
+
+    expect(await browser.execute(() => document.URL)).toBe(helpers.testSnapshotURL);
+  });
+});
+
+describe('percySnapshot with a held browsing context', () => {
+  beforeEach(async () => {
+    await helpers.setupTest();
+  });
+
+  it('runs a browsing context through the call command of its browser', async () => {
+    // A webdriverio 10 BrowsingContext has no call command; it is marked with
+    // the wdio.kind symbol and links to the browser that owns it.
+    const requestSpy = spyOn(percySnapshot, 'request').and.callThrough();
+    const owner = { call: jasmine.createSpy('call').and.callFake((fn) => fn()) };
+    const context = {
+      [Symbol.for('wdio.kind')]: 'browsing-context',
+      browser: owner,
+      isBidi: true,
+      frame: () => Promise.reject(new Error('no frames expected')),
+      $$: () => Promise.resolve([]),
+      execute: (script) => Promise.resolve(typeof script === 'function'
+        ? { domSnapshot: { html: '<html>tab</html>', resources: [] }, url: 'http://localhost/tab' }
+        : undefined)
+    };
+
+    await percySnapshot(context, 'Held context');
+
+    expect(owner.call).toHaveBeenCalledTimes(1);
+    expect(requestSpy).toHaveBeenCalledTimes(1);
+    expect(requestSpy.calls.mostRecent().args[0].url).toBe('http://localhost/tab');
+  });
+
+  it('throws at once when the first argument is not a browser or browsing context', () => {
+    // For example what newWindow() returns in a WebDriver Classic session.
+    expect(() => percySnapshot({ handle: 'window-1', type: 'tab' }, 'Not a browser'))
+      .toThrowError('The first argument must be a WebdriverIO browser or browsing context.');
   });
 });
 
