@@ -387,9 +387,20 @@ describe('percySnapshot', () => {
       ];
       const requestSpy = spyOn(percySnapshot, 'request').and.callFake(() => Promise.resolve());
       // Run the real readiness function and PercyDOM in the real browser so
-      // PercyDOM.waitForReady receives the adversarial preset.
+      // PercyDOM.waitForReady receives the adversarial preset. Wrap the
+      // injected PercyDOM.waitForReady to record the preset it receives.
       buildBrowser({
-        executeAsyncImpl: (fn, ...rest) => og.executeAsync(fn, ...rest),
+        executeAsyncImpl: async (fn, ...rest) => {
+          /* istanbul ignore next: browser-executed wrapper */
+          await og.execute(() => {
+            const waitForReady = window.PercyDOM.waitForReady;
+            window.PercyDOM.waitForReady = function(config) {
+              window.__percyReceivedPreset = config && config.preset;
+              return waitForReady.apply(this, arguments);
+            };
+          });
+          return og.executeAsync(fn, ...rest);
+        },
         executeImpl: (...args) => og.execute(...args)
       });
 
@@ -401,6 +412,8 @@ describe('percySnapshot', () => {
         const { domSnapshot } = requestSpy.calls.mostRecent().args[0];
         expect(domSnapshot.readiness_diagnostics).toEqual(jasmine.any(Object));
 
+        /* istanbul ignore next: browser-executed probe */
+        expect(await og.execute(() => window.__percyReceivedPreset)).toBe(preset);
         /* istanbul ignore next: browser-executed probe */
         expect(await og.execute(() => window.__percyReadinessProbe)).toBeUndefined();
       }
