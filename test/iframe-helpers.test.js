@@ -527,20 +527,14 @@ describe('createFrameStrategy', () => {
     expect(root).toBe(standIn);
   });
 
-  it('falls back to the first browsing context when no context matches the window handle', async () => {
-    const c1 = { contextId: 'ctx-1' };
+  it('rejects when no browsing context matches the window handle, rather than use another tab', async () => {
     const b = {
       isBidi: true,
       getWindowHandle: () => Promise.resolve('other'),
-      browsingContexts: () => Promise.resolve([c1, { contextId: 'ctx-2' }])
+      browsingContexts: () => Promise.resolve([{ contextId: 'ctx-1' }, { contextId: 'ctx-2' }])
     };
-    const debugLog = { debug: jasmine.createSpy('debug') };
-    const { root } = await createFrameStrategy(b, debugLog);
-    expect(root).toBe(c1);
-    // The fallback can pick another tab than the one serialized, so say so.
-    expect(debugLog.debug).toHaveBeenCalledWith(
-      'No browsing context matches window handle other; using the first one (ctx-1)'
-    );
+    await expectAsync(createFrameStrategy(b, log))
+      .toBeRejectedWithError('No browsing context matches window handle other');
   });
 
   it('logs nothing when a browsing context matches the window handle', async () => {

@@ -27,8 +27,20 @@ const page = await browser.url('https://example.com');
 await percySnapshot(page, 'Example page');
 ```
 
-In a BiDi session, `browser.newWindow()` also returns a browsing context. In a Classic session it
-switches the session to the new window, so give `browser`.
+In a BiDi session, `browser.newWindow()` also returns a browsing context, but it does not switch
+`browser` to the new tab: give the context to snapshot that tab. In a Classic session it returns
+`{ handle, type }` and switches the session to the new window, so give `browser`. In TypeScript,
+narrow the result before the call:
+
+```typescript
+const tab = await browser.newWindow('https://example.com', { type: 'tab' });
+if ('handle' in tab) {
+  await percySnapshot(browser, 'New tab'); // Classic: the session is on the new tab
+} else {
+  await percySnapshot(tab, 'New tab'); // BiDi: tab is a browsing context
+}
+```
+
 ## Usage
 
 This is an example using the `percySnapshot()` function in async mode.
@@ -83,7 +95,9 @@ $ percy exec -- wdio wdio.conf.js
 ### Standalone mode
 
 When using WebdriverIO in [standalone mode](https://webdriver.io/docs/setuptypes.html), the browser
-object must be provided as the first argument to the `percySnapshot` function.
+object must be provided as the first argument to the `percySnapshot` function. With WebdriverIO 10
+you can give a browsing context instead; to snapshot a tab opened with `browser.newWindow()` in a
+BiDi session, give that tab's context, because `newWindow()` does not switch `browser` to it.
 
 ```javascript
 const { remote } = require('webdriverio');
@@ -105,7 +119,7 @@ const percySnapshot = require('@percy/webdriverio');
   const submitBtn = await browser.$('#search_button_homepage');
   await submitBtn.click();
 
-  // the browser object is required in standalone mode
+  // standalone mode needs a browser or (WebdriverIO 10) a browsing context
   await percySnapshot(browser, 'WebdriverIO at DuckDuckGo');
 
   await browser.deleteSession();
@@ -116,13 +130,16 @@ const percySnapshot = require('@percy/webdriverio');
 
 `percySnapshot(name[, options])`
 
-`percySnapshot(browser, name[, options])` (required in standalone mode)
+`percySnapshot(browser, name[, options])`
 
 `percySnapshot(context, name[, options])` (WebdriverIO 10)
 
+In standalone mode, give either `browser` or `context`.
+
 - `browser` - The WebdriverIO browser object. Without it, the global `browser` of the testrunner
   is used.
-- `context` - A WebdriverIO 10 browsing context, for example the result of `browser.url()`. See
+- `context` - A WebdriverIO 10 browsing context, for example the result of `browser.url()`, or of
+  `browser.newWindow()` in a BiDi session (which does not switch `browser` to the new tab). See
   [Compatibility](#compatibility).
 - `name` (**required**) - The snapshot name; must be unique to each snapshot
 - `options` - [See per-snapshot configuration options](https://www.browserstack.com/docs/percy/take-percy-snapshots/overview#per-snapshot-configuration)

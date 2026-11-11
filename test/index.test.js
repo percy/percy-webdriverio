@@ -2,6 +2,19 @@ const http = require('http');
 const helpers = require('@percy/sdk-utils/test/helpers');
 const utils = require('@percy/sdk-utils');
 const percySnapshot = require('../index.js');
+// The installed webdriverio, not WDIO_MAJOR, so a local run checks the same thing as CI.
+// webdriverio 10's "exports" hides package.json from require(), so read it from disk.
+const wdioMajor = (() => {
+  const fs = require('fs');
+  const path = require('path');
+  const read = (dir) => {
+    const file = path.join(dir, 'package.json');
+    return fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : {};
+  };
+  let dir = path.dirname(require.resolve('webdriverio'));
+  while (read(dir).name !== 'webdriverio') dir = path.dirname(dir);
+  return parseInt(read(dir).version, 10);
+})();
 
 // Forward-compat shim: `utils.runReadinessGate` is the orchestrator added
 // in @percy/sdk-utils 1.31.15. Until that version is published, polyfill
@@ -529,8 +542,10 @@ describe('cross-origin iframes in a real browser', () => {
 
   it('runs in the session protocol that the CI job asks for', () => {
     // WDIO_CLASSIC=1 must give a Classic session, or the Classic switchFrame
-    // path is not what the e2e specs below exercise.
+    // path is not what the e2e specs below exercise. The webdriverio 10 job
+    // without it must give BiDi, or the BiDi specs below would go pending.
     if (process.env.WDIO_CLASSIC) expect(browser.isBidi).toBe(false);
+    else if (wdioMajor >= 10) expect(browser.isBidi).toBe(true);
   });
 
   it('captures a cross-origin iframe', async () => {
@@ -603,10 +618,12 @@ describe('cross-origin iframes in a real browser', () => {
     const page = await browser.url(helpers.testSnapshotURL);
     // webdriverio 8 returns nothing and 9 returns the request; only 10
     // returns a browsing context (BiDi) or a Classic stand-in.
-    if (!page || typeof page.execute !== 'function') {
+    if (wdioMajor < 10) {
       pending('browser.url() returns a browsing context only in webdriverio 10');
       return;
     }
+    // From webdriverio 10 on, a missing context is a regression, not a skip.
+    expect(typeof (page && page.execute)).toBe('function');
     const requestSpy = spyOn(percySnapshot, 'request').and.callThrough();
     await addIframe(`http://127.0.0.1:${port}/nested`, 'e2e-cors');
 

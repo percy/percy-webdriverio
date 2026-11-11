@@ -202,12 +202,12 @@ async function createFrameStrategy(b, log) {
   if (b.isBidi && typeof b.browsingContexts === 'function') {
     const handle = await b.getWindowHandle();
     const contexts = await b.browsingContexts();
-    let root = contexts.find((context) => context.contextId === handle);
+    const root = contexts.find((context) => context.contextId === handle);
     if (!root) {
-      // Not expected: the iframes may then come from another tab than the
-      // page that was serialized.
-      root = contexts[0];
-      log.debug(`No browsing context matches window handle ${handle}; using the first one (${root.contextId})`);
+      // Not expected (for example the window closed in between). Another
+      // context could be another tab, so capture no iframes: the caller
+      // keeps the main-page snapshot.
+      throw new Error(`No browsing context matches window handle ${handle}`);
     }
     return { strategy: contextFrameStrategy, root };
   }
