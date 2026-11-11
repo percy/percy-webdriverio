@@ -34,10 +34,10 @@ narrow the result before the call:
 
 ```typescript
 const tab = await browser.newWindow('https://example.com', { type: 'tab' });
-if ('handle' in tab) {
-  await percySnapshot(browser, 'New tab'); // Classic: the session is on the new tab
-} else {
+if ('browser' in tab) {
   await percySnapshot(tab, 'New tab'); // BiDi: tab is a browsing context
+} else {
+  await percySnapshot(browser, 'New tab'); // Classic: the session is on the new tab
 }
 ```
 
