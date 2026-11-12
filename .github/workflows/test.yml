@@ -100,3 +100,19 @@ jobs:
         env:
           WDIO_MAJOR: ${{ matrix.wdio }}
           WDIO_CLASSIC: ${{ matrix.classic && '1' || '' }}
+
+  # Branch protection requires a check named "Test (ubuntu-latest, 20)", the
+  # name the single-job matrix used to report. This job keeps that name and
+  # passes only when every webdriverio job above passed.
+  test-summary:
+    name: Test (ubuntu-latest, 20)
+    needs: test
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: All webdriverio jobs passed
+        env:
+          RESULT: ${{ needs.test.result }}
+        run: |
+          echo "webdriverio matrix result: $RESULT"
+          [ "$RESULT" = "success" ]
