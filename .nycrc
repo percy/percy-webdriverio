@@ -1,5 +1,5 @@
 {
-  "exclude": ["test"],
+  "exclude": ["test", "wdio.conf.js"],
   "check-coverage": true,
   "branches": 100,
   "lines": 100,
