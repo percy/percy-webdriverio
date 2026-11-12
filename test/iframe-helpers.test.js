@@ -548,6 +548,76 @@ describe('createFrameStrategy', () => {
     await createFrameStrategy(b, debugLog);
     expect(debugLog.debug.calls.count()).toBe(0);
   });
+
+  // WebdriverIO 10 parallel mode: each concurrent test has its own browsing
+  // context, execute() acts on the test's window, and Classic commands such
+  // as getWindowHandle throw (PER-11533, percy-webdriverio#1522).
+  function makeParallelSession(ownIndex, contextCount) {
+    const windows = Array.from({ length: contextCount }, () => ({}));
+    const contexts = windows.map((win, i) => ({
+      contextId: `ctx-${i}`,
+      execute: jasmine.createSpy(`execute-${i}`).and.callFake((fn, ...args) => {
+        const saved = global.window;
+        global.window = win;
+        try { return Promise.resolve(fn(...args)); } finally { global.window = saved; }
+      })
+    }));
+    const b = {
+      isBidi: true,
+      getWindowHandle: jasmine.createSpy('getWindowHandle')
+        .and.rejectWith(new Error('getWindowHandle is not supported in parallel mode')),
+      browsingContexts: () => Promise.resolve(contexts),
+      execute: jasmine.createSpy('execute').and.callFake((fn, ...args) => contexts[ownIndex].execute(fn, ...args))
+    };
+    return { b, contexts, windows };
+  }
+
+  it('finds the test\'s own context by a window mark when getWindowHandle throws (parallel mode)', async () => {
+    const { b, contexts, windows } = makeParallelSession(2, 4);
+    const debugLog = { debug: jasmine.createSpy('debug') };
+
+    const { strategy, root } = await createFrameStrategy(b, debugLog);
+
+    expect(strategy).toBe(contextFrameStrategy);
+    expect(root).toBe(contexts[2]);
+    expect(debugLog.debug).toHaveBeenCalledWith(jasmine.stringMatching(/getWindowHandle failed .*window mark/));
+    // The mark is removed again.
+    expect(windows.every((w) => !('__percyRootMark' in w))).toBe(true);
+  });
+
+  it('ignores contexts whose execute rejects while looking for the mark', async () => {
+    const { b, contexts } = makeParallelSession(1, 3);
+    contexts[0].execute.and.rejectWith(new Error('context discarded'));
+
+    const { root } = await createFrameStrategy(b, log);
+
+    expect(root).toBe(contexts[1]);
+  });
+
+  it('rejects when no context carries the mark, rather than use another test\'s context', async () => {
+    const { b, contexts } = makeParallelSession(0, 2);
+    b.browsingContexts = () => Promise.resolve([contexts[1]]);
+
+    await expectAsync(createFrameStrategy(b, log))
+      .toBeRejectedWithError('No browsing context carries the root window mark');
+  });
+});
+
+describe('captureSerializedDOM when the root context cannot be found', () => {
+  it('warns, and still returns the main-page snapshot', async () => {
+    const log = { debug: jasmine.createSpy('debug'), warn: jasmine.createSpy('warn') };
+    const b = {
+      isBidi: true,
+      getWindowHandle: () => Promise.resolve('gone'),
+      browsingContexts: () => Promise.resolve([{ contextId: 'ctx-1' }]),
+      execute: () => Promise.resolve({ domSnapshot: { html: 'page' }, url: 'https://page.example/' })
+    };
+
+    const { domSnapshot } = await captureSerializedDOM(b, {}, '', log);
+
+    expect(domSnapshot).toEqual({ html: 'page' });
+    expect(log.warn).toHaveBeenCalledWith(jasmine.stringMatching(/Error capturing CORS iframes, the snapshot is sent without them: No browsing context matches/));
+  });
 });
 
 describe('processFrameTree with contextFrameStrategy', () => {
