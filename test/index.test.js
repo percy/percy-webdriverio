@@ -16,37 +16,6 @@ const wdioMajor = (() => {
   return parseInt(read(dir).version, 10);
 })();
 
-// Forward-compat shim: `utils.runReadinessGate` is the orchestrator added
-// in @percy/sdk-utils 1.31.15. Until that version is published, polyfill
-// it here so tests exercise the real call shape instead of being skipped
-// by the SDK's typeof guard. Once 1.31.15 lands, this becomes a no-op.
-if (typeof utils.runReadinessGate !== 'function') {
-  utils.runReadinessGate = async function runReadinessGate(evalScript, snapshotOptions, opts) {
-    snapshotOptions = snapshotOptions || {};
-    opts = opts || {};
-    const callback = !!opts.callback;
-    const log = opts.log;
-    if (typeof utils.isReadinessDisabled === 'function' && utils.isReadinessDisabled(snapshotOptions)) return null;
-    const cfg = typeof utils.getReadinessConfig === 'function'
-      ? utils.getReadinessConfig(snapshotOptions)
-      : Object.assign({},
-          (utils.percy && utils.percy.config && utils.percy.config.snapshot && utils.percy.config.snapshot.readiness) || {},
-          (snapshotOptions && snapshotOptions.readiness) || {});
-    const script = typeof utils.waitForReadyScript === 'function'
-      ? utils.waitForReadyScript(cfg, { callback })
-      : null;
-    if (!script) return null;
-    try {
-      return await evalScript(script);
-    } catch (err) {
-      if (log && typeof log.debug === 'function') {
-        log.debug('waitForReady failed, proceeding to serialize: ' + ((err && err.message) || err));
-      }
-      return null;
-    }
-  };
-}
-
 describe('percySnapshot', () => {
   let og;
 
@@ -394,10 +363,11 @@ describe('percySnapshot', () => {
     // a plain object with hand-rolled call recorders per spec so behaviour
     // is deterministic. The outer afterEach in `describe('percySnapshot')`
     // restores `browser = og`, so this swap is scoped to each spec.
-    // The injected PercyDOM bundle also mentions `PercyDOM.waitForReady`, so
-    // match the guard that only the sdk-utils readiness script contains.
+    // The injected PercyDOM bundle is a string that also mentions
+    // `PercyDOM.waitForReady`; the readiness gate is the only function that
+    // calls it.
     function isReadinessScript(script) {
-      return typeof script === 'string' && script.includes("typeof PercyDOM !== 'undefined'");
+      return typeof script === 'function' && script.toString().includes('PercyDOM.waitForReady');
     }
 
     function buildBrowser({ readinessImpl, executeImpl } = {}) {
@@ -422,7 +392,7 @@ describe('percySnapshot', () => {
       return { readinessCalls, executeCalls };
     }
 
-    it('calls execute with a promise-returning waitForReady script before serialize', async () => {
+    it('calls execute with the readiness function before serialize', async () => {
       const { readinessCalls, executeCalls } = buildBrowser({
         readinessImpl: () => Promise.resolve({ ok: true })
       });
@@ -430,18 +400,18 @@ describe('percySnapshot', () => {
       await percySnapshot('readiness-happy-path');
 
       expect(readinessCalls.length).toBe(1);
-      // No extra arguments: the readiness config is inlined into the script.
-      expect(readinessCalls[0].length).toBe(1);
-      // execute runs the string as a function body, so it needs an explicit
-      // return; the promise-mode script has no done callback.
-      expect(readinessCalls[0][0]).toMatch(/^return \(/);
-      expect(readinessCalls[0][0]).not.toContain('arguments[arguments.length - 1]');
-      const serializeIndex = executeCalls.findIndex((args) => typeof args[0] === 'function');
+      // A function taking only the config: it returns the waitForReady
+      // promise, so there is no executeAsync done callback (WebdriverIO 10
+      // removed executeAsync).
+      expect(typeof readinessCalls[0][0]).toBe('function');
+      expect(readinessCalls[0].length).toBe(2);
+      const serializeIndex = executeCalls.findIndex((args) =>
+        typeof args[0] === 'function' && !isReadinessScript(args[0]));
       const readinessIndex = executeCalls.findIndex((args) => isReadinessScript(args[0]));
       expect(readinessIndex).toBeLessThan(serializeIndex);
     });
 
-    it('inlines per-snapshot readiness config as JSON into the script', async () => {
+    it('passes the readiness config as an execute argument, not as inlined source', async () => {
       const { readinessCalls } = buildBrowser({
         readinessImpl: () => Promise.resolve(null)
       });
@@ -450,10 +420,67 @@ describe('percySnapshot', () => {
       await percySnapshot('readiness-config', { readiness });
 
       expect(readinessCalls.length).toBe(1);
-      // sdk-utils inlines the config via JSON.stringify rather than passing
-      // it as a separate b.execute argument.
-      expect(readinessCalls[0][0]).toContain('"preset":"strict"');
-      expect(readinessCalls[0][0]).toContain('"stabilityWindowMs":500');
+      expect(readinessCalls[0][1]).toEqual(jasmine.objectContaining(readiness));
+      // No executed source carries the config values.
+      const source = readinessCalls[0][0].toString();
+      expect(source).not.toContain('strict');
+      expect(source).not.toContain('500');
+    });
+
+    it('delivers readiness config strings to the browser as data', async () => {
+      const presets = [
+        '"});window.__percyReadinessProbe=1;//',
+        '"});window.__percyReadinessProbe=1;//\u2028x'
+      ];
+      const requestSpy = spyOn(percySnapshot, 'request').and.callFake(() => Promise.resolve());
+      // Run the real readiness function and PercyDOM in the real browser so
+      // PercyDOM.waitForReady receives the adversarial preset. Wrap the
+      // injected PercyDOM.waitForReady to record the preset it receives.
+      buildBrowser({
+        readinessImpl: async (fn, ...rest) => {
+          /* istanbul ignore next: browser-executed wrapper */
+          await og.execute(() => {
+            const waitForReady = window.PercyDOM.waitForReady;
+            window.PercyDOM.waitForReady = function(config) {
+              window.__percyReceivedPreset = config && config.preset;
+              return waitForReady.apply(this, arguments);
+            };
+          });
+          return og.execute(fn, ...rest);
+        },
+        executeImpl: (...args) => og.execute(...args)
+      });
+
+      for (const preset of presets) {
+        requestSpy.calls.reset();
+        await percySnapshot('readiness-data', { readiness: { preset } });
+
+        expect(requestSpy).toHaveBeenCalledTimes(1);
+        const { domSnapshot } = requestSpy.calls.mostRecent().args[0];
+        expect(domSnapshot.readiness_diagnostics).toEqual(jasmine.any(Object));
+
+        /* istanbul ignore next: browser-executed probe */
+        expect(await og.execute(() => window.__percyReceivedPreset)).toBe(preset);
+        // typeof, because WebDriver Classic returns an undefined value as null.
+        /* istanbul ignore next: browser-executed probe */
+        expect(await og.execute(() => typeof window.__percyReadinessProbe)).toBe('undefined');
+      }
+    });
+
+    it('runs the readiness gate in a real browser and attaches diagnostics', async () => {
+      const requestSpy = spyOn(percySnapshot, 'request').and.callFake(() => Promise.resolve());
+      // No executeAsync: WebdriverIO 10 removed it, and the gate must not need it.
+      browser = {
+        call: (fn) => fn(),
+        execute: (...args) => og.execute(...args),
+        $$: (...args) => og.$$(...args)
+      };
+
+      await percySnapshot('readiness-real-browser', { readiness: { stabilityWindowMs: 50 } });
+
+      expect(requestSpy).toHaveBeenCalledTimes(1);
+      const { domSnapshot } = requestSpy.calls.mostRecent().args[0];
+      expect(domSnapshot.readiness_diagnostics).toEqual(jasmine.any(Object));
     });
 
     it('skips the readiness script when preset is disabled', async () => {
