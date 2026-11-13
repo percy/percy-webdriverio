@@ -200,7 +200,17 @@ async function createFrameStrategy(b, log) {
     return { strategy: contextFrameStrategy, root: b };
   }
   if (b.isBidi && typeof b.browsingContexts === 'function') {
-    const handle = await b.getWindowHandle();
+    let handle;
+    try {
+      handle = await b.getWindowHandle();
+    } catch (error) {
+      // WebdriverIO 10 parallel mode (mochaOpts/vitestOpts.parallelMode)
+      // runs each test in its own browsing context and rejects WebDriver
+      // Classic commands such as getWindowHandle. execute() still acts on
+      // the test's own window, so find the context by a mark set there.
+      log.debug(`getWindowHandle failed (${error.message}); finding the root browsing context by a window mark`);
+      return { strategy: contextFrameStrategy, root: await findMarkedContext(b) };
+    }
     const contexts = await b.browsingContexts();
     const root = contexts.find((context) => context.contextId === handle);
     if (!root) {
@@ -212,6 +222,30 @@ async function createFrameStrategy(b, log) {
     return { strategy: contextFrameStrategy, root };
   }
   return { strategy: classicFrameStrategy(b, log), root: b };
+}
+
+// Sets a random mark on the window that b.execute acts on, then returns the
+// browsing context whose window carries that mark. Each concurrent test sets
+// its own mark, so a test never picks another test's context.
+async function findMarkedContext(b) {
+  const mark = `percy-root-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  /* istanbul ignore next: no instrumenting injected code */
+  await b.execute(function(m) { window.__percyRootMark = m; }, mark);
+  try {
+    const contexts = await b.browsingContexts();
+    const marks = await Promise.all(contexts.map((context) => (
+      /* istanbul ignore next: no instrumenting injected code */
+      context.execute(function() { return window.__percyRootMark; }).catch(() => null)
+    )));
+    const index = marks.indexOf(mark);
+    if (index === -1) {
+      throw new Error('No browsing context carries the root window mark');
+    }
+    return contexts[index];
+  } finally {
+    /* istanbul ignore next: no instrumenting injected code */
+    await b.execute(function() { delete window.__percyRootMark; }).catch(() => {});
+  }
 }
 
 // `scope` is the parent document: the browser for the classic strategy, a
@@ -398,7 +432,9 @@ async function captureSerializedDOM(b, options, percyDOMScript, log) {
     }
   } catch (error) {
     /* istanbul ignore next: outer-catch fires only on synchronous JS errors not handled by inner try/catches */
-    log.debug(`Error capturing CORS iframes: ${error.message}`);
+    // The snapshot is still sent, but without its cross-origin iframes:
+    // say so at warn level so the loss is not silent.
+    log.warn(`Error capturing CORS iframes, the snapshot is sent without them: ${error.message}`);
   }
 
   return { domSnapshot, url };
