@@ -30,6 +30,10 @@ exports.config = {
   // Firefox runs -headless, so webdriverio 10 does not need to start a
   // display server (Weston or Xvfb) on Linux. Older versions ignore it.
   displayServerEnabled: false,
+  // The same for webdriverio 9, which otherwise starts each worker through
+  // xvfb-run. On the ubuntu-26.04 runner image the worker's IPC channel then
+  // fails on its first message (write EINVAL), before any spec runs.
+  autoXvfb: false,
   capabilities: [capability],
 
   // webdriverio 6 and 7 connect to localhost:4444; 8.14 and later start their
