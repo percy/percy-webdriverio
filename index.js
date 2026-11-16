@@ -226,25 +226,26 @@ async function createFrameStrategy(b, log) {
 
 // Sets a random mark on the window that b.execute acts on, then returns the
 // browsing context whose window carries that mark. Each concurrent test sets
-// its own mark, so a test never picks another test's context.
+// its own mark, so a test never picks another test's context. The mark is the
+// property name, so concurrent captures on one window don't overwrite each other.
 async function findMarkedContext(b) {
-  const mark = `percy-root-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const mark = `__percyRootMark_${Date.now()}_${Math.random().toString(36).slice(2)}`;
   /* istanbul ignore next: no instrumenting injected code */
-  await b.execute(function(m) { window.__percyRootMark = m; }, mark);
+  await b.execute(function(m) { window[m] = true; }, mark);
   try {
     const contexts = await b.browsingContexts();
-    const marks = await Promise.all(contexts.map((context) => (
+    const marked = await Promise.all(contexts.map((context) => (
       /* istanbul ignore next: no instrumenting injected code */
-      context.execute(function() { return window.__percyRootMark; }).catch(() => null)
+      context.execute(function(m) { return window[m] === true; }, mark).catch(() => false)
     )));
-    const index = marks.indexOf(mark);
+    const index = marked.indexOf(true);
     if (index === -1) {
       throw new Error('No browsing context carries the root window mark');
     }
     return contexts[index];
   } finally {
     /* istanbul ignore next: no instrumenting injected code */
-    await b.execute(function() { delete window.__percyRootMark; }).catch(() => {});
+    await b.execute(function(m) { delete window[m]; }, mark).catch(() => {});
   }
 }
 

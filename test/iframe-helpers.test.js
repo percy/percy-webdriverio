@@ -582,7 +582,17 @@ describe('createFrameStrategy', () => {
     expect(root).toBe(contexts[2]);
     expect(debugLog.debug).toHaveBeenCalledWith(jasmine.stringMatching(/getWindowHandle failed .*window mark/));
     // The mark is removed again.
-    expect(windows.every((w) => !('__percyRootMark' in w))).toBe(true);
+    expect(windows.every((w) => Object.keys(w).length === 0)).toBe(true);
+  });
+
+  it('keeps concurrent captures on the same window from overwriting each other\'s mark', async () => {
+    const { b, contexts, windows } = makeParallelSession(1, 3);
+
+    const [first, second] = await Promise.all([createFrameStrategy(b, log), createFrameStrategy(b, log)]);
+
+    expect(first.root).toBe(contexts[1]);
+    expect(second.root).toBe(contexts[1]);
+    expect(windows.every((w) => Object.keys(w).length === 0)).toBe(true);
   });
 
   it('ignores contexts whose execute rejects while looking for the mark', async () => {
