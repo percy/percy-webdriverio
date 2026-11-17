@@ -14,6 +14,9 @@ jobs:
         with:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
-      - run: npm publish
+      # A GitHub pre-release publishes under the npm "beta" tag, so a plain
+      # `npm install @percy/webdriverio` keeps getting the latest stable version.
+      - run: npm publish --tag "$NPM_TAG"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TAG: ${{ github.event.release.prerelease && 'beta' || 'latest' }}
