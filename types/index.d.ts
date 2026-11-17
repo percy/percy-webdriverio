@@ -13,19 +13,25 @@ declare global {
   }
 }
 
-export default function percySnapshot(
+declare function percySnapshot(
   browser: WebdriverIO.Browser,
   name: string,
   options?: SnapshotOptions
 ): Promise<void | { [key: string]: any }>;
 
-export default function percySnapshot(
+declare function percySnapshot(
   context: WebdriverIO.BrowsingContext,
   name: string,
   options?: SnapshotOptions
 ): Promise<void | { [key: string]: any }>;
 
-export default function percySnapshot(
+declare function percySnapshot(
   name: string,
   options?: SnapshotOptions
 ): Promise<void | { [key: string]: any }>;
+
+// index.js sets module.exports to the function (CommonJS), so the types use
+// `export =`. `export default` told TypeScript the function was at `.default`,
+// which does not exist at runtime: it broke ESM projects on NodeNext (TS2349)
+// and CommonJS projects without esModuleInterop (`.default is not a function`).
+export = percySnapshot;
